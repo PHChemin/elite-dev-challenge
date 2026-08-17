@@ -46,9 +46,9 @@ O objetivo do Must é o fluxo ponta a ponta: login por papel, sessão com mapa, 
 
 **Critérios de Aceitação:**
 
-- [ ] Login emite JWT com `sub` e `role`.
-- [ ] Seed cobre os quatro papéis; README lista e-mails e senhas.
-- [ ] Rota protegida recusa token ausente, inválido ou papel errado.
+- [x] Login emite JWT com `sub` e `role`.
+- [x] Seed cobre os quatro papéis; README lista e-mails e senhas.
+- [x] Rota protegida recusa token ausente, inválido ou papel errado.
 
 #### US02 — Catálogo TMDb e CRUD de sessão
 

@@ -20,13 +20,33 @@ Readers: the evaluator and the model. One paragraph serves both.
 
 Chat leftovers: “after we discussed”, “we settled on”, “in my view”, “as we agreed”.
 
-Prompt negation: “this is not code”, “this section is not implementation”.
+Prompt negation: “this is not code”, “this section is not implementation”, “não é código”, “não layout final”.
 
 Filler: “it is important to note”, “worth mentioning”, “basically”, “in terms of”.
 
 Internal debate labels (`1B`, `2B`) in evaluator-facing text. Must/Should/Could only as priorities defined in the PRD.
 
 Do not list discarded alternatives mid-rule (fonts, stacks, libs). State what applies. Out-of-scope items go under **Out of scope** / **Out of Must design** as a short list.
+
+**Hard fail — prompt/chat leak.** Evaluator-facing markdown states facts. It does not narrate the chat, the backlog, or instructions to the model.
+
+Never write:
+
+- Future work glued to a deliverable: “TMDb e telas entram nas issues seguintes da PR.”
+- Placeholders: “Pendente: outras (preencher).”
+- Prompt-to-self: “O que a IA não deve fazer”, “não inventar X”.
+- Parenthetical denial from a prompt: “Repo para X (não é código).”
+- Process leftover inside a product sentence: “com testes Jest primeiro” + next-issue promise.
+
+One artifact per sentence. What exists. What the human decided. What the AI produced. Backlog lives in `docs/github-issues.md` as issue titles, not inside another paragraph.
+
+Exception: SDD `Instrução para a IA` blockquotes are voice v4 and stay in the SDD only.
+
+`docs/ai-process.md`: tools, human decisions, artifacts produced. No backlog, no “don’t invent”, no placeholders.
+
+Wrong: “Auth JWT na API com testes Jest primeiro. TMDb e telas entram nas issues seguintes da PR.”
+
+Right: “Auth JWT na API: `POST /api/auth/login`, `GET /api/users/me`, guards de papel, testes Jest, seed dos quatro papéis no README.”
 
 ## Required
 

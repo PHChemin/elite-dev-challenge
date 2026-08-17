@@ -1,36 +1,32 @@
 # Uso de IA
 
-O enunciado pede para contar ferramentas, o que a IA fez e o que foi decisão humana. Atualizar esta página ao longo da semana.
+O enunciado pede ferramentas, o que a IA gerou e o que foi decisão humana.
 
 ## Ferramentas
 
-- Cursor (agente) — docs, skills (EN), depois código.
-- Skills de domínio: nestjs-expert, prisma-expert (community) + skills do PHCTickets.
-- Stitch — ideias de tela (referência, não layout final).
-- Pendente: outras (preencher).
+- Cursor (agente)
+- Skills: nestjs-expert, prisma-expert (community) e skills do PHCTickets em `.agents/skills/`
+- Stitch — ideias de tela em `docs/design/`
 
-## O que foi decidido sem a IA gerar o produto
+## Decisão humana
 
 - Vite + Mantine e NestJS/Express, dois processos.
 - Prisma e Postgres.
-- JWT com `role` no token; guards no Nest. Quatro papéis no banco; telas de Admin são Should.
-- Must: TMDb, mapa, quantidade inteira/meia antes dos assentos. Ticketmaster, pista e estabelecimento só se sobrar tempo.
+- JWT com `role` no token. Guards no Nest. Quatro papéis no banco. Telas de Admin são Should.
+- Must: TMDb, mapa, quantidade inteira/meia antes dos assentos.
+- Ticketmaster, pista e estabelecimento ficam fora do Must.
 - Fonte Roboto. Paleta com Sucesso `#2D6A4F` para válido e pagamento aprovado.
-- Teto de ingressos por sessão, padrão 6, o organizador muda. Meia começa na metade da inteira.
+- Teto de ingressos por sessão, padrão 6. O organizador altera. Meia começa na metade da inteira.
 - Retenção de 10 minutos no checkout.
-- Link do ingresso: GET público por `shareToken`; QR na página; Meus ingressos autenticado.
-- API em TDD: casos na issue, testes primeiro, código depois.
-- Portaria: um login por pessoa; a pessoa escolhe a sessão e depois lê o QR.
-- Registro e o organizador cadastrar portaria: depois do fluxo mínimo.
+- Link do ingresso: GET público por `shareToken`. QR na página. Meus ingressos autenticado.
+- API em TDD: casos na issue, testes, implementação.
+- Portaria: um login por pessoa. A pessoa escolhe a sessão e lê o QR.
+- Registro do consumidor e cadastro de portaria pelo organizador são Should.
 
-## O que a IA fez nesta fase
+## O que a IA gerou
 
-- Rascunho de PRD, SDD, visual, skills em `.agents/skills/`, texto das issues.
-- Comparar formas (Next vs Vite+API) e opções de portaria, para o autor escolher.
-- Scaffold do monorepo (`apps/api` + `apps/web`) e schema Prisma. Auth, TMDb e telas entram nas issues da PR.
-- Docker Compose local, Compose de produção (droplet) e hoist das dependências na raiz do monorepo.
-- Prisma no Nest (`PrismaService`), Prisma Studio em `http://localhost:5555` e Swagger em `/api/docs`.
-
-## O que a IA não deve fazer
-
-Inventar pista, Ticketmaster, e-mail de ingresso ou recuperação de senha no Must. Inventar microserviço Nest. Copiar tela genérica de CRUD e chamar de identidade.
+- PRD, SDD, visual, skills em `.agents/skills/`, texto das issues.
+- Monorepo `apps/api` + `apps/web` e schema Prisma.
+- Auth JWT na API: `POST /api/auth/login`, `GET /api/users/me`, guards de papel, testes Jest, seed dos quatro papéis no README.
+- Docker Compose local, Compose de produção na droplet, dependências hoisted na raiz.
+- Prisma no Nest (`PrismaService`). Prisma Studio em `http://localhost:5555`. Swagger em `/api/docs`.

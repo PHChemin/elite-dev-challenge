@@ -59,9 +59,21 @@ cp apps/web/.env.example apps/web/.env
 npm install
 npm run prisma:generate
 npm run prisma:migrate
+npm run prisma:seed
 npm run dev:api
 npm run dev:web
 ```
+
+## Usuários do seed
+
+| Papel       | E-mail                       | Senha          |
+| ----------- | ---------------------------- | -------------- |
+| Admin       | `admin@phctickets.local`     | `admin123`     |
+| Organizador | `organizer@phctickets.local` | `organizer123` |
+| Consumidor  | `customer@phctickets.local`  | `customer123`  |
+| Portaria    | `gate@phctickets.local`      | `gate123`      |
+
+A portaria fica ligada ao organizador do seed (`organizerId`).
 
 Prisma Studio (Postgres no ar, `apps/api/.env` com `DATABASE_URL`):
 
@@ -79,8 +91,8 @@ npm test
 
 ## O que já existe
 
-Scaffold do monorepo, schema Prisma, tema Mantine (Roboto e paleta PHCTickets) e Docker Compose.
+Scaffold do monorepo, schema Prisma, tema Mantine (Roboto e paleta PHCTickets), Docker Compose e Auth JWT na API (`POST /api/auth/login`, `GET /api/users/me`, guards de papel).
 
 ## O que falta
 
-Auth, catálogo, mapa, hold, pagamento, QR, portaria e seed. Ver [issues](docs/github-issues.md).
+Catálogo TMDb, mapa, hold, pagamento, QR, portaria e seed completo da sessão. Ver [issues](docs/github-issues.md).

@@ -54,7 +54,7 @@ Sem MCP obrigatório neste projeto. Migrações via Prisma CLI; diagrama da seç
 
 ### Bibliotecas permitidas (Must)
 
-- **Auth:** `@nestjs/jwt`, `@nestjs/passport`, Passport JWT  
+- **Auth:** `@nestjs/jwt`, `@nestjs/passport`, Passport JWT, `bcryptjs`  
 - **Validação:** `class-validator`, `class-transformer` + ValidationPipe global (`whitelist: true`)  
 - **Config:** `@nestjs/config`  
 - **Docs API:** `@nestjs/swagger` (`/api/docs`)  
@@ -237,9 +237,14 @@ Regra de preço: se `priceHalf` omitido na criação/atualização de `priceFull
   "statusCode": 400,
   "timestamp": "2026-08-17T00:00:00.000Z",
   "path": "/api/rota",
-  "message": "Descrição ou lista de validações"
+  "message": "Dados inválidos",
+  "fieldErrors": {
+    "email": ["Informe um e-mail válido"]
+  }
 }
 ```
+
+`fieldErrors` é um objeto campo → lista de mensagens. Sem erro de campo, vem `{}`.
 
 ## 8. Contratos de API (Must)
 
