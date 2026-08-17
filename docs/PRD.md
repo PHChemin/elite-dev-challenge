@@ -129,7 +129,7 @@ Registro do consumidor. Admin cria/desativa organizador. Organizador cria/desati
 
 #### US09 — Busca, cancelamento e deploy
 
-Busca/filtro de sessões. Cancelamento até 24 h antes de `startsAt` com devolução do lugar. Docker Compose. Front na Vercel. Regenerar `shareToken`.
+Busca/filtro de sessões. Cancelamento até 24 h antes de `startsAt` com devolução do lugar. Docker Compose. Regenerar `shareToken`.
 
 ### Could Have
 
@@ -162,7 +162,7 @@ Won’t do enunciado e do prazo. Pista e Ticketmaster. Escala de staff por sess�
 - **Segurança:** DTO + ValidationPipe (`whitelist`); JWT Bearer; segredos só em ambiente.
 - **Integridade:** Transação no hold e na confirmação; unique de assento/ticket no Postgres.
 - **Qualidade:** Jest na API; success e fail por operação Must.
-- **Operação:** README local obrigatório; Docker e Vercel (front) são Should.
+- **Operação:** README local obrigatório; Docker Compose é Should.
 - **Visual:** [visual.md](visual.md) — Roboto, paleta PHCTickets, Mantine.
 
 ## 8. Fluxos Principais

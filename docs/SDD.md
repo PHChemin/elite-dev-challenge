@@ -57,12 +57,13 @@ Sem MCP obrigatório neste projeto. Migrações via Prisma CLI; diagrama da seç
 - **Auth:** `@nestjs/jwt`, `@nestjs/passport`, Passport JWT  
 - **Validação:** `class-validator`, `class-transformer` + ValidationPipe global (`whitelist: true`)  
 - **Config:** `@nestjs/config`  
+- **Docs API:** `@nestjs/swagger` (`/api/docs`)  
 - **QR (web ou api):** lib de geração de QR a partir do `code`  
 - **Fonte web:** `@fontsource/roboto` (ou equivalente)
 
 ### Fora do Must
 
-Ticketmaster, pista, websocket do mapa, entidade estabelecimento, Next.js, Fastify, CQRS, Redis, refresh token, API Nest na Vercel, E2E de browser.
+Ticketmaster, pista, websocket do mapa, entidade estabelecimento, Next.js, Fastify, CQRS, Redis, refresh token, API serverless, E2E de browser.
 
 ## 4. Arquitetura de Dados
 
@@ -275,6 +276,8 @@ Regra de preço: se `priceHalf` omitido na criação/atualização de `priceFull
 
 > **Instrução para a IA:** Nada sensível hardcoded. `ConfigModule` valida na subida.
 
+**Implementation:** `apps/api/.env` e `apps/web/.env` são arquivos separados. Produção na droplet usa `.env.prod` só no Compose.
+
 | Variável | Onde | Uso |
 | -------- | ---- | --- |
 | `DATABASE_URL` | api | Postgres |
@@ -295,7 +298,9 @@ Must: auth/papéis, CRUD sessão, hold/unicidade, pagamento, share/QR, portaria 
 **Seed (README):** 1 admin, 1 organizador, 2 consumidores, 1 portaria (`organizerId` do org), 1 sessão publicada com mapa e lugares livres.
 
 **Must:** subir local (API + web + Postgres) via README.  
-**Should:** Docker Compose; front na Vercel apontando para API em host longo (Render, Railway ou similar).
+**Should:** Docker Compose local (`docker compose up --build`) e Compose de produção na droplet (`docker-compose.prod.yml`).  
+
+**Implementation:** na droplet, `docker-compose.prod.yml` publica só 80/443. Caddy faz proxy de `/api` para o Nest e do restante para o Nginx do front. Postgres não abre porta no host. `VITE_API_URL=/api` (mesma origem).
 
 ## 12. Design Tokens
 

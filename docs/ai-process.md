@@ -27,6 +27,9 @@ O enunciado pede para contar ferramentas, o que a IA fez e o que foi decisão hu
 
 - Rascunho de PRD, SDD, visual, skills em `.agents/skills/`, texto das issues.
 - Comparar formas (Next vs Vite+API) e opções de portaria, para o autor escolher.
+- Scaffold do monorepo (`apps/api` + `apps/web`) e schema Prisma. Auth, TMDb e telas entram nas issues da PR.
+- Docker Compose local, Compose de produção (droplet) e hoist das dependências na raiz do monorepo.
+- Prisma no Nest (`PrismaService`), Prisma Studio em `http://localhost:5555` e Swagger em `/api/docs`.
 
 ## O que a IA não deve fazer
 
