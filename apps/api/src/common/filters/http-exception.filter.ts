@@ -6,6 +6,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
+import type { FieldErrors } from '../validation/field-errors';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
@@ -19,8 +20,6 @@ export class AllExceptionsFilter implements ExceptionFilter {
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
 
-    const message = this.resolveMessage(exception, status);
-
     const rawPath = request.originalUrl ?? request.url;
     const path = rawPath.split('?')[0];
 
@@ -28,18 +27,14 @@ export class AllExceptionsFilter implements ExceptionFilter {
       statusCode: status,
       timestamp: new Date().toISOString(),
       path,
-      message,
+      message: this.resolveMessage(exception),
+      fieldErrors: this.resolveFieldErrors(exception),
     });
   }
 
-  private resolveMessage(
-    exception: unknown,
-    status: number,
-  ): string | string[] {
+  private resolveMessage(exception: unknown): string | string[] {
     if (!(exception instanceof HttpException)) {
-      return status === HttpStatus.INTERNAL_SERVER_ERROR
-        ? 'Erro interno'
-        : 'Erro';
+      return 'Erro interno';
     }
 
     const body = exception.getResponse();
@@ -51,5 +46,23 @@ export class AllExceptionsFilter implements ExceptionFilter {
       return value;
     }
     return exception.message;
+  }
+
+  private resolveFieldErrors(exception: unknown): FieldErrors {
+    if (!(exception instanceof HttpException)) {
+      return {};
+    }
+
+    const body = exception.getResponse();
+    if (!body || typeof body !== 'object' || !('fieldErrors' in body)) {
+      return {};
+    }
+
+    const value = body.fieldErrors;
+    if (!value || typeof value !== 'object' || Array.isArray(value)) {
+      return {};
+    }
+
+    return value as FieldErrors;
   }
 }

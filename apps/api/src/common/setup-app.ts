@@ -1,7 +1,13 @@
-import { INestApplication, ValidationPipe } from '@nestjs/common';
+import {
+  BadRequestException,
+  INestApplication,
+  ValidationPipe,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { ValidationError } from 'class-validator';
 import { AllExceptionsFilter } from './filters/http-exception.filter';
 import { setupSwagger } from './setup-swagger';
+import { toFieldErrors } from './validation/field-errors';
 
 export function setupApp(app: INestApplication): INestApplication {
   app.setGlobalPrefix('api');
@@ -10,6 +16,11 @@ export function setupApp(app: INestApplication): INestApplication {
     new ValidationPipe({
       whitelist: true,
       transform: true,
+      exceptionFactory: (errors: ValidationError[]) =>
+        new BadRequestException({
+          message: 'Dados inválidos',
+          fieldErrors: toFieldErrors(errors),
+        }),
     }),
   );
   app.useGlobalFilters(new AllExceptionsFilter());
