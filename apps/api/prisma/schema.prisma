@@ -1,0 +1,143 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  admin
+  organizer
+  customer
+  gate
+}
+
+enum UserStatus {
+  active
+  inactive
+}
+
+enum PublishStatus {
+  draft
+  published
+}
+
+enum HoldStatus {
+  active
+  converted
+  expired
+  cancelled
+}
+
+enum PaymentStatus {
+  approved
+  declined
+}
+
+enum TicketKind {
+  full
+  half
+}
+
+model User {
+  id                 String     @id @default(uuid())
+  email              String     @unique
+  passwordHash       String
+  role               Role
+  status             UserStatus @default(active)
+  organizerId        String?
+  organizer          User?      @relation("employsGate", fields: [organizerId], references: [id])
+  gateStaff          User[]     @relation("employsGate")
+  mustChangePassword Boolean    @default(false)
+  events             Event[]
+  holds              Hold[]
+  orders             Order[]
+  tickets            Ticket[]   @relation("owns")
+  validatedTickets   Ticket[]   @relation("validates")
+}
+
+model Event {
+  id                 String        @id @default(uuid())
+  organizerId        String
+  organizer          User          @relation(fields: [organizerId], references: [id])
+  tmdbId             String
+  title              String
+  posterUrl          String
+  startsAt           DateTime
+  venueName          String
+  venueAddress       String?
+  priceFull          Int
+  priceHalf          Int
+  maxTicketsPerOrder Int           @default(6)
+  publishStatus      PublishStatus @default(draft)
+  seats              Seat[]
+  holds              Hold[]
+  tickets            Ticket[]
+}
+
+model Seat {
+  id       String    @id @default(uuid())
+  eventId  String
+  event    Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  label    String
+  holdSeat HoldSeat?
+  ticket   Ticket?
+
+  @@unique([eventId, label])
+}
+
+model Hold {
+  id         String     @id @default(uuid())
+  customerId String
+  customer   User       @relation(fields: [customerId], references: [id])
+  eventId    String
+  event      Event      @relation(fields: [eventId], references: [id])
+  fullCount  Int
+  halfCount  Int
+  expiresAt  DateTime
+  holdStatus HoldStatus @default(active)
+  holdSeats  HoldSeat[]
+  order      Order?
+}
+
+model HoldSeat {
+  holdId String
+  seatId String @unique
+  hold   Hold   @relation(fields: [holdId], references: [id], onDelete: Cascade)
+  seat   Seat   @relation(fields: [seatId], references: [id])
+
+  @@id([holdId, seatId])
+}
+
+model Order {
+  id            String        @id @default(uuid())
+  customerId    String
+  customer      User          @relation(fields: [customerId], references: [id])
+  holdId        String        @unique
+  hold          Hold          @relation(fields: [holdId], references: [id])
+  paymentStatus PaymentStatus
+  totalCents    Int
+  paidAt        DateTime?
+  tickets       Ticket[]
+}
+
+model Ticket {
+  id                String     @id @default(uuid())
+  orderId           String
+  order             Order      @relation(fields: [orderId], references: [id])
+  eventId           String
+  event             Event      @relation(fields: [eventId], references: [id])
+  seatId            String     @unique
+  seat              Seat       @relation(fields: [seatId], references: [id])
+  customerId        String
+  customer          User       @relation("owns", fields: [customerId], references: [id])
+  kind              TicketKind
+  code              String     @unique
+  shareToken        String     @unique
+  usedAt            DateTime?
+  validatedByUserId String?
+  validatedBy       User?      @relation("validates", fields: [validatedByUserId], references: [id])
+  cancelledAt       DateTime?
+}
