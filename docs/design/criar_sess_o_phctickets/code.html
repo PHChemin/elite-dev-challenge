@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Criar Sessão - PHCTickets</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline-variant": "#dec0bc",
+                        "on-primary-fixed": "#410002",
+                        "on-secondary": "#ffffff",
+                        "primary-container": "#660708",
+                        "error": "#ba1a1a",
+                        "support-alert": "#BA181B",
+                        "on-tertiary-fixed": "#00174a",
+                        "on-error-container": "#93000a",
+                        "primary-fixed-dim": "#ffb4ab",
+                        "surface-bg": "#F5F3F4",
+                        "on-error": "#ffffff",
+                        "secondary-fixed": "#e0e3e7",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-fixed": "#ffdad6",
+                        "inverse-surface": "#3a2d2c",
+                        "on-surface": "#241917",
+                        "surface-tint": "#a63930",
+                        "success-valid": "#2D6A4F",
+                        "outline": "#8b716e",
+                        "surface-container": "#ffe9e6",
+                        "inverse-primary": "#ffb4ab",
+                        "tertiary-fixed": "#dbe1ff",
+                        "surface-variant": "#f3dedb",
+                        "on-primary-container": "#f27064",
+                        "on-primary": "#ffffff",
+                        "tertiary-container": "#002a77",
+                        "inverse-on-surface": "#ffedea",
+                        "surface-container-highest": "#f3dedb",
+                        "surface-dim": "#ebd5d2",
+                        "tertiary-fixed-dim": "#b4c5ff",
+                        "secondary-container": "#e0e3e7",
+                        "on-surface-variant": "#57423f",
+                        "on-secondary-fixed-variant": "#43474b",
+                        "on-background": "#241917",
+                        "neutral-gray": "#D3D3D3",
+                        "on-secondary-fixed": "#181c1f",
+                        "tertiary": "#00174a",
+                        "on-primary-fixed-variant": "#86211c",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-low": "#fff0ee",
+                        "surface-bright": "#fff8f7",
+                        "primary": "#410002",
+                        "on-tertiary-container": "#7a95e7",
+                        "secondary-fixed-dim": "#c4c7cb",
+                        "on-secondary-container": "#616568",
+                        "surface": "#fff8f7",
+                        "background": "#fff8f7",
+                        "error-container": "#ffdad6",
+                        "secondary": "#5b5f62",
+                        "on-tertiary-fixed-variant": "#23428e",
+                        "surface-container-high": "#f9e3e0"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "gutter": "20px",
+                        "lg": "40px",
+                        "max-width": "1200px",
+                        "margin-desktop": "auto",
+                        "xs": "8px",
+                        "sm": "16px",
+                        "base": "4px",
+                        "md": "24px",
+                        "xl": "64px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-surface-bg text-on-surface antialiased min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<header class="bg-surface dark:bg-surface-container-lowest w-full h-16 border-b border-neutral-gray dark:border-on-surface-variant flex-shrink-0 relative z-50">
+<div class="max-w-[1200px] mx-auto px-margin-mobile md:px-gutter h-full flex justify-between items-center">
+<!-- Brand Logo -->
+<div class="flex items-center gap-4">
+<a class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed-dim" href="#">
+                    PHCTickets
+                </a>
+</div>
+<!-- Navigation Links (Web) -->
+<nav class="hidden md:flex gap-lg items-center h-full">
+<a class="h-full flex items-center text-secondary dark:text-secondary-fixed-dim font-medium hover:text-primary-container dark:hover:text-on-primary-container transition-colors font-label-md text-label-md" href="#">Filmes</a>
+<a class="h-full flex items-center text-secondary dark:text-secondary-fixed-dim font-medium hover:text-primary-container dark:hover:text-on-primary-container transition-colors font-label-md text-label-md" href="#">Cinemas</a>
+<a class="h-full flex items-center text-primary dark:text-primary-fixed-dim border-b-2 border-primary font-bold hover:text-primary-container dark:hover:text-on-primary-container transition-colors font-label-md text-label-md opacity-80" href="#">Minha Conta</a>
+</nav>
+<!-- Actions -->
+<div class="flex items-center gap-md">
+<!-- Search Bar Placeholder -->
+<div class="hidden lg:flex items-center bg-surface-bg rounded-DEFAULT border border-neutral-gray px-3 py-1.5 focus-within:border-primary-container transition-colors">
+<span class="material-symbols-outlined text-secondary text-sm mr-2" data-icon="search" data-weight="regular">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm font-body-md text-body-md p-0 text-on-surface placeholder-secondary w-32 focus:w-48 transition-all duration-300" placeholder="Buscar..." type="text"/>
+</div>
+<button class="font-label-md text-label-md font-bold text-primary dark:text-primary-fixed-dim hover:text-primary-container transition-colors">
+                    Ingressos
+                </button>
+<button class="font-label-md text-label-md font-medium text-secondary dark:text-secondary-fixed-dim hover:text-on-surface transition-colors">
+                    PT-BR
+                </button>
+<!-- Mobile Menu Toggle -->
+<button class="md:hidden text-on-surface flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="menu" data-weight="regular">menu</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow flex items-start justify-center p-margin-mobile md:p-lg">
+<!-- Utilitarian Form Card -->
+<div class="w-full max-w-2xl bg-surface-container-lowest border border-neutral-gray rounded-DEFAULT mt-md mb-xl shadow-sm">
+<div class="px-md py-sm border-b border-neutral-gray flex items-center gap-xs">
+<span class="material-symbols-outlined text-primary-container" data-icon="movie" data-weight="fill" style="font-variation-settings: 'FILL' 1;">movie</span>
+<h1 class="font-headline-md text-headline-md text-on-surface">Criar Sessão</h1>
+</div>
+<form class="p-md flex flex-col gap-md">
+<!-- Movie Search Section (TMDb Placeholder) -->
+<div class="flex flex-col gap-base">
+<label class="font-label-sm text-label-sm text-on-surface uppercase tracking-wider" for="movieSearch">Buscar Filme (TMDb)</label>
+<div class="relative">
+<span class="absolute inset-y-0 left-0 flex items-center pl-3 text-secondary">
+<span class="material-symbols-outlined" data-icon="search" data-weight="regular">search</span>
+</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-bg border border-neutral-gray rounded-DEFAULT font-body-md text-body-md text-on-surface focus:border-primary-container focus:ring-1 focus:ring-primary-container outline-none transition-colors" id="movieSearch" placeholder="Ex: O Poderoso Chefão" type="text"/>
+</div>
+<p class="font-label-sm text-label-sm text-secondary mt-1">Busque um filme para autocompletar os detalhes da sessão.</p>
+</div>
+<!-- Bento Grid Layout for Details -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<!-- Date & Time -->
+<div class="flex flex-col gap-base">
+<label class="font-label-sm text-label-sm text-on-surface uppercase tracking-wider" for="sessionDate">Data e Hora</label>
+<div class="relative">
+<span class="absolute inset-y-0 left-0 flex items-center pl-3 text-secondary">
+<span class="material-symbols-outlined" data-icon="calendar_today" data-weight="regular">calendar_today</span>
+</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-bg border border-neutral-gray rounded-DEFAULT font-body-md text-body-md text-on-surface focus:border-primary-container focus:ring-1 focus:ring-primary-container outline-none transition-colors" id="sessionDate" type="datetime-local"/>
+</div>
+</div>
+<!-- Venue / Screen -->
+<div class="flex flex-col gap-base">
+<label class="font-label-sm text-label-sm text-on-surface uppercase tracking-wider" for="venue">Sala / Local</label>
+<div class="relative">
+<span class="absolute inset-y-0 left-0 flex items-center pl-3 text-secondary">
+<span class="material-symbols-outlined" data-icon="chair" data-weight="regular">chair</span>
+</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-bg border border-neutral-gray rounded-DEFAULT font-body-md text-body-md text-on-surface focus:border-primary-container focus:ring-1 focus:ring-primary-container outline-none transition-colors" id="venue" placeholder="Ex: Sala 3 VIP" type="text"/>
+</div>
+</div>
+<!-- Price -->
+<div class="flex flex-col gap-base">
+<label class="font-label-sm text-label-sm text-on-surface uppercase tracking-wider" for="price">Preço Base (R$)</label>
+<div class="relative">
+<span class="absolute inset-y-0 left-0 flex items-center pl-3 text-secondary">
+<span class="material-symbols-outlined" data-icon="payments" data-weight="regular">payments</span>
+</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-bg border border-neutral-gray rounded-DEFAULT font-body-md text-body-md text-on-surface focus:border-primary-container focus:ring-1 focus:ring-primary-container outline-none transition-colors" id="price" min="0" placeholder="0,00" step="0.01" type="number"/>
+</div>
+</div>
+<!-- Max Tickets -->
+<div class="flex flex-col gap-base">
+<label class="font-label-sm text-label-sm text-on-surface uppercase tracking-wider" for="maxTickets">Máx. Ingressos por Pedido</label>
+<div class="relative">
+<span class="absolute inset-y-0 left-0 flex items-center pl-3 text-secondary">
+<span class="material-symbols-outlined" data-icon="confirmation_number" data-weight="regular">confirmation_number</span>
+</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-bg border border-neutral-gray rounded-DEFAULT font-body-md text-body-md text-on-surface focus:border-primary-container focus:ring-1 focus:ring-primary-container outline-none transition-colors" id="maxTickets" max="20" min="1" type="number" value="6"/>
+</div>
+</div>
+</div>
+<!-- Form Actions -->
+<div class="flex justify-end gap-sm mt-md pt-md border-t border-neutral-gray">
+<button class="px-md py-2 border border-on-surface text-on-surface font-label-md text-label-md rounded-DEFAULT hover:bg-surface-variant transition-colors" type="button">
+                        Cancelar
+                    </button>
+<button class="px-md py-2 bg-primary-container text-on-primary font-label-md text-label-md rounded-DEFAULT hover:bg-on-primary-fixed-variant transition-colors shadow-[0_4px_8px_rgba(22,26,29,0.08)] flex items-center gap-xs" type="submit">
+<span class="material-symbols-outlined text-sm" data-icon="publish" data-weight="fill" style="font-variation-settings: 'FILL' 1;">publish</span>
+                        Publicar Sessão
+                    </button>
+</div>
+</form>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-bg dark:bg-surface-dim w-full py-xl border-t border-neutral-gray dark:border-outline-variant mt-auto flex-shrink-0 relative z-10">
+<div class="max-w-[1200px] mx-auto px-margin-desktop grid grid-cols-1 md:grid-cols-2 gap-md">
+<div class="flex flex-col gap-sm">
+<span class="font-label-md text-label-md font-extrabold text-primary dark:text-primary-fixed-dim">
+                    PHCTickets
+                </span>
+<span class="text-on-surface-variant dark:text-secondary-fixed-dim font-body-md text-body-md">
+                    © 2024 Powered by PHCTickets
+                </span>
+</div>
+<div class="flex flex-col md:items-end justify-center">
+<nav class="flex flex-wrap gap-md">
+<a class="font-label-sm text-label-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:underline hover:text-primary dark:hover:text-primary-fixed-dim transition-colors" href="#">Termos de Uso</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:underline hover:text-primary dark:hover:text-primary-fixed-dim transition-colors" href="#">Privacidade</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:underline hover:text-primary dark:hover:text-primary-fixed-dim transition-colors" href="#">Ajuda</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:underline hover:text-primary dark:hover:text-primary-fixed-dim transition-colors" href="#">Contato</a>
+</nav>
+</div>
+</div>
+</footer>
+</body></html>

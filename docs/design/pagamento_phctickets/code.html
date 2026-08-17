@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Checkout de Pagamento - PHCTickets</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "outline-variant": "#dec0bc",
+                    "on-primary-fixed": "#410002",
+                    "on-secondary": "#ffffff",
+                    "primary-container": "#660708",
+                    "error": "#ba1a1a",
+                    "support-alert": "#BA181B",
+                    "on-tertiary-fixed": "#00174a",
+                    "on-error-container": "#93000a",
+                    "primary-fixed-dim": "#ffb4ab",
+                    "surface-bg": "#F5F3F4",
+                    "on-error": "#ffffff",
+                    "secondary-fixed": "#e0e3e7",
+                    "surface-container-lowest": "#ffffff",
+                    "primary-fixed": "#ffdad6",
+                    "inverse-surface": "#3a2d2c",
+                    "on-surface": "#241917",
+                    "surface-tint": "#a63930",
+                    "success-valid": "#2D6A4F",
+                    "outline": "#8b716e",
+                    "surface-container": "#ffe9e6",
+                    "inverse-primary": "#ffb4ab",
+                    "tertiary-fixed": "#dbe1ff",
+                    "surface-variant": "#f3dedb",
+                    "on-primary-container": "#f27064",
+                    "on-primary": "#ffffff",
+                    "tertiary-container": "#002a77",
+                    "inverse-on-surface": "#ffedea",
+                    "surface-container-highest": "#f3dedb",
+                    "surface-dim": "#ebd5d2",
+                    "tertiary-fixed-dim": "#b4c5ff",
+                    "secondary-container": "#e0e3e7",
+                    "on-surface-variant": "#57423f",
+                    "on-secondary-fixed-variant": "#43474b",
+                    "on-background": "#241917",
+                    "neutral-gray": "#D3D3D3",
+                    "on-secondary-fixed": "#181c1f",
+                    "tertiary": "#00174a",
+                    "on-primary-fixed-variant": "#86211c",
+                    "on-tertiary": "#ffffff",
+                    "surface-container-low": "#fff0ee",
+                    "surface-bright": "#fff8f7",
+                    "primary": "#410002",
+                    "on-tertiary-container": "#7a95e7",
+                    "secondary-fixed-dim": "#c4c7cb",
+                    "on-secondary-container": "#616568",
+                    "surface": "#fff8f7",
+                    "background": "#fff8f7",
+                    "error-container": "#ffdad6",
+                    "secondary": "#5b5f62",
+                    "on-tertiary-fixed-variant": "#23428e",
+                    "surface-container-high": "#f9e3e0"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "margin-mobile": "16px",
+                    "gutter": "20px",
+                    "lg": "40px",
+                    "max-width": "1200px",
+                    "margin-desktop": "auto",
+                    "xs": "8px",
+                    "sm": "16px",
+                    "base": "4px",
+                    "md": "24px",
+                    "xl": "64px"
+            },
+            "fontFamily": {
+                    "display-lg": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "body-md": ["Inter"],
+                    "label-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "headline-md": ["Inter"]
+            },
+            "fontSize": {
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { background-color: #F5F3F4; }
+        .ambient-shadow { box-shadow: 0 4px 12px rgba(22, 26, 29, 0.08); }
+    </style>
+</head>
+<body class="font-body-md text-body-md text-on-surface antialiased min-h-screen flex flex-col">
+<!-- TopNavBar Omitted as per semantic shell mandate for transactional screens -->
+<main class="flex-grow flex items-center justify-center p-margin-mobile md:p-gutter">
+<div class="w-full max-w-md bg-surface-container-lowest border border-neutral-gray rounded-DEFAULT ambient-shadow overflow-hidden">
+<!-- Header -->
+<div class="p-md border-b border-neutral-gray flex items-center gap-xs">
+<span class="material-symbols-outlined text-primary-container" style="font-variation-settings: 'FILL' 1;">payment</span>
+<h1 class="font-headline-md text-headline-md text-on-surface">Pagamento</h1>
+</div>
+<!-- Content -->
+<div class="p-md space-y-lg">
+<!-- Order Summary -->
+<div class="space-y-sm">
+<h2 class="font-label-md text-label-md text-secondary uppercase tracking-wider">Resumo do Pedido</h2>
+<div class="bg-surface-bg border border-neutral-gray p-sm rounded-DEFAULT">
+<div class="flex justify-between items-start mb-xs">
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface leading-tight">Duna: Parte 2</h3>
+<p class="font-label-sm text-label-sm text-secondary">Hoje, 20:30 • Sala IMAX 1</p>
+</div>
+</div>
+<div class="mt-sm pt-sm border-t border-neutral-gray">
+<div class="flex justify-between items-center py-base">
+<span class="font-body-md text-body-md text-on-surface">Meia Entrada (F12)</span>
+<span class="font-label-md text-label-md text-on-surface">R$ 25,00</span>
+</div>
+<div class="flex justify-between items-center py-base">
+<span class="font-body-md text-body-md text-on-surface">Inteira (F13)</span>
+<span class="font-label-md text-label-md text-on-surface">R$ 50,00</span>
+</div>
+<div class="flex justify-between items-center py-base">
+<span class="font-body-md text-body-md text-secondary">Taxa de Conveniência</span>
+<span class="font-label-md text-label-md text-secondary">R$ 7,50</span>
+</div>
+</div>
+<div class="mt-sm pt-sm border-t border-neutral-gray flex justify-between items-center">
+<span class="font-headline-md text-headline-md text-on-surface">Total</span>
+<span class="font-headline-lg text-headline-lg text-primary-container">R$ 82,50</span>
+</div>
+</div>
+</div>
+<!-- Payment Method Simulator (Static) -->
+<div class="space-y-sm">
+<h2 class="font-label-md text-label-md text-secondary uppercase tracking-wider">Método Selecionado</h2>
+<div class="flex items-center gap-sm p-sm border border-neutral-gray rounded-DEFAULT">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">credit_card</span>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Cartão de Crédito</p>
+<p class="font-label-sm text-label-sm text-secondary">Final 4321</p>
+</div>
+<span class="material-symbols-outlined text-success-valid ml-auto">check_circle</span>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="flex flex-col gap-sm pt-xs">
+<button class="w-full h-12 bg-primary-container text-on-primary font-label-md text-label-md rounded-DEFAULT flex items-center justify-center gap-xs hover:bg-on-primary-fixed transition-colors ambient-shadow">
+<span class="material-symbols-outlined">check</span>
+                        Aprovar
+                    </button>
+<button class="w-full h-12 bg-transparent text-on-background border border-[#161A1D] font-label-md text-label-md rounded-DEFAULT flex items-center justify-center gap-xs hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined">close</span>
+                        Recusar
+                    </button>
+</div>
+</div>
+<div class="bg-surface-bg p-sm border-t border-neutral-gray text-center">
+<p class="font-label-sm text-label-sm text-secondary flex items-center justify-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">lock</span>
+                    Ambiente Seguro
+                </p>
+</div>
+</div>
+</main>
+<!-- Footer Omitted as per semantic shell mandate for transactional screens -->
+</body></html>

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PHCTickets - Selecionar Sessão</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "outline-variant": "#dec0bc",
+                      "on-primary-fixed": "#410002",
+                      "on-secondary": "#ffffff",
+                      "primary-container": "#660708",
+                      "error": "#ba1a1a",
+                      "support-alert": "#BA181B",
+                      "on-tertiary-fixed": "#00174a",
+                      "on-error-container": "#93000a",
+                      "primary-fixed-dim": "#ffb4ab",
+                      "surface-bg": "#F5F3F4",
+                      "on-error": "#ffffff",
+                      "secondary-fixed": "#e0e3e7",
+                      "surface-container-lowest": "#ffffff",
+                      "primary-fixed": "#ffdad6",
+                      "inverse-surface": "#3a2d2c",
+                      "on-surface": "#241917",
+                      "surface-tint": "#a63930",
+                      "success-valid": "#2D6A4F",
+                      "outline": "#8b716e",
+                      "surface-container": "#ffe9e6",
+                      "inverse-primary": "#ffb4ab",
+                      "tertiary-fixed": "#dbe1ff",
+                      "surface-variant": "#f3dedb",
+                      "on-primary-container": "#f27064",
+                      "on-primary": "#ffffff",
+                      "tertiary-container": "#002a77",
+                      "inverse-on-surface": "#ffedea",
+                      "surface-container-highest": "#f3dedb",
+                      "surface-dim": "#ebd5d2",
+                      "tertiary-fixed-dim": "#b4c5ff",
+                      "secondary-container": "#e0e3e7",
+                      "on-surface-variant": "#57423f",
+                      "on-secondary-fixed-variant": "#43474b",
+                      "on-background": "#241917",
+                      "neutral-gray": "#D3D3D3",
+                      "on-secondary-fixed": "#181c1f",
+                      "tertiary": "#00174a",
+                      "on-primary-fixed-variant": "#86211c",
+                      "on-tertiary": "#ffffff",
+                      "surface-container-low": "#fff0ee",
+                      "surface-bright": "#fff8f7",
+                      "primary": "#410002",
+                      "on-tertiary-container": "#7a95e7",
+                      "secondary-fixed-dim": "#c4c7cb",
+                      "on-secondary-container": "#616568",
+                      "surface": "#fff8f7",
+                      "background": "#fff8f7",
+                      "error-container": "#ffdad6",
+                      "secondary": "#5b5f62",
+                      "on-tertiary-fixed-variant": "#23428e",
+                      "surface-container-high": "#f9e3e0"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "margin-mobile": "16px",
+                      "gutter": "20px",
+                      "lg": "40px",
+                      "max-width": "1200px",
+                      "margin-desktop": "auto",
+                      "xs": "8px",
+                      "sm": "16px",
+                      "base": "4px",
+                      "md": "24px",
+                      "xl": "64px"
+              },
+              "fontFamily": {
+                      "display-lg": ["Inter"],
+                      "headline-lg-mobile": ["Inter"],
+                      "body-md": ["Inter"],
+                      "label-md": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "label-sm": ["Inter"],
+                      "headline-md": ["Inter"]
+              },
+              "fontSize": {
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                      "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}]
+              }
+            }
+          }
+        }
+    </script>
+</head>
+<body class="bg-surface-bg text-on-surface min-h-screen flex flex-col font-body-md">
+<!-- TopNavBar -->
+<header class="bg-surface dark:bg-surface-container-lowest w-full h-16 border-b border-neutral-gray dark:border-on-surface-variant flex-none">
+<div class="max-w-[1200px] mx-auto px-margin-mobile md:px-margin-desktop h-full flex justify-between items-center">
+<div class="flex items-center gap-md h-full">
+<a class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed-dim" href="#">PHCTickets</a>
+</div>
+<!-- Hide nav on transactional/staff screens based on strict rule, but keeping structure if needed for context -->
+<div class="hidden md:flex h-full items-center gap-md">
+<!-- Staff Context: We show a back/exit instead of full nav for this focused task -->
+<span class="text-secondary font-medium font-label-md text-label-md">Portaria: Seleção de Sessão</span>
+</div>
+<div class="flex items-center gap-sm">
+<span class="font-label-md text-label-md text-primary dark:text-primary-fixed-dim hidden md:inline-block">Operador01</span>
+<button class="bg-primary-container text-on-primary px-sm py-xs rounded font-label-md text-label-md hover:bg-on-primary-fixed transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">logout</span>
+                    Sair
+                </button>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-grow max-w-[1200px] w-full mx-auto px-margin-mobile md:px-margin-desktop py-lg">
+<div class="mb-lg">
+<h1 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary mb-xs">Selecione a Sessão Ativa</h1>
+<p class="font-body-md text-body-md text-secondary">Escolha qual sala e sessão você irá monitorar para controle de acesso.</p>
+</div>
+<!-- Bento Grid for Sessions -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
+<!-- Session Card 1 -->
+<button class="bg-surface-container-lowest border border-neutral-gray rounded-lg p-md flex flex-col gap-sm text-left hover:border-primary hover:shadow-[0_4px_8px_rgba(22,26,29,0.08)] transition-all group group-hover:cursor-pointer relative overflow-hidden">
+<div class="flex justify-between items-start w-full">
+<span class="bg-primary-container text-on-primary font-label-sm text-label-sm px-xs py-base rounded">Sala 1</span>
+<span class="bg-success-valid text-on-primary font-label-sm text-label-sm px-xs py-base rounded flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">check_circle</span>
+                        Embarque
+                    </span>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors">Duna: Parte 2</h2>
+<p class="font-label-md text-label-md text-primary mt-base">14:30 - 17:15</p>
+</div>
+<div class="mt-auto pt-sm w-full flex justify-between items-end border-t border-surface-variant">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-secondary">Lotação</span>
+<span class="font-body-md text-body-md text-on-surface font-semibold">120 / 150</span>
+</div>
+<span class="material-symbols-outlined text-primary text-[32px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</div>
+</button>
+<!-- Session Card 2 -->
+<button class="bg-surface-container-lowest border border-neutral-gray rounded-lg p-md flex flex-col gap-sm text-left hover:border-primary hover:shadow-[0_4px_8px_rgba(22,26,29,0.08)] transition-all group group-hover:cursor-pointer relative overflow-hidden">
+<div class="flex justify-between items-start w-full">
+<span class="bg-primary-container text-on-primary font-label-sm text-label-sm px-xs py-base rounded">Sala 2</span>
+<span class="bg-success-valid text-on-primary font-label-sm text-label-sm px-xs py-base rounded flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">check_circle</span>
+                        Embarque
+                    </span>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors">O Menino e a Garça</h2>
+<p class="font-label-md text-label-md text-primary mt-base">15:00 - 17:04</p>
+</div>
+<div class="mt-auto pt-sm w-full flex justify-between items-end border-t border-surface-variant">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-secondary">Lotação</span>
+<span class="font-body-md text-body-md text-on-surface font-semibold">45 / 80</span>
+</div>
+<span class="material-symbols-outlined text-primary text-[32px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</div>
+</button>
+<!-- Session Card 3 (Soon) -->
+<button class="bg-surface-container-lowest border border-neutral-gray rounded-lg p-md flex flex-col gap-sm text-left hover:border-primary hover:shadow-[0_4px_8px_rgba(22,26,29,0.08)] transition-all group group-hover:cursor-pointer relative overflow-hidden opacity-80">
+<div class="flex justify-between items-start w-full">
+<span class="bg-surface-variant text-on-surface-variant font-label-sm text-label-sm px-xs py-base rounded border border-neutral-gray">Sala 3</span>
+<span class="bg-surface-variant text-on-surface-variant font-label-sm text-label-sm px-xs py-base rounded flex items-center gap-1 border border-neutral-gray">
+<span class="material-symbols-outlined text-[14px]">schedule</span>
+                        Em Breve
+                    </span>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors">Guerra Civil</h2>
+<p class="font-label-md text-label-md text-secondary mt-base">18:00 - 19:49</p>
+</div>
+<div class="mt-auto pt-sm w-full flex justify-between items-end border-t border-surface-variant">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-secondary">Lotação Prevista</span>
+<span class="font-body-md text-body-md text-on-surface font-semibold">190 / 200</span>
+</div>
+<span class="material-symbols-outlined text-secondary text-[32px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</div>
+</button>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-bg dark:bg-surface-dim w-full py-xl border-t border-neutral-gray dark:border-outline-variant mt-auto">
+<div class="max-w-[1200px] mx-auto px-margin-mobile md:px-margin-desktop grid grid-cols-1 md:grid-cols-2 gap-md items-center">
+<div>
+<span class="font-label-md text-label-md font-extrabold text-primary dark:text-primary-fixed-dim">PHCTickets</span>
+<p class="font-body-md text-body-md text-on-surface-variant dark:text-secondary-fixed-dim mt-xs">© 2024 Powered by PHCTickets</p>
+</div>
+<div class="flex gap-md md:justify-end">
+<a class="font-label-sm text-label-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:underline hover:text-primary dark:hover:text-primary-fixed-dim" href="#">Termos de Uso</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:underline hover:text-primary dark:hover:text-primary-fixed-dim" href="#">Privacidade</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:underline hover:text-primary dark:hover:text-primary-fixed-dim" href="#">Ajuda</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:underline hover:text-primary dark:hover:text-primary-fixed-dim" href="#">Contato</a>
+</div>
+</div>
+</footer>
+</body></html>

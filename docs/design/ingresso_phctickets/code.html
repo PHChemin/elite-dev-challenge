@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Visualizar Ingresso - PHCTickets</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline-variant": "#dec0bc",
+                        "on-primary-fixed": "#410002",
+                        "on-secondary": "#ffffff",
+                        "primary-container": "#660708",
+                        "error": "#ba1a1a",
+                        "support-alert": "#BA181B",
+                        "on-tertiary-fixed": "#00174a",
+                        "on-error-container": "#93000a",
+                        "primary-fixed-dim": "#ffb4ab",
+                        "surface-bg": "#F5F3F4",
+                        "on-error": "#ffffff",
+                        "secondary-fixed": "#e0e3e7",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-fixed": "#ffdad6",
+                        "inverse-surface": "#3a2d2c",
+                        "on-surface": "#241917",
+                        "surface-tint": "#a63930",
+                        "success-valid": "#2D6A4F",
+                        "outline": "#8b716e",
+                        "surface-container": "#ffe9e6",
+                        "inverse-primary": "#ffb4ab",
+                        "tertiary-fixed": "#dbe1ff",
+                        "surface-variant": "#f3dedb",
+                        "on-primary-container": "#f27064",
+                        "on-primary": "#ffffff",
+                        "tertiary-container": "#002a77",
+                        "inverse-on-surface": "#ffedea",
+                        "surface-container-highest": "#f3dedb",
+                        "surface-dim": "#ebd5d2",
+                        "tertiary-fixed-dim": "#b4c5ff",
+                        "secondary-container": "#e0e3e7",
+                        "on-surface-variant": "#57423f",
+                        "on-secondary-fixed-variant": "#43474b",
+                        "on-background": "#241917",
+                        "neutral-gray": "#D3D3D3",
+                        "on-secondary-fixed": "#181c1f",
+                        "tertiary": "#00174a",
+                        "on-primary-fixed-variant": "#86211c",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-low": "#fff0ee",
+                        "surface-bright": "#fff8f7",
+                        "primary": "#410002",
+                        "on-tertiary-container": "#7a95e7",
+                        "secondary-fixed-dim": "#c4c7cb",
+                        "on-secondary-container": "#616568",
+                        "surface": "#fff8f7",
+                        "background": "#fff8f7",
+                        "error-container": "#ffdad6",
+                        "secondary": "#5b5f62",
+                        "on-tertiary-fixed-variant": "#23428e",
+                        "surface-container-high": "#f9e3e0"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "gutter": "20px",
+                        "lg": "40px",
+                        "max-width": "1200px",
+                        "margin-desktop": "auto",
+                        "xs": "8px",
+                        "sm": "16px",
+                        "base": "4px",
+                        "md": "24px",
+                        "xl": "64px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .ticket-cutout {
+            position: relative;
+        }
+        .ticket-cutout::before,
+        .ticket-cutout::after {
+            content: '';
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background-color: #F5F3F4; /* Match surface-bg */
+            border-radius: 50%;
+            top: 50%;
+            transform: translateY(-50%);
+            border: 1px solid #D3D3D3; /* Match neutral-gray border */
+            z-index: 10;
+        }
+        .ticket-cutout::before {
+            left: -13px;
+            border-right-color: transparent;
+            border-top-color: transparent;
+            border-bottom-color: transparent;
+            transform: translateY(-50%) rotate(45deg);
+        }
+        .ticket-cutout::after {
+            right: -13px;
+            border-left-color: transparent;
+            border-top-color: transparent;
+            border-bottom-color: transparent;
+            transform: translateY(-50%) rotate(-45deg);
+        }
+    </style>
+</head>
+<body class="bg-surface-bg text-on-surface font-body-md min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<header class="bg-surface dark:bg-surface-container-lowest w-full h-16 border-b border-neutral-gray dark:border-on-surface-variant hidden md:block">
+<div class="max-w-[1200px] mx-auto px-margin-desktop flex justify-between items-center h-full">
+<!-- Brand -->
+<a class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed-dim" href="#">PHCTickets</a>
+<!-- Navigation -->
+<nav class="flex space-x-lg">
+<a class="text-secondary dark:text-secondary-fixed-dim font-medium hover:text-primary-container dark:hover:text-on-primary-container transition-colors" href="#">Filmes</a>
+<a class="text-secondary dark:text-secondary-fixed-dim font-medium hover:text-primary-container dark:hover:text-on-primary-container transition-colors" href="#">Cinemas</a>
+<a class="text-primary dark:text-primary-fixed-dim border-b-2 border-primary font-bold opacity-80 transition-opacity" href="#">Minha Conta</a>
+</nav>
+<!-- Actions -->
+<div class="flex items-center space-x-md">
+<button class="bg-primary-container text-on-primary font-label-md text-label-md px-md py-xs rounded hover:opacity-90 transition-opacity flex items-center gap-2">
+                    Ingressos
+                </button>
+<button class="text-primary font-label-md text-label-md bg-transparent border border-neutral-gray px-md py-xs rounded hover:bg-surface-variant transition-colors">
+                    PT-BR
+                </button>
+</div>
+</div>
+</header>
+<!-- Mobile Header (Simplified for App Flow) -->
+<header class="md:hidden bg-surface w-full h-16 border-b border-neutral-gray flex items-center px-margin-mobile">
+<a aria-label="Voltar" class="flex items-center text-primary" href="#">
+<span class="material-symbols-outlined text-[24px]">arrow_back</span>
+</a>
+<h1 class="ml-sm font-headline-md text-headline-md font-bold text-primary">Ingresso</h1>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow flex items-center justify-center py-xl px-margin-mobile md:px-margin-desktop">
+<div class="w-full max-w-[400px]">
+<!-- Ticket Container -->
+<div class="bg-surface-container-lowest border border-neutral-gray rounded shadow-[0_4px_24px_-8px_rgba(22,26,29,0.1)] overflow-hidden flex flex-col">
+<!-- Ticket Header Image -->
+<div class="h-48 relative overflow-hidden bg-on-surface">
+<img class="w-full h-full object-cover opacity-80 mix-blend-luminosity" data-alt="A cinematic, high-contrast promotional still for a modern science fiction film. Deep space blacks contrasted with vivid crimson red glowing neon rings. The composition is stark, minimalist, and editorial, suitable for a premium theater experience. Wide angle, dramatic lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC7G8mkPJKnBG7fUfUmUCHHYrcjnOYIn13i8cm9iUIisTusMW5dl6fOS_KrLUhdRzyRY2Tlod64XXvzYzD8kaZ4mHhrlBiSUicHX2gRrt-LYlPpDLI1_ymQcW5qXAzh3AFo1AVpz_13EbI71J8BbHVNBfT56TfvZ3JBMf1-8pz_lTDd6kvqzgr2V13XjS8X8YPwOiNYI92N3ZEKQ4-pIigMXi0aHUDqLMfA1t8hSBF6LOejutU1Wfu8"/>
+<div class="absolute inset-0 bg-gradient-to-t from-on-surface to-transparent"></div>
+<div class="absolute bottom-md left-md right-md">
+<span class="inline-block bg-success-valid text-on-primary font-label-sm text-label-sm px-2 py-1 rounded mb-2 uppercase tracking-widest">Válido</span>
+<h2 class="font-headline-lg text-headline-lg text-on-primary leading-tight">Duna: Parte Dois</h2>
+</div>
+</div>
+<!-- Ticket Details Block -->
+<div class="p-md bg-surface-container-lowest border-b border-dashed border-neutral-gray relative ticket-cutout">
+<div class="grid grid-cols-2 gap-md mb-md">
+<div>
+<p class="font-label-sm text-label-sm text-secondary uppercase mb-1">Data</p>
+<p class="font-label-md text-label-md text-on-surface">24 Nov 2024</p>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-secondary uppercase mb-1">Horário</p>
+<p class="font-label-md text-label-md text-on-surface">19:30</p>
+</div>
+</div>
+<div class="mb-md">
+<p class="font-label-sm text-label-sm text-secondary uppercase mb-1">Local</p>
+<p class="font-label-md text-label-md text-on-surface">Cineplex Prime JK Iguatemi</p>
+<p class="font-body-md text-body-md text-secondary mt-1 text-[14px]">Sala 3 - IMAX</p>
+</div>
+<div class="grid grid-cols-3 gap-xs bg-surface-bg p-sm rounded border border-neutral-gray">
+<div class="text-center border-r border-neutral-gray">
+<p class="font-label-sm text-label-sm text-secondary uppercase mb-1">Fila</p>
+<p class="font-headline-md text-headline-md text-primary-container">K</p>
+</div>
+<div class="text-center border-r border-neutral-gray">
+<p class="font-label-sm text-label-sm text-secondary uppercase mb-1">Assento</p>
+<p class="font-headline-md text-headline-md text-primary-container">14</p>
+</div>
+<div class="text-center">
+<p class="font-label-sm text-label-sm text-secondary uppercase mb-1">Tipo</p>
+<p class="font-label-md text-label-md text-on-surface mt-2">Meia</p>
+</div>
+</div>
+</div>
+<!-- QR Code Block -->
+<div class="p-md bg-surface-container-lowest flex flex-col items-center justify-center">
+<p class="font-label-sm text-label-sm text-secondary mb-md text-center max-w-[250px]">Apresente este código na entrada da sala para validação.</p>
+<!-- QR Placeholder -->
+<div class="w-48 h-48 bg-white border-2 border-on-surface p-2 rounded flex items-center justify-center">
+<div class="w-full h-full border-4 border-on-surface flex flex-col justify-between p-2">
+<div class="flex justify-between w-full h-8">
+<div class="w-8 h-8 bg-on-surface"></div>
+<div class="w-8 h-8 bg-on-surface"></div>
+</div>
+<div class="flex justify-between w-full h-8">
+<div class="w-8 h-8 bg-on-surface"></div>
+<div class="w-8 h-8 bg-transparent"></div>
+</div>
+</div>
+</div>
+<p class="font-label-sm text-label-sm text-secondary mt-sm tracking-[0.2em]">TK-8492-4910-B</p>
+</div>
+</div>
+<!-- Contextual Actions -->
+<div class="mt-md flex justify-center">
+<button class="flex items-center text-primary-container hover:text-primary font-label-md text-label-md transition-colors px-md py-sm rounded border border-neutral-gray hover:bg-surface bg-surface-container-lowest shadow-sm">
+<span class="material-symbols-outlined mr-2" style="font-variation-settings: 'FILL' 0;">share</span>
+                    Compartilhar Ingresso
+                </button>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-bg dark:bg-surface-dim w-full py-xl border-t border-neutral-gray dark:border-outline-variant hidden md:block">
+<div class="max-w-[1200px] mx-auto px-margin-desktop grid grid-cols-1 md:grid-cols-2 gap-md">
+<div>
+<span class="font-label-md text-label-md font-extrabold text-primary dark:text-primary-fixed-dim block mb-sm">PHCTickets</span>
+<p class="font-body-md text-body-md text-on-surface-variant dark:text-secondary-fixed-dim">© 2024 Powered by PHCTickets</p>
+</div>
+<div class="flex space-x-md md:justify-end">
+<a class="font-label-sm text-label-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:underline hover:text-primary dark:hover:text-primary-fixed-dim" href="#">Termos de Uso</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:underline hover:text-primary dark:hover:text-primary-fixed-dim" href="#">Privacidade</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:underline hover:text-primary dark:hover:text-primary-fixed-dim" href="#">Ajuda</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:underline hover:text-primary dark:hover:text-primary-fixed-dim" href="#">Contato</a>
+</div>
+</div>
+</footer>
+</body></html>

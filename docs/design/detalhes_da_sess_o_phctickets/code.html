@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Detalhes da Sessão - PHCTickets</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "outline-variant": "#dec0bc",
+                    "on-primary-fixed": "#410002",
+                    "on-secondary": "#ffffff",
+                    "primary-container": "#660708",
+                    "error": "#ba1a1a",
+                    "support-alert": "#BA181B",
+                    "on-tertiary-fixed": "#00174a",
+                    "on-error-container": "#93000a",
+                    "primary-fixed-dim": "#ffb4ab",
+                    "surface-bg": "#F5F3F4",
+                    "on-error": "#ffffff",
+                    "secondary-fixed": "#e0e3e7",
+                    "surface-container-lowest": "#ffffff",
+                    "primary-fixed": "#ffdad6",
+                    "inverse-surface": "#3a2d2c",
+                    "on-surface": "#241917",
+                    "surface-tint": "#a63930",
+                    "success-valid": "#2D6A4F",
+                    "outline": "#8b716e",
+                    "surface-container": "#ffe9e6",
+                    "inverse-primary": "#ffb4ab",
+                    "tertiary-fixed": "#dbe1ff",
+                    "surface-variant": "#f3dedb",
+                    "on-primary-container": "#f27064",
+                    "on-primary": "#ffffff",
+                    "tertiary-container": "#002a77",
+                    "inverse-on-surface": "#ffedea",
+                    "surface-container-highest": "#f3dedb",
+                    "surface-dim": "#ebd5d2",
+                    "tertiary-fixed-dim": "#b4c5ff",
+                    "secondary-container": "#e0e3e7",
+                    "on-surface-variant": "#57423f",
+                    "on-secondary-fixed-variant": "#43474b",
+                    "on-background": "#241917",
+                    "neutral-gray": "#D3D3D3",
+                    "on-secondary-fixed": "#181c1f",
+                    "tertiary": "#00174a",
+                    "on-primary-fixed-variant": "#86211c",
+                    "on-tertiary": "#ffffff",
+                    "surface-container-low": "#fff0ee",
+                    "surface-bright": "#fff8f7",
+                    "primary": "#410002",
+                    "on-tertiary-container": "#7a95e7",
+                    "secondary-fixed-dim": "#c4c7cb",
+                    "on-secondary-container": "#616568",
+                    "surface": "#fff8f7",
+                    "background": "#fff8f7",
+                    "error-container": "#ffdad6",
+                    "secondary": "#5b5f62",
+                    "on-tertiary-fixed-variant": "#23428e",
+                    "surface-container-high": "#f9e3e0"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "margin-mobile": "16px",
+                    "gutter": "20px",
+                    "lg": "40px",
+                    "max-width": "1200px",
+                    "margin-desktop": "auto",
+                    "xs": "8px",
+                    "sm": "16px",
+                    "base": "4px",
+                    "md": "24px",
+                    "xl": "64px"
+            },
+            "fontFamily": {
+                    "display-lg": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "body-md": ["Inter"],
+                    "label-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "headline-md": ["Inter"]
+            },
+            "fontSize": {
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+          font-family: 'Material Symbols Outlined';
+          font-weight: normal;
+          font-style: normal;
+          font-size: 24px;
+          line-height: 1;
+          letter-spacing: normal;
+          text-transform: none;
+          display: inline-block;
+          white-space: nowrap;
+          word-wrap: normal;
+          direction: ltr;
+          -webkit-font-feature-settings: 'liga';
+          -webkit-font-smoothing: antialiased;
+        }
+    </style>
+</head>
+<body class="bg-surface-bg text-on-surface font-body-md antialiased min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<header class="bg-surface w-full h-16 border-b border-neutral-gray flex-none">
+<div class="max-w-[1200px] mx-auto px-sm md:px-gutter h-full flex justify-between items-center">
+<!-- Logo & Search (Left side grouping per JSON search_bar logic) -->
+<div class="flex items-center gap-md">
+<a class="font-headline-md text-headline-md font-bold text-primary" href="#">PHCTickets</a>
+<div class="hidden md:flex items-center text-secondary border border-neutral-gray rounded px-xs py-[2px]">
+<span class="material-symbols-outlined text-[18px]">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-label-md font-label-md w-32 outline-none" placeholder="Buscar..." type="text"/>
+</div>
+</div>
+<!-- Navigation Links -->
+<nav class="hidden md:flex items-center gap-lg h-full">
+<!-- Active Nav Item -->
+<a class="h-full flex items-center text-primary border-b-2 border-primary font-bold font-label-md text-label-md" href="#">Filmes</a>
+<!-- Inactive Nav Items -->
+<a class="h-full flex items-center text-secondary font-medium font-label-md text-label-md hover:text-primary-container transition-colors" href="#">Cinemas</a>
+<a class="h-full flex items-center text-secondary font-medium font-label-md text-label-md hover:text-primary-container transition-colors" href="#">Minha Conta</a>
+</nav>
+<!-- Trailing Actions -->
+<div class="flex items-center gap-sm">
+<button class="font-label-md text-label-md text-secondary font-medium hover:text-primary-container transition-colors">PT-BR</button>
+<button class="font-label-md text-label-md bg-transparent border border-on-surface text-on-surface px-sm py-[6px] rounded hover:bg-surface-variant transition-colors">Ingressos</button>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow w-full max-w-[1200px] mx-auto px-sm md:px-gutter py-xl">
+<!-- Breadcrumb / Back -->
+<div class="mb-lg">
+<a class="inline-flex items-center gap-xs text-secondary hover:text-primary-container transition-colors font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined text-[16px]">arrow_back</span>
+                Voltar para Filmes
+            </a>
+</div>
+<!-- Asymmetric Editorial Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-xl items-start">
+<!-- Left Column: Poster Canvas (5 columns) -->
+<div class="md:col-span-5 relative">
+<div class="w-full aspect-[2/3] bg-white border border-neutral-gray p-base shadow-sm">
+<img class="w-full h-full object-cover" data-alt="A striking, high-contrast cinematic poster for a modern architectural documentary. The design features a minimalist, editorial layout with stark typography against a pristine white background. Deep monochromatic red (#660708) geometric overlays highlight key visual elements of brutalist concrete structures, creating a utilitarian yet premium aesthetic. The image conveys sophisticated structural drama without excessive clutter, perfectly fitting a clean, corporate modern cinema ticketing platform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA-ybn-XN3oEqZ1rR9Z1BYGjl2LEBZFJGEQAB8eAk5YDZ6W1q6qTm03iusGoWmLU3FCNfxTFfcc57CF7u2LE2YsnN3sOUoAIAaoH_SeFwSSFFSMpcuCFjUodbGqFeea-x3V0kyVU1RqFjyn_tssNur812cUfJ7umBNu3u6fHy6QzgUI6r19cFwBN4XY_wqswwm4q6vm2RvEmXn6AMcYWIZtGH6uDeY127PVb2dx186_6xiiqfeZAxOv"/>
+</div>
+</div>
+<!-- Right Column: Event Details & Action (7 columns) -->
+<div class="md:col-span-7 flex flex-col gap-lg">
+<!-- Title Block -->
+<div>
+<div class="flex items-center gap-sm mb-base">
+<span class="inline-block bg-neutral-gray text-on-surface font-label-sm text-label-sm px-xs py-[2px] rounded uppercase tracking-wider">Legendado</span>
+<span class="inline-block border border-support-alert text-support-alert font-label-sm text-label-sm px-xs py-[2px] rounded font-bold">16</span>
+</div>
+<h1 class="font-display-lg text-display-lg text-on-surface mb-xs leading-tight">Estruturas do Silêncio</h1>
+<p class="font-body-lg text-body-lg text-secondary">Dirigido por Anton Varga • 142 min</p>
+</div>
+<!-- Session Meta Info Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-md py-md border-y border-neutral-gray">
+<div class="flex items-start gap-sm">
+<span class="material-symbols-outlined text-primary-container mt-[2px]">calendar_today</span>
+<div>
+<p class="font-label-sm text-label-sm text-secondary uppercase mb-[2px]">Data</p>
+<p class="font-label-md text-label-md text-on-surface">Sexta-feira, 24 de Novembro</p>
+<p class="font-body-md text-body-md text-on-surface">19:30 - Sessão Única</p>
+</div>
+</div>
+<div class="flex items-start gap-sm">
+<span class="material-symbols-outlined text-primary-container mt-[2px]">location_on</span>
+<div>
+<p class="font-label-sm text-label-sm text-secondary uppercase mb-[2px]">Local</p>
+<p class="font-label-md text-label-md text-on-surface">Cine Arte Metropolis</p>
+<p class="font-body-md text-body-md text-on-surface">Sala 3 - VIP</p>
+</div>
+</div>
+</div>
+<!-- Synopsis -->
+<div>
+<h2 class="font-label-md text-label-md text-on-surface uppercase tracking-wider mb-sm">Sinopse</h2>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+                        Um documentário visceral que explora o impacto psicológico da arquitetura brutalista nas metrópoles modernas. Através de um design de som imersivo e cinematografia de alto contraste, o filme questiona a relação entre o concreto opressivo e a alienação humana no século XXI.
+                    </p>
+</div>
+<!-- Action Block (Price & CTA) -->
+<div class="bg-white border border-neutral-gray p-md mt-sm flex flex-col sm:flex-row items-center justify-between gap-md">
+<div>
+<p class="font-label-sm text-label-sm text-secondary uppercase mb-[2px]">Ingresso Padrão</p>
+<p class="font-headline-lg text-headline-lg text-on-surface">R$ 45,00</p>
+</div>
+<button class="w-full sm:w-auto bg-primary-container text-on-primary font-label-md text-label-md px-lg py-sm rounded hover:bg-on-primary-fixed transition-colors shadow-[0_4px_8px_rgba(22,26,29,0.08)] flex items-center justify-center gap-xs">
+                        Escolher assentos
+                        <span class="material-symbols-outlined text-[18px]">event_seat</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-bg w-full py-xl border-t border-neutral-gray mt-auto">
+<div class="max-w-[1200px] mx-auto px-sm md:px-gutter grid grid-cols-1 md:grid-cols-2 gap-md items-center">
+<!-- Brand & Copyright -->
+<div class="flex flex-col gap-xs">
+<span class="font-label-md text-label-md font-extrabold text-primary">PHCTickets</span>
+<span class="font-body-md text-body-md text-on-surface-variant">© 2024 Powered by PHCTickets</span>
+</div>
+<!-- Footer Links -->
+<nav class="flex flex-wrap md:justify-end gap-md md:gap-lg">
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:underline hover:text-primary transition-colors" href="#">Termos de Uso</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:underline hover:text-primary transition-colors" href="#">Privacidade</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:underline hover:text-primary transition-colors" href="#">Ajuda</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:underline hover:text-primary transition-colors" href="#">Contato</a>
+</nav>
+</div>
+</footer>
+</body></html>

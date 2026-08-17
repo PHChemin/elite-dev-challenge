@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+
+<html class="light" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PHCTickets - Meus Ingressos</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline-variant": "#dec0bc",
+                        "on-primary-fixed": "#410002",
+                        "on-secondary": "#ffffff",
+                        "primary-container": "#660708",
+                        "error": "#ba1a1a",
+                        "support-alert": "#BA181B",
+                        "on-tertiary-fixed": "#00174a",
+                        "on-error-container": "#93000a",
+                        "primary-fixed-dim": "#ffb4ab",
+                        "surface-bg": "#F5F3F4",
+                        "on-error": "#ffffff",
+                        "secondary-fixed": "#e0e3e7",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-fixed": "#ffdad6",
+                        "inverse-surface": "#3a2d2c",
+                        "on-surface": "#241917",
+                        "surface-tint": "#a63930",
+                        "success-valid": "#2D6A4F",
+                        "outline": "#8b716e",
+                        "surface-container": "#ffe9e6",
+                        "inverse-primary": "#ffb4ab",
+                        "tertiary-fixed": "#dbe1ff",
+                        "surface-variant": "#f3dedb",
+                        "on-primary-container": "#f27064",
+                        "on-primary": "#ffffff",
+                        "tertiary-container": "#002a77",
+                        "inverse-on-surface": "#ffedea",
+                        "surface-container-highest": "#f3dedb",
+                        "surface-dim": "#ebd5d2",
+                        "tertiary-fixed-dim": "#b4c5ff",
+                        "secondary-container": "#e0e3e7",
+                        "on-surface-variant": "#57423f",
+                        "on-secondary-fixed-variant": "#43474b",
+                        "on-background": "#241917",
+                        "neutral-gray": "#D3D3D3",
+                        "on-secondary-fixed": "#181c1f",
+                        "tertiary": "#00174a",
+                        "on-primary-fixed-variant": "#86211c",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-low": "#fff0ee",
+                        "surface-bright": "#fff8f7",
+                        "primary": "#410002",
+                        "on-tertiary-container": "#7a95e7",
+                        "secondary-fixed-dim": "#c4c7cb",
+                        "on-secondary-container": "#616568",
+                        "surface": "#fff8f7",
+                        "background": "#fff8f7",
+                        "error-container": "#ffdad6",
+                        "secondary": "#5b5f62",
+                        "on-tertiary-fixed-variant": "#23428e",
+                        "surface-container-high": "#f9e3e0"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "gutter": "20px",
+                        "lg": "40px",
+                        "max-width": "1200px",
+                        "margin-desktop": "auto",
+                        "xs": "8px",
+                        "sm": "16px",
+                        "base": "4px",
+                        "md": "24px",
+                        "xl": "64px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { background-color: #F5F3F4; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 1; }
+    </style>
+</head>
+<body class="bg-surface-bg text-on-surface antialiased min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<header class="bg-surface border-b border-neutral-gray w-full h-16 sticky top-0 z-50">
+<div class="max-w-[1200px] mx-auto px-margin-mobile md:px-0 flex justify-between items-center h-full">
+<div class="flex items-center gap-md">
+<a class="font-headline-md text-headline-md font-bold text-primary" href="#">PHCTickets</a>
+<nav class="hidden md:flex gap-gutter h-full items-center">
+<a class="font-label-md text-label-md text-secondary font-medium hover:text-primary-container transition-colors" href="#">Filmes</a>
+<a class="font-label-md text-label-md text-secondary font-medium hover:text-primary-container transition-colors" href="#">Cinemas</a>
+<a class="font-label-md text-label-md text-primary border-b-2 border-primary font-bold h-full flex items-center" href="#">Minha Conta</a>
+</nav>
+</div>
+<div class="flex items-center gap-sm">
+<button class="font-label-md text-label-md bg-transparent border border-on-surface text-on-surface px-sm py-xs rounded hover:bg-surface-dim transition-colors">PT-BR</button>
+<button class="font-label-md text-label-md bg-primary-container text-on-primary px-sm py-xs rounded shadow-[0_4px_8px_rgba(22,26,29,0.08)] hover:opacity-90 transition-opacity">Ingressos</button>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-grow max-w-[1200px] mx-auto w-full px-margin-mobile md:px-0 py-lg">
+<div class="mb-lg">
+<h1 class="font-headline-lg text-headline-lg text-on-surface">Meus Ingressos</h1>
+<p class="font-body-md text-body-md text-secondary mt-base">Gerencie suas sessões e acesse seus ingressos digitais.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Sidebar / Filtering (Editorial Style) -->
+<aside class="col-span-1 md:col-span-3">
+<div class="bg-surface-container-lowest border border-neutral-gray rounded p-sm sticky top-24">
+<h2 class="font-label-md text-label-md text-on-surface mb-sm">STATUS</h2>
+<ul class="space-y-xs">
+<li>
+<button class="font-body-md text-body-md w-full text-left py-xs flex justify-between items-center text-primary-container font-medium border-l-2 border-primary-container pl-xs">
+                                Próximos
+                                <span class="bg-primary-container text-on-primary font-label-sm text-label-sm px-2 rounded-full">3</span>
+</button>
+</li>
+<li>
+<button class="font-body-md text-body-md w-full text-left py-xs flex justify-between items-center text-secondary hover:text-primary-container pl-[6px] transition-colors">
+                                Passados
+                            </button>
+</li>
+<li>
+<button class="font-body-md text-body-md w-full text-left py-xs flex justify-between items-center text-secondary hover:text-primary-container pl-[6px] transition-colors">
+                                Cancelados
+                            </button>
+</li>
+</ul>
+</div>
+</aside>
+<!-- Tickets List -->
+<section class="col-span-1 md:col-span-9 space-y-md">
+<!-- Ticket Card 1 -->
+<article class="bg-surface-container-lowest border border-neutral-gray rounded flex flex-col md:flex-row overflow-hidden hover:shadow-[0_4px_8px_rgba(22,26,29,0.04)] transition-shadow">
+<div class="w-full md:w-48 h-48 md:h-auto shrink-0 relative">
+<img class="object-cover w-full h-full absolute inset-0" data-alt="A cinematic, high-contrast poster image for a science fiction movie set in a dark, dystopian cityscape with neon red accents. The aesthetic is modern, sleek, and slightly gritty, aligning with a premium corporate cinema brand." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBUwi2gR6aWLZ8CAYelKGWxbTfRhUZzTbp25Hd8PBrO7MFPHpl6NRYAJrVePZCng7E3pp-xy5esaSHi4_jVVI__7BfkaXW_4q-SCWYPnKlRhSAmQDhU7e9V5_fQrm9TtVgkXdubqbbfflFCYy9DFlNdMHqHzSJGPPS4y2G5AqUKGVZ7UmocoMRpGvaQXv-_kuUpLFzYJEE7LFjAuBIq0qmsxggB1HSrUsoRRd60BTc2wsvg5qRKRMeI"/>
+</div>
+<div class="p-md flex flex-col justify-between flex-grow">
+<div>
+<div class="flex justify-between items-start mb-base">
+<h3 class="font-headline-md text-headline-md text-on-surface">Duna: Parte Dois</h3>
+<span class="bg-success-valid text-on-primary font-label-sm text-label-sm px-2 py-1 rounded">Válido</span>
+</div>
+<p class="font-label-md text-label-md text-primary-container mb-xs">HOJE, 15 de Novembro • 20:30</p>
+<p class="font-body-md text-body-md text-secondary">Cinemark Eldorado • Sala 4, IMAX</p>
+<p class="font-body-md text-body-md text-secondary mt-base">Assentos: <span class="font-bold text-on-surface">G12, G13</span></p>
+</div>
+<div class="mt-md flex justify-end">
+<button class="font-label-md text-label-md bg-transparent border border-on-surface text-on-surface px-md py-xs rounded hover:bg-surface-dim transition-colors flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px]">qr_code_scanner</span>
+                                Ver Ingresso
+                            </button>
+</div>
+</div>
+</article>
+<!-- Ticket Card 2 -->
+<article class="bg-surface-container-lowest border border-neutral-gray rounded flex flex-col md:flex-row overflow-hidden hover:shadow-[0_4px_8px_rgba(22,26,29,0.04)] transition-shadow">
+<div class="w-full md:w-48 h-48 md:h-auto shrink-0 relative">
+<img class="object-cover w-full h-full absolute inset-0" data-alt="A dramatic, low-key lighting movie poster image for an intense drama. Deep shadows dominate with subtle rim lighting on a solitary figure. The color palette features deep blacks and stark whites, fitting a minimalist editorial design." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCXTfKQgSEp2VngGcI72OsZMjQBu2onidFweuh2yuT8wNmjSe5eYDSfIlxtkdwz_lYaGCd0VRfc3rF7CzlqHACJETu3oLHk_CiAyfTEOzBr-BYLChhXSS8N2AHEysnC6eF0DZ9kMKbbiIQ5waC3uupoE2flH_qeD4932xxqyID071l_ug07hA_ykSwFGqc-Z5k5pYd5yyU7Bff0O69NuAeFWcSrugvu84WAW-exRSwIXVU2gB-ABDXM"/>
+</div>
+<div class="p-md flex flex-col justify-between flex-grow">
+<div>
+<div class="flex justify-between items-start mb-base">
+<h3 class="font-headline-md text-headline-md text-on-surface">Oppenheimer</h3>
+<span class="bg-success-valid text-on-primary font-label-sm text-label-sm px-2 py-1 rounded">Válido</span>
+</div>
+<p class="font-label-md text-label-md text-primary-container mb-xs">Sábado, 18 de Novembro • 18:00</p>
+<p class="font-body-md text-body-md text-secondary">Kinoplex Itaim • Sala 1, VIP</p>
+<p class="font-body-md text-body-md text-secondary mt-base">Assento: <span class="font-bold text-on-surface">D4</span></p>
+</div>
+<div class="mt-md flex justify-end">
+<button class="font-label-md text-label-md bg-transparent border border-on-surface text-on-surface px-md py-xs rounded hover:bg-surface-dim transition-colors flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px]">qr_code_scanner</span>
+                                Ver Ingresso
+                            </button>
+</div>
+</div>
+</article>
+</section>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-bg border-t border-neutral-gray w-full py-xl mt-auto">
+<div class="max-w-[1200px] mx-auto px-margin-mobile md:px-0 grid grid-cols-1 md:grid-cols-2 gap-md">
+<div>
+<span class="font-label-md text-label-md font-extrabold text-primary">PHCTickets</span>
+<p class="font-body-md text-body-md text-on-surface-variant mt-sm">© 2024 Powered by PHCTickets</p>
+</div>
+<div class="flex flex-wrap gap-md md:justify-end">
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:underline hover:text-primary transition-colors" href="#">Termos de Uso</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:underline hover:text-primary transition-colors" href="#">Privacidade</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:underline hover:text-primary transition-colors" href="#">Ajuda</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:underline hover:text-primary transition-colors" href="#">Contato</a>
+</div>
+</div>
+</footer>
+</body></html>
