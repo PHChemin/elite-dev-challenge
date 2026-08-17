@@ -1,9 +1,21 @@
-import { createTheme } from '@mantine/core';
+import {
+  Button,
+  Paper,
+  PasswordInput,
+  Text,
+  TextInput,
+  Title,
+  createTheme,
+} from '@mantine/core';
 
 export const theme = createTheme({
   fontFamily: 'Roboto, sans-serif',
   headings: { fontFamily: 'Roboto, sans-serif' },
   primaryColor: 'brand',
+  primaryShade: 6,
+  defaultRadius: 'md',
+  black: '#161A1D',
+  white: '#F5F3F4',
   colors: {
     brand: [
       '#F5F3F4',
@@ -30,7 +42,39 @@ export const theme = createTheme({
       '#091A14',
     ],
   },
-  defaultRadius: 'sm',
-  black: '#161A1D',
-  white: '#F5F3F4',
+  components: {
+    Paper: Paper.extend({
+      defaultProps: {
+        withBorder: true,
+        shadow: 'sm',
+        radius: 'md',
+        bg: 'white',
+      },
+    }),
+    Title: Title.extend({
+      defaultProps: {
+        c: 'brand.6',
+      },
+    }),
+    Text: Text.extend({
+      defaultProps: {
+        c: 'black',
+      },
+    }),
+    Button: Button.extend({
+      defaultProps: {
+        color: 'brand',
+      },
+    }),
+    TextInput: TextInput.extend({
+      defaultProps: {
+        radius: 'md',
+      },
+    }),
+    PasswordInput: PasswordInput.extend({
+      defaultProps: {
+        radius: 'md',
+      },
+    }),
+  },
 });
