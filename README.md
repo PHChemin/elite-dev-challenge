@@ -91,7 +91,7 @@ npm test
 
 ## O que já existe
 
-Scaffold do monorepo, schema Prisma, tema Mantine (Roboto e paleta PHCTickets), Docker Compose e Auth JWT na API (`POST /api/auth/login`, `GET /api/users/me`, guards de papel).
+Scaffold do monorepo, schema Prisma, tema Mantine (Roboto e paleta PHCTickets), Docker Compose, Auth JWT na API (`POST /api/auth/login`, `GET /api/users/me`, guards de papel) e tela de login.
 
 ## O que falta
 

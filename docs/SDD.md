@@ -59,7 +59,9 @@ Sem MCP obrigatório neste projeto. Migrações via Prisma CLI; diagrama da seç
 - **Config:** `@nestjs/config`  
 - **Docs API:** `@nestjs/swagger` (`/api/docs`)  
 - **QR (web ou api):** lib de geração de QR a partir do `code`  
-- **Fonte web:** `@fontsource/roboto` (ou equivalente)
+- **Fonte web:** `@fontsource/roboto` (ou equivalente)  
+- **Formulários web:** `@mantine/form`, `@mantine/notifications`
+- **Textos (i18n):** `nestjs-i18n` (API), `i18next` + `react-i18next` (web). Locale único `pt`; centraliza labels, validação e mensagens de erro reutilizáveis.
 
 ### Fora do Must
 
