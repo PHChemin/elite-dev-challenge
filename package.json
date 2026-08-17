@@ -13,6 +13,7 @@
     "lint": "npm run lint --workspaces --if-present",
     "prisma:generate": "npm run prisma:generate -w @phctickets/api",
     "prisma:migrate": "npm run prisma:migrate -w @phctickets/api",
+    "prisma:seed": "npm run prisma:seed -w @phctickets/api",
     "prisma:studio": "npm run prisma:studio -w @phctickets/api",
     "docker:up": "docker compose up --build",
     "docker:up:db": "docker compose up db -d",
