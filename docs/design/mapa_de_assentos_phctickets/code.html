@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+
+<html class="light" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PHCTickets - Seleção de Assentos</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline-variant": "#dec0bc",
+                        "on-primary-fixed": "#410002",
+                        "on-secondary": "#ffffff",
+                        "primary-container": "#660708",
+                        "error": "#ba1a1a",
+                        "support-alert": "#BA181B",
+                        "on-tertiary-fixed": "#00174a",
+                        "on-error-container": "#93000a",
+                        "primary-fixed-dim": "#ffb4ab",
+                        "surface-bg": "#F5F3F4",
+                        "on-error": "#ffffff",
+                        "secondary-fixed": "#e0e3e7",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-fixed": "#ffdad6",
+                        "inverse-surface": "#3a2d2c",
+                        "on-surface": "#241917",
+                        "surface-tint": "#a63930",
+                        "success-valid": "#2D6A4F",
+                        "outline": "#8b716e",
+                        "surface-container": "#ffe9e6",
+                        "inverse-primary": "#ffb4ab",
+                        "tertiary-fixed": "#dbe1ff",
+                        "surface-variant": "#f3dedb",
+                        "on-primary-container": "#f27064",
+                        "on-primary": "#ffffff",
+                        "tertiary-container": "#002a77",
+                        "inverse-on-surface": "#ffedea",
+                        "surface-container-highest": "#f3dedb",
+                        "surface-dim": "#ebd5d2",
+                        "tertiary-fixed-dim": "#b4c5ff",
+                        "secondary-container": "#e0e3e7",
+                        "on-surface-variant": "#57423f",
+                        "on-secondary-fixed-variant": "#43474b",
+                        "on-background": "#241917",
+                        "neutral-gray": "#D3D3D3",
+                        "on-secondary-fixed": "#181c1f",
+                        "tertiary": "#00174a",
+                        "on-primary-fixed-variant": "#86211c",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-low": "#fff0ee",
+                        "surface-bright": "#fff8f7",
+                        "primary": "#410002",
+                        "on-tertiary-container": "#7a95e7",
+                        "secondary-fixed-dim": "#c4c7cb",
+                        "on-secondary-container": "#616568",
+                        "surface": "#fff8f7",
+                        "background": "#fff8f7",
+                        "error-container": "#ffdad6",
+                        "secondary": "#5b5f62",
+                        "on-tertiary-fixed-variant": "#23428e",
+                        "surface-container-high": "#f9e3e0",
+                        
+                        "brand-red": "#660708",
+                        "dark-text": "#161A1D"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "gutter": "20px",
+                        "lg": "40px",
+                        "max-width": "1200px",
+                        "margin-desktop": "auto",
+                        "xs": "8px",
+                        "sm": "16px",
+                        "base": "4px",
+                        "md": "24px",
+                        "xl": "64px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .seat { transition: all 0.2s ease; }
+        .seat:hover:not(.seat-taken):not(.seat-held) { cursor: pointer; transform: scale(1.1); }
+        .seat-free { background-color: #ffffff; border: 1px solid #D3D3D3; }
+        .seat-free:hover { border-color: #660708; }
+        .seat-selected { background-color: #660708; color: #ffffff; border: 1px solid #660708; }
+        .seat-held { background-color: #e0e3e7; border: 1px solid #c4c7cb; cursor: not-allowed; opacity: 0.7; }
+        .seat-taken { background-color: #161A1D; border: 1px solid #161A1D; cursor: not-allowed; }
+        
+        .timer-flash { animation: flash 1s infinite alternate; }
+        @keyframes flash {
+            from { opacity: 1; }
+            to { opacity: 0.5; color: #BA181B; }
+        }
+    </style>
+</head>
+<body class="bg-surface-bg text-on-surface font-body-md min-h-screen flex flex-col antialiased">
+<!-- TopNavBar -->
+<header class="bg-surface dark:bg-surface-container-lowest w-full h-16 border-b border-neutral-gray dark:border-on-surface-variant flat no shadows">
+<div class="max-w-[1200px] mx-auto px-margin-desktop flex justify-between items-center h-full">
+<div class="flex items-center gap-md">
+<div class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed-dim mr-xl">
+                    PHCTickets
+                </div>
+</div>
+<div class="flex items-center gap-md">
+<div class="flex items-center gap-xs text-primary dark:text-primary-fixed-dim timer-flash font-label-md text-label-md bg-surface-variant px-sm py-xs rounded">
+<span class="material-symbols-outlined" data-icon="timer">timer</span>
+<span id="countdown">10:00</span>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow max-w-[1200px] mx-auto w-full px-margin-mobile md:px-margin-desktop py-lg grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Left Column: Context -->
+<div class="md:col-span-3 flex flex-col gap-md">
+<div class="bg-surface-container-lowest border border-neutral-gray p-md flex flex-col gap-sm">
+<img class="w-full aspect-[2/3] object-cover border border-neutral-gray mb-sm" data-alt="A striking, high-contrast minimalist poster for a sci-fi thriller movie. The image features dramatic lighting with deep shadows and intense, focused beams of white light against a stark black background. Bold, utilitarian typography in a deep cinematic red cuts through the composition. The overall aesthetic is highly modern, editorial, and sophisticated, perfectly aligned with a premium cinema experience." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC4uxE8BfKhXv3yIceyjtPWXxxjZvyz4u5jBWisn-YtaWTLkNio78KlG0Qf1y1ZvZN01aSFdr7KbHxmYLKH6ogJlwM96xyfOEKuTfIJ7n_MdF9s3rfMjXUGIGX_Ba5XK_uBt4oewUQeOR6djCpEN5RO4Xl5iZouOnQHbLTvnmqto8v4cImKSIwGizTycIwbmb58SY2g45ATIqmZwb2zLjfw3e93XqMMBfPiz5c4gHMika2aseb5Xezn"/>
+<h1 class="font-headline-md text-headline-md text-on-surface">Duna: Parte Dois</h1>
+<p class="font-label-md text-label-md text-brand-red uppercase">Hoje • 19:30</p>
+<p class="font-body-md text-body-md text-on-surface-variant flex items-center gap-xs">
+<span class="material-symbols-outlined text-label-md" data-icon="location_on">location_on</span>
+                    Sala IMAX 3
+                </p>
+</div>
+</div>
+<!-- Center Column: Seat Map -->
+<div class="md:col-span-6 flex flex-col gap-lg items-center">
+<!-- Screen Indicator -->
+<div class="w-full max-w-md flex flex-col items-center mb-md">
+<div class="w-full h-8 border-t-4 border-brand-red rounded-t-[50%] opacity-80 mb-xs"></div>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">Tela</span>
+</div>
+<!-- Seat Grid -->
+<div class="flex flex-col gap-base" id="seat-map-container">
+<!-- Javascript will populate this grid -->
+</div>
+<!-- Legend -->
+<div class="mt-lg w-full max-w-md flex justify-between px-md border-t border-neutral-gray pt-md">
+<div class="flex items-center gap-xs">
+<div class="w-6 h-6 seat-free rounded-DEFAULT"></div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Livre</span>
+</div>
+<div class="flex items-center gap-xs">
+<div class="w-6 h-6 seat-selected rounded-DEFAULT"></div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Selecionado</span>
+</div>
+<div class="flex items-center gap-xs">
+<div class="w-6 h-6 seat-held rounded-DEFAULT"></div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Reservado</span>
+</div>
+<div class="flex items-center gap-xs">
+<div class="w-6 h-6 seat-taken rounded-DEFAULT"></div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Ocupado</span>
+</div>
+</div>
+</div>
+<!-- Right Column: Summary & Checkout -->
+<div class="md:col-span-3 flex flex-col gap-md">
+<div class="bg-surface-container-lowest border border-neutral-gray p-md flex flex-col gap-md sticky top-lg">
+<h2 class="font-headline-md text-headline-md text-on-surface pb-sm border-b border-neutral-gray">Resumo</h2>
+<div class="flex justify-between items-center">
+<span class="font-body-md text-body-md text-on-surface-variant">Assentos</span>
+<span class="font-label-md text-label-md text-on-surface" id="selected-seats-list">Nenhum</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-body-md text-body-md text-on-surface-variant">Total</span>
+<span class="font-headline-md text-headline-md text-brand-red" id="total-price">R$ 0,00</span>
+</div>
+<button class="w-full bg-brand-red text-white font-label-md text-label-md py-sm px-md rounded-DEFAULT mt-sm opacity-50 cursor-not-allowed transition-all shadow-[0_4px_8px_rgba(22,26,29,0.08)]" disabled="" id="confirm-btn">
+                    Confirmar Assentos
+                </button>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-bg dark:bg-surface-dim w-full py-xl border-t border-neutral-gray dark:border-outline-variant flat no shadows mt-auto">
+<div class="max-w-[1200px] mx-auto px-margin-desktop grid grid-cols-1 md:grid-cols-2 gap-md">
+<div>
+<div class="font-label-md text-label-md font-extrabold text-primary dark:text-primary-fixed-dim mb-sm">
+                    PHCTickets
+                </div>
+<p class="font-label-sm text-label-sm text-on-surface-variant dark:text-secondary-fixed-dim">
+                    © 2024 Powered by PHCTickets
+                </p>
+</div>
+<div class="flex gap-md md:justify-end">
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-secondary-fixed-dim hover:underline hover:text-primary dark:hover:text-primary-fixed-dim" href="#">Termos de Uso</a>
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-secondary-fixed-dim hover:underline hover:text-primary dark:hover:text-primary-fixed-dim" href="#">Privacidade</a>
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-secondary-fixed-dim hover:underline hover:text-primary dark:hover:text-primary-fixed-dim" href="#">Ajuda</a>
+</div>
+</div>
+</footer>
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Seat Map Generation Logic
+            const container = document.getElementById('seat-map-container');
+            const rows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+            const cols = 12;
+            const pricePerSeat = 45.00;
+            let selectedSeats = [];
+
+            // Simple pseudo-random status assignment for demo purposes
+            const getSeatStatus = (r, c) => {
+                const rand = Math.random();
+                if (r === 'A' || r === 'B') return 'seat-free'; // Premium front
+                if (rand > 0.85) return 'seat-taken';
+                if (rand > 0.75) return 'seat-held';
+                return 'seat-free';
+            };
+
+            rows.forEach(rowLabel => {
+                const rowDiv = document.createElement('div');
+                rowDiv.className = 'flex items-center gap-base justify-center';
+                
+                // Row Label Left
+                const labelLeft = document.createElement('span');
+                labelLeft.className = 'font-label-sm text-label-sm w-6 text-center text-on-surface-variant';
+                labelLeft.textContent = rowLabel;
+                rowDiv.appendChild(labelLeft);
+
+                // Add aisle gap after col 4 and 8
+                for (let c = 1; c <= cols; c++) {
+                    if (c === 5 || c === 9) {
+                        const aisle = document.createElement('div');
+                        aisle.className = 'w-sm'; // Aisle width
+                        rowDiv.appendChild(aisle);
+                    }
+
+                    const seat = document.createElement('div');
+                    const status = getSeatStatus(rowLabel, c);
+                    const seatId = `${rowLabel}${c}`;
+                    
+                    seat.className = `w-8 h-8 rounded-DEFAULT flex items-center justify-center font-label-sm text-[10px] seat ${status}`;
+                    seat.dataset.id = seatId;
+                    seat.dataset.status = status;
+                    
+                    if (status === 'seat-free') {
+                        seat.addEventListener('click', () => toggleSeat(seat, seatId));
+                    }
+
+                    rowDiv.appendChild(seat);
+                }
+
+                // Row Label Right
+                const labelRight = document.createElement('span');
+                labelRight.className = 'font-label-sm text-label-sm w-6 text-center text-on-surface-variant';
+                labelRight.textContent = rowLabel;
+                rowDiv.appendChild(labelRight);
+
+                container.appendChild(rowDiv);
+            });
+
+            // Interaction Logic
+            function toggleSeat(element, id) {
+                if (element.dataset.status === 'seat-taken' || element.dataset.status === 'seat-held') return;
+
+                const index = selectedSeats.indexOf(id);
+                if (index > -1) {
+                    selectedSeats.splice(index, 1);
+                    element.classList.remove('seat-selected');
+                    element.classList.add('seat-free');
+                    element.dataset.status = 'seat-free';
+                } else {
+                    if(selectedSeats.length >= 8) {
+                        alert('Máximo de 8 assentos permitidos por transação.');
+                        return;
+                    }
+                    selectedSeats.push(id);
+                    element.classList.remove('seat-free');
+                    element.classList.add('seat-selected');
+                    element.dataset.status = 'seat-selected';
+                }
+                updateSummary();
+            }
+
+            function updateSummary() {
+                const listEl = document.getElementById('selected-seats-list');
+                const priceEl = document.getElementById('total-price');
+                const btn = document.getElementById('confirm-btn');
+
+                if (selectedSeats.length > 0) {
+                    listEl.textContent = selectedSeats.sort().join(', ');
+                    const total = (selectedSeats.length * pricePerSeat).toFixed(2).replace('.', ',');
+                    priceEl.textContent = `R$ ${total}`;
+                    
+                    btn.disabled = false;
+                    btn.classList.remove('opacity-50', 'cursor-not-allowed');
+                    btn.classList.add('hover:bg-opacity-90');
+                } else {
+                    listEl.textContent = 'Nenhum';
+                    priceEl.textContent = 'R$ 0,00';
+                    
+                    btn.disabled = true;
+                    btn.classList.add('opacity-50', 'cursor-not-allowed');
+                    btn.classList.remove('hover:bg-opacity-90');
+                }
+            }
+
+            // Simple Timer Logic
+            let time = 600; // 10 minutes
+            const timerEl = document.getElementById('countdown');
+            setInterval(() => {
+                if (time <= 0) return;
+                time--;
+                const min = Math.floor(time / 60);
+                const sec = time % 60;
+                timerEl.textContent = `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
+                
+                if(time < 60) {
+                    timerEl.parentElement.classList.add('timer-flash');
+                }
+            }, 1000);
+        });
+    </script>
+</body></html>

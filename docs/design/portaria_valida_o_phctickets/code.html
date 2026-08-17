@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+
+<html class="light" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PHCTickets - Gate Scanner</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline-variant": "#dec0bc",
+                        "on-primary-fixed": "#410002",
+                        "on-secondary": "#ffffff",
+                        "primary-container": "#660708",
+                        "error": "#ba1a1a",
+                        "support-alert": "#BA181B",
+                        "on-tertiary-fixed": "#00174a",
+                        "on-error-container": "#93000a",
+                        "primary-fixed-dim": "#ffb4ab",
+                        "surface-bg": "#F5F3F4",
+                        "on-error": "#ffffff",
+                        "secondary-fixed": "#e0e3e7",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-fixed": "#ffdad6",
+                        "inverse-surface": "#3a2d2c",
+                        "on-surface": "#241917",
+                        "surface-tint": "#a63930",
+                        "success-valid": "#2D6A4F",
+                        "outline": "#8b716e",
+                        "surface-container": "#ffe9e6",
+                        "inverse-primary": "#ffb4ab",
+                        "tertiary-fixed": "#dbe1ff",
+                        "surface-variant": "#f3dedb",
+                        "on-primary-container": "#f27064",
+                        "on-primary": "#ffffff",
+                        "tertiary-container": "#002a77",
+                        "inverse-on-surface": "#ffedea",
+                        "surface-container-highest": "#f3dedb",
+                        "surface-dim": "#ebd5d2",
+                        "tertiary-fixed-dim": "#b4c5ff",
+                        "secondary-container": "#e0e3e7",
+                        "on-surface-variant": "#57423f",
+                        "on-secondary-fixed-variant": "#43474b",
+                        "on-background": "#241917",
+                        "neutral-gray": "#D3D3D3",
+                        "on-secondary-fixed": "#181c1f",
+                        "tertiary": "#00174a",
+                        "on-primary-fixed-variant": "#86211c",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-low": "#fff0ee",
+                        "surface-bright": "#fff8f7",
+                        "primary": "#410002",
+                        "on-tertiary-container": "#7a95e7",
+                        "secondary-fixed-dim": "#c4c7cb",
+                        "on-secondary-container": "#616568",
+                        "surface": "#fff8f7",
+                        "background": "#fff8f7",
+                        "error-container": "#ffdad6",
+                        "secondary": "#5b5f62",
+                        "on-tertiary-fixed-variant": "#23428e",
+                        "surface-container-high": "#f9e3e0"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "gutter": "20px",
+                        "lg": "40px",
+                        "max-width": "1200px",
+                        "margin-desktop": "auto",
+                        "xs": "8px",
+                        "sm": "16px",
+                        "base": "4px",
+                        "md": "24px",
+                        "xl": "64px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .scanner-line {
+            animation: scan 2s linear infinite;
+        }
+        @keyframes scan {
+            0% { top: 10%; opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { top: 90%; opacity: 0; }
+        }
+        .status-overlay {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+    </style>
+</head>
+<body class="bg-surface-bg text-on-surface font-body-md text-body-md h-screen flex flex-col overflow-hidden selection:bg-primary-container selection:text-white">
+<!-- Staff Header - Pinned Session Info -->
+<header class="bg-surface-container-lowest border-b border-neutral-gray px-margin-mobile md:px-margin-desktop py-sm flex justify-between items-center z-50 shadow-sm flex-shrink-0">
+<div class="flex items-center gap-sm">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined text-on-surface">arrow_back</span>
+</button>
+<div class="flex flex-col">
+<h1 class="font-headline-md text-headline-md text-primary-container truncate max-w-[200px] md:max-w-md" title="Oppenheimer (IMAX)">Oppenheimer (IMAX)</h1>
+<div class="flex items-center gap-xs text-secondary font-label-sm text-label-sm">
+<span class="material-symbols-outlined" style="font-size: 16px;">meeting_room</span>
+<span>Sala 3</span>
+<span>•</span>
+<span class="material-symbols-outlined" style="font-size: 16px;">schedule</span>
+<span>19:00</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-xs bg-surface-variant px-xs py-base rounded-lg border border-neutral-gray">
+<span class="material-symbols-outlined text-secondary" style="font-size: 18px;">qr_code_scanner</span>
+<span class="font-label-sm text-label-sm text-on-surface uppercase tracking-wider">Gate 1</span>
+</div>
+</header>
+<!-- Main Scanner Area -->
+<main class="flex-1 flex flex-col relative">
+<!-- Viewfinder Canvas -->
+<div class="flex-1 bg-black relative overflow-hidden flex items-center justify-center relative">
+<!-- Simulated Camera Feed Background -->
+<div class="absolute inset-0 bg-cover bg-center opacity-40 mix-blend-luminosity" data-alt="A blurred, slightly grainy perspective of a modern cinema lobby floor and a person's hand holding a smartphone displaying a generic QR code ticket. The lighting is typical indoor commercial lighting, cool and utilitarian, simulating a live camera feed from a mobile device." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAP6GQYb2GgQ_NhyRG5uUw582rjEO-ytGkW_-qv90c1ENZl-QyS4zD7OS3fcas_D-aW4z5rlJMDYIH12O3Sc4TpCrGIngyXVkeYvlBFoAInt91-iMQQsPO8J0qZhSrxx4pxAVewTfmT_bINiGYrtAl9J2gfpxezGA3e5QoXFWAlG6N1ZJYqaIttozx8c_KZwtZWT9hGkX-xIFmjq8SHd_thg83gdTFxoIO-wzeA-_otyPNP446Cc7AH')"></div>
+<!-- Viewfinder Target Area -->
+<div class="relative w-[280px] h-[280px] md:w-[400px] md:h-[400px] z-10">
+<!-- Corner Brackets -->
+<div class="absolute top-0 left-0 w-10 h-10 border-t-4 border-l-4 border-white rounded-tl-lg shadow-[0_0_8px_rgba(0,0,0,0.5)]"></div>
+<div class="absolute top-0 right-0 w-10 h-10 border-t-4 border-r-4 border-white rounded-tr-lg shadow-[0_0_8px_rgba(0,0,0,0.5)]"></div>
+<div class="absolute bottom-0 left-0 w-10 h-10 border-b-4 border-l-4 border-white rounded-bl-lg shadow-[0_0_8px_rgba(0,0,0,0.5)]"></div>
+<div class="absolute bottom-0 right-0 w-10 h-10 border-b-4 border-r-4 border-white rounded-br-lg shadow-[0_0_8px_rgba(0,0,0,0.5)]"></div>
+<!-- Scanning Laser Line -->
+<div class="scanner-line absolute left-0 right-0 h-0.5 bg-support-alert shadow-[0_0_8px_#BA181B] z-20"></div>
+<!-- Instruction Text Inside Viewfinder -->
+<div class="absolute -bottom-10 left-0 right-0 text-center">
+<p class="font-label-md text-label-md text-white drop-shadow-md">Posicione o QR Code no quadro</p>
+</div>
+</div>
+<!-- Dynamic Status Overlay (Absolute positioning over the viewfinder) -->
+<!-- Initial State: Hidden (translate-y-full opacity-0) -->
+<div class="status-overlay absolute inset-0 z-30 flex flex-col items-center justify-center backdrop-blur-md bg-black/60 translate-y-full opacity-0" id="status-panel">
+<div class="w-24 h-24 rounded-full flex items-center justify-center mb-md shadow-lg transform scale-90 transition-transform duration-300" id="status-icon-container">
+<span class="material-symbols-outlined text-white" id="status-icon" style="font-size: 64px; font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<h2 class="font-display-lg text-display-lg text-white mb-base text-center px-sm drop-shadow-lg" id="status-title">Válido</h2>
+<div class="bg-surface-container-lowest/10 backdrop-blur-sm border border-white/20 rounded-xl p-md mt-sm text-center min-w-[280px]" id="status-details">
+<p class="font-label-md text-label-md text-secondary-fixed mb-1">Ingresso Meia - Estudante</p>
+<p class="font-body-lg text-body-lg text-white font-semibold">Assento: F12</p>
+<p class="font-label-sm text-label-sm text-error mt-sm hidden" id="status-extra">Utilizado às 18:45</p>
+</div>
+<button class="mt-xl px-xl py-sm rounded-lg border-2 border-white text-white font-label-md text-label-md hover:bg-white/10 active:bg-white/20 transition-colors uppercase tracking-widest" onclick="resetScanner()">
+                    Novo Scan
+                </button>
+</div>
+</div>
+<!-- Manual Entry Bottom Sheet -->
+<div class="bg-surface-container-lowest border-t border-neutral-gray p-margin-mobile md:p-md shadow-[0_-4px_20px_rgba(0,0,0,0.05)] z-40 flex-shrink-0">
+<label class="block font-label-sm text-label-sm text-secondary mb-xs uppercase tracking-wider" for="manual-code">Entrada Manual</label>
+<div class="flex">
+<div class="relative flex-1">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-secondary" style="font-size: 20px;">keyboard</span>
+<input class="w-full pl-xl pr-sm py-sm bg-surface border border-neutral-gray rounded-l-lg font-body-lg text-body-lg text-on-surface focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-shadow" id="manual-code" placeholder="Digite o código do ingresso..." type="text"/>
+</div>
+<button class="bg-primary-container text-on-primary px-md py-sm rounded-r-lg font-label-md text-label-md hover:bg-surface-tint transition-colors flex items-center justify-center min-w-[100px]" onclick="simulateScan('valid')">
+                    Validar
+                </button>
+</div>
+<!-- Development Tools / Simulation Triggers (for demonstration of states) -->
+<div class="mt-md flex gap-xs justify-center flex-wrap">
+<span class="text-xs text-neutral-400 w-full text-center block mb-1">Simular Estados:</span>
+<button class="px-3 py-1 rounded bg-success-valid text-white text-xs font-semibold" onclick="simulateScan('valid')">Válido</button>
+<button class="px-3 py-1 rounded bg-support-alert text-white text-xs font-semibold" onclick="simulateScan('invalid')">Inválido</button>
+<button class="px-3 py-1 rounded bg-support-alert text-white text-xs font-semibold opacity-90 border border-black/20" onclick="simulateScan('duplicate')">Já Utilizado</button>
+</div>
+</div>
+</main>
+<script>
+        function simulateScan(state) {
+            const panel = document.getElementById('status-panel');
+            const iconContainer = document.getElementById('status-icon-container');
+            const icon = document.getElementById('status-icon');
+            const title = document.getElementById('status-title');
+            const details = document.getElementById('status-details');
+            const extra = document.getElementById('status-extra');
+
+            // Reset classes
+            iconContainer.className = 'w-24 h-24 rounded-full flex items-center justify-center mb-md shadow-lg transform scale-110 transition-transform duration-300';
+            extra.classList.add('hidden');
+
+            if (state === 'valid') {
+                iconContainer.classList.add('bg-success-valid');
+                icon.textContent = 'check_circle';
+                title.textContent = 'Válido';
+                title.className = 'font-display-lg text-display-lg text-success-valid mb-base text-center px-sm drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]';
+            } else if (state === 'invalid') {
+                iconContainer.classList.add('bg-support-alert');
+                icon.textContent = 'cancel';
+                title.textContent = 'Inválido';
+                title.className = 'font-display-lg text-display-lg text-support-alert mb-base text-center px-sm drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]';
+                details.querySelector('p:nth-child(1)').textContent = 'Código não encontrado';
+                details.querySelector('p:nth-child(2)').textContent = '---';
+            } else if (state === 'duplicate') {
+                iconContainer.classList.add('bg-support-alert');
+                icon.textContent = 'warning';
+                title.textContent = 'Já Utilizado';
+                title.className = 'font-display-lg text-display-lg text-support-alert mb-base text-center px-sm drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] leading-tight';
+                details.querySelector('p:nth-child(1)').textContent = 'Ingresso Inteira';
+                details.querySelector('p:nth-child(2)').textContent = 'Assento: G14';
+                extra.classList.remove('hidden');
+            }
+
+            // Show panel
+            panel.classList.remove('translate-y-full', 'opacity-0');
+            panel.classList.add('translate-y-0', 'opacity-100');
+        }
+
+        function resetScanner() {
+            const panel = document.getElementById('status-panel');
+            const iconContainer = document.getElementById('status-icon-container');
+            
+            // Hide panel
+            panel.classList.add('translate-y-full', 'opacity-0');
+            panel.classList.remove('translate-y-0', 'opacity-100');
+            
+            // Reset scale for next animation
+            iconContainer.classList.replace('scale-110', 'scale-90');
+            
+            // Reset text
+            setTimeout(() => {
+                document.getElementById('manual-code').value = '';
+                document.getElementById('status-details').querySelector('p:nth-child(1)').textContent = 'Ingresso Meia - Estudante';
+                document.getElementById('status-details').querySelector('p:nth-child(2)').textContent = 'Assento: F12';
+                iconContainer.classList.remove('bg-success-valid', 'bg-support-alert');
+            }, 300);
+        }
+    </script>
+</body></html>

@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sessões - PHCTickets</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline-variant": "#dec0bc",
+                        "on-primary-fixed": "#410002",
+                        "on-secondary": "#ffffff",
+                        "primary-container": "#660708",
+                        "error": "#ba1a1a",
+                        "support-alert": "#BA181B",
+                        "on-tertiary-fixed": "#00174a",
+                        "on-error-container": "#93000a",
+                        "primary-fixed-dim": "#ffb4ab",
+                        "surface-bg": "#F5F3F4",
+                        "on-error": "#ffffff",
+                        "secondary-fixed": "#e0e3e7",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-fixed": "#ffdad6",
+                        "inverse-surface": "#3a2d2c",
+                        "on-surface": "#241917",
+                        "surface-tint": "#a63930",
+                        "success-valid": "#2D6A4F",
+                        "outline": "#8b716e",
+                        "surface-container": "#ffe9e6",
+                        "inverse-primary": "#ffb4ab",
+                        "tertiary-fixed": "#dbe1ff",
+                        "surface-variant": "#f3dedb",
+                        "on-primary-container": "#f27064",
+                        "on-primary": "#ffffff",
+                        "tertiary-container": "#002a77",
+                        "inverse-on-surface": "#ffedea",
+                        "surface-container-highest": "#f3dedb",
+                        "surface-dim": "#ebd5d2",
+                        "tertiary-fixed-dim": "#b4c5ff",
+                        "secondary-container": "#e0e3e7",
+                        "on-surface-variant": "#57423f",
+                        "on-secondary-fixed-variant": "#43474b",
+                        "on-background": "#241917",
+                        "neutral-gray": "#D3D3D3",
+                        "on-secondary-fixed": "#181c1f",
+                        "tertiary": "#00174a",
+                        "on-primary-fixed-variant": "#86211c",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-low": "#fff0ee",
+                        "surface-bright": "#fff8f7",
+                        "primary": "#410002",
+                        "on-tertiary-container": "#7a95e7",
+                        "secondary-fixed-dim": "#c4c7cb",
+                        "on-secondary-container": "#616568",
+                        "surface": "#fff8f7",
+                        "background": "#fff8f7",
+                        "error-container": "#ffdad6",
+                        "secondary": "#5b5f62",
+                        "on-tertiary-fixed-variant": "#23428e",
+                        "surface-container-high": "#f9e3e0"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "gutter": "20px",
+                        "lg": "40px",
+                        "max-width": "1200px",
+                        "margin-desktop": "auto",
+                        "xs": "8px",
+                        "sm": "16px",
+                        "base": "4px",
+                        "md": "24px",
+                        "xl": "64px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-surface-bg text-on-surface font-body-md min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<header class="bg-surface dark:bg-surface-container-lowest w-full h-16 border-b border-neutral-gray dark:border-on-surface-variant flex-shrink-0 relative z-50">
+<div class="max-w-[1200px] mx-auto px-margin-desktop h-full flex justify-between items-center px-4 md:px-0">
+<!-- Brand -->
+<div class="flex items-center gap-6">
+<a class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed-dim" href="#">
+                    PHCTickets
+                </a>
+<!-- Search (Web) -->
+<div class="hidden md:flex items-center bg-surface-bg border border-neutral-gray rounded px-3 py-1.5 focus-within:border-primary transition-colors">
+<span class="material-symbols-outlined text-secondary mr-2" style="font-size: 18px;">search</span>
+<input class="bg-transparent border-none outline-none text-label-md font-label-md text-on-surface placeholder:text-secondary p-0 focus:ring-0 w-48" placeholder="Buscar filmes..." type="text"/>
+</div>
+</div>
+<!-- Navigation Links (Web) -->
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-primary dark:text-primary-fixed-dim border-b-2 border-primary font-bold font-label-md text-label-md h-16 flex items-center hover:text-primary-container transition-colors" href="#">Filmes</a>
+<a class="text-secondary dark:text-secondary-fixed-dim font-medium font-label-md text-label-md h-16 flex items-center hover:text-primary-container transition-colors" href="#">Cinemas</a>
+<a class="text-secondary dark:text-secondary-fixed-dim font-medium font-label-md text-label-md h-16 flex items-center hover:text-primary-container transition-colors" href="#">Minha Conta</a>
+</nav>
+<!-- Actions -->
+<div class="flex items-center gap-4">
+<button class="hidden md:flex items-center gap-1 font-label-md text-label-md text-on-surface hover:text-primary transition-colors">
+<span class="material-symbols-outlined" style="font-size: 18px;">language</span>
+                    PT-BR
+                </button>
+<button class="bg-primary-container text-on-primary font-label-md text-label-md px-4 py-2 rounded hover:opacity-90 transition-opacity">
+                    Ingressos
+                </button>
+<button class="md:hidden text-on-surface">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow max-w-[1200px] w-full mx-auto px-margin-mobile md:px-0 py-lg flex flex-col gap-lg">
+<!-- Page Header & Filter Bar -->
+<section class="flex flex-col gap-6">
+<h1 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary">Sessões Disponíveis</h1>
+<div class="bg-surface-container-lowest border border-neutral-gray p-4 rounded flex flex-col md:flex-row gap-4 md:items-end">
+<div class="flex-1 flex flex-col gap-2">
+<label class="font-label-sm text-label-sm text-secondary">Cidade</label>
+<div class="relative">
+<select class="w-full bg-surface-bg border border-neutral-gray rounded font-body-md text-body-md text-on-surface px-3 py-2 appearance-none focus:border-primary-container focus:ring-0">
+<option>São Paulo, SP</option>
+<option>Rio de Janeiro, RJ</option>
+<option>Belo Horizonte, MG</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-secondary pointer-events-none">expand_more</span>
+</div>
+</div>
+<div class="flex-1 flex flex-col gap-2">
+<label class="font-label-sm text-label-sm text-secondary">Data</label>
+<div class="relative">
+<input class="w-full bg-surface-bg border border-neutral-gray rounded font-body-md text-body-md text-on-surface px-3 py-2 focus:border-primary-container focus:ring-0" type="date"/>
+</div>
+</div>
+<div class="flex-1 flex flex-col gap-2">
+<label class="font-label-sm text-label-sm text-secondary">Gênero</label>
+<div class="relative">
+<select class="w-full bg-surface-bg border border-neutral-gray rounded font-body-md text-body-md text-on-surface px-3 py-2 appearance-none focus:border-primary-container focus:ring-0">
+<option>Todos os gêneros</option>
+<option>Ação</option>
+<option>Comédia</option>
+<option>Drama</option>
+<option>Sci-Fi</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-secondary pointer-events-none">expand_more</span>
+</div>
+</div>
+<button class="bg-transparent border border-on-surface text-on-surface font-label-md text-label-md px-6 py-2 rounded hover:bg-surface-variant transition-colors h-[42px] flex items-center justify-center gap-2">
+<span class="material-symbols-outlined" style="font-size: 18px;">filter_list</span>
+                    Filtrar
+                </button>
+</div>
+</section>
+<!-- Events Grid -->
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Card 1 -->
+<article class="bg-surface-container-lowest border border-neutral-gray rounded overflow-hidden flex flex-col group cursor-pointer hover:border-primary-container transition-colors">
+<div class="relative w-full aspect-[2/3] bg-surface-variant">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="A cinematic, high-contrast promotional poster for a sci-fi thriller movie. The poster features a solitary astronaut standing on a desolate, rocky alien planet surface, illuminated by a stark, cool white light coming from a massive, glowing geometric monolith in the background. The mood is intense, mysterious, and modern. The color palette leans on deep blacks, cool grays, and a sharp, brilliant white, avoiding clutter." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDRqtcU51xopkbo4O_7nZdxvS7FSc1l8D44UsswaVQdsVHxEYFEGsDqoOrqyyFuYTpI3ic7hq4ZqiQka-LJ0PR3Uk7bI_D-_yCys-DyyuyGVF_m94xmF0gHauaGw3d7Dt02Ko5OmYY2GXtd-DwU5Bob2z4GBqIh5uVda6QSUM2_8oLrNJODukts0FZ5juVhQwqg-QedGm8y3ZD2d7uPLT3lor2dyG1vl9C8wjr__NTooFtcK_rVj1pT"/>
+<div class="absolute top-3 right-3 bg-primary-container text-on-primary font-label-sm text-label-sm px-2 py-1 rounded">Hoje</div>
+</div>
+<div class="p-4 flex flex-col flex-grow">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-2 line-clamp-2 group-hover:text-primary-container transition-colors">O Paradoxo do Tempo</h2>
+<div class="flex items-center gap-2 text-primary-container mb-3 font-label-md text-label-md">
+<span class="material-symbols-outlined" style="font-size: 16px;">calendar_month</span>
+<span>Sáb, 24 Ago • 20:00</span>
+</div>
+<div class="flex items-start gap-2 text-secondary font-body-md text-body-md mb-4 flex-grow">
+<span class="material-symbols-outlined mt-1" style="font-size: 16px;">location_on</span>
+<span>Cineplex Prime - Shopping Central, São Paulo</span>
+</div>
+<div class="flex items-center justify-between mt-auto pt-4 border-t border-surface-variant">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-secondary">A partir de</span>
+<span class="font-label-md text-label-md text-on-surface">R$ 35,00</span>
+</div>
+<span class="material-symbols-outlined text-primary-container">arrow_forward</span>
+</div>
+</div>
+</article>
+<!-- Card 2 -->
+<article class="bg-surface-container-lowest border border-neutral-gray rounded overflow-hidden flex flex-col group cursor-pointer hover:border-primary-container transition-colors">
+<div class="relative w-full aspect-[2/3] bg-surface-variant">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="A modern, high-contrast movie poster for an urban crime drama. The image shows a close-up profile of a gritty detective in silhouette against a neon-lit, rain-slicked city street at night. The lighting is harsh and direct, casting deep shadows. The color palette utilizes stark contrasts between deep blacks, concrete grays, and piercing crimson red neon accents, reflecting a utilitarian and tense aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBDzfF0gr_Lqtqda2GDU2Opx7cn4yU2Wq-pcF-bBEgIGTAerLk3Hc3imhQ6En2xU1MKl0u5loK978Iledc06LAJMyAg2KNkctHq-PBng5QI48nb9mfuddxymuEZmmMEsX_tGdlMUf7S6BDcpHbiPNfvA3w5DeV3zD5-EHfxFO7kEDP8BY5ocZrkYJE4_srkwWRvQvnypE0wTNklL2pcDbG8SzBwenVpnK5P1raUpDPFmWoxiB6hAZrv"/>
+</div>
+<div class="p-4 flex flex-col flex-grow">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-2 line-clamp-2 group-hover:text-primary-container transition-colors">Noites de Chumbo</h2>
+<div class="flex items-center gap-2 text-primary-container mb-3 font-label-md text-label-md">
+<span class="material-symbols-outlined" style="font-size: 16px;">calendar_month</span>
+<span>Sáb, 24 Ago • 21:30</span>
+</div>
+<div class="flex items-start gap-2 text-secondary font-body-md text-body-md mb-4 flex-grow">
+<span class="material-symbols-outlined mt-1" style="font-size: 16px;">location_on</span>
+<span>Cinema Reserva - Augusta, São Paulo</span>
+</div>
+<div class="flex items-center justify-between mt-auto pt-4 border-t border-surface-variant">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-secondary">A partir de</span>
+<span class="font-label-md text-label-md text-on-surface">R$ 28,00</span>
+</div>
+<span class="material-symbols-outlined text-primary-container">arrow_forward</span>
+</div>
+</div>
+</article>
+<!-- Card 3 -->
+<article class="bg-surface-container-lowest border border-neutral-gray rounded overflow-hidden flex flex-col group cursor-pointer hover:border-primary-container transition-colors">
+<div class="relative w-full aspect-[2/3] bg-surface-variant">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="An elegant, minimalist movie poster for a historical drama. The central image is a highly detailed, vintage gold pocket watch resting on a stark white marble surface. A single drop of deep red blood sits near the watch, creating a striking focal point. The lighting is soft but high-key, creating an editorial, clean look with predominantly white and light gray tones, accented only by the gold and deep red." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhOcn2WN_CHeT2tVdHWDD-BbVfmsMM2kwipSveSBKIfNcnobvlypRyNqYp5n0JvjB3nG8ZZ6EwSqofwUM0RYBv1FRRo07ZOnyfViF_JxaRAtUklXoC74QtNSPx7SYGd1prpW19RtQOd9DN2zCx75wRNBWOs82Yn3EcpwtxH9pQWSU1qeF-3cyNqi8litytsnEbqg7UlDxWynfY1omflGEyhL8Jdu13MCHxywh-oRlYvZD0x25QDxsZ"/>
+</div>
+<div class="p-4 flex flex-col flex-grow">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-2 line-clamp-2 group-hover:text-primary-container transition-colors">A Última Valsa</h2>
+<div class="flex items-center gap-2 text-primary-container mb-3 font-label-md text-label-md">
+<span class="material-symbols-outlined" style="font-size: 16px;">calendar_month</span>
+<span>Dom, 25 Ago • 18:00</span>
+</div>
+<div class="flex items-start gap-2 text-secondary font-body-md text-body-md mb-4 flex-grow">
+<span class="material-symbols-outlined mt-1" style="font-size: 16px;">location_on</span>
+<span>Espaço VIP - JK, São Paulo</span>
+</div>
+<div class="flex items-center justify-between mt-auto pt-4 border-t border-surface-variant">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-secondary">A partir de</span>
+<span class="font-label-md text-label-md text-on-surface">R$ 65,00</span>
+</div>
+<span class="material-symbols-outlined text-primary-container">arrow_forward</span>
+</div>
+</div>
+</article>
+<!-- Card 4 -->
+<article class="bg-surface-container-lowest border border-neutral-gray rounded overflow-hidden flex flex-col group cursor-pointer hover:border-primary-container transition-colors">
+<div class="relative w-full aspect-[2/3] bg-surface-variant">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="A striking, high-density movie poster for a fast-paced action comedy. The design features a chaotic collage of sports cars, flying money, and stylized explosions, all rendered in a tight, structured grid rather than a messy scatter. The background is a clean, stark white, allowing the deep red and dark gray elements of the collage to pop intensely. The overall aesthetic is clean, corporate modern, but energetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBxdFugP0gXMP5jtDmlHNcuWJjT8YhpkYIfWD6f8xmyDlmnYtR7l6ZTQzbsIYdBC_Ug_Qnz-VO_uq9rf8AXoaougoR7iLk1MxG70rQDxRPp7sdnw-HWos8Av_KFOJUcn5MElUnpCFVffV9ERfO4nUo80TwJKGaqBfB_bzUHqXaiAEdeHtrE4ZO48j4V83a2cB0ewHuJxZ3hCS0qQrnmlM-qwjpKPRzBg4DzGl8YDN_XXV22mRJM5u0G"/>
+</div>
+<div class="p-4 flex flex-col flex-grow">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-2 line-clamp-2 group-hover:text-primary-container transition-colors">Fuga em Dobro</h2>
+<div class="flex items-center gap-2 text-primary-container mb-3 font-label-md text-label-md">
+<span class="material-symbols-outlined" style="font-size: 16px;">calendar_month</span>
+<span>Dom, 25 Ago • 20:30</span>
+</div>
+<div class="flex items-start gap-2 text-secondary font-body-md text-body-md mb-4 flex-grow">
+<span class="material-symbols-outlined mt-1" style="font-size: 16px;">location_on</span>
+<span>Cineplex Prime - Shopping Central, São Paulo</span>
+</div>
+<div class="flex items-center justify-between mt-auto pt-4 border-t border-surface-variant">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-secondary">A partir de</span>
+<span class="font-label-md text-label-md text-on-surface">R$ 35,00</span>
+</div>
+<span class="material-symbols-outlined text-primary-container">arrow_forward</span>
+</div>
+</div>
+</article>
+</section>
+<!-- Pagination -->
+<div class="flex justify-center items-center gap-2 mt-8">
+<button class="w-10 h-10 flex items-center justify-center rounded border border-neutral-gray text-secondary hover:bg-surface-variant transition-colors disabled:opacity-50" disabled="">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded bg-primary-container text-on-primary font-label-md text-label-md">1</button>
+<button class="w-10 h-10 flex items-center justify-center rounded border border-neutral-gray text-on-surface hover:bg-surface-variant transition-colors font-label-md text-label-md">2</button>
+<button class="w-10 h-10 flex items-center justify-center rounded border border-neutral-gray text-on-surface hover:bg-surface-variant transition-colors font-label-md text-label-md">3</button>
+<button class="w-10 h-10 flex items-center justify-center rounded border border-neutral-gray text-secondary hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-bg dark:bg-surface-dim w-full py-xl border-t border-neutral-gray dark:border-outline-variant mt-auto">
+<div class="max-w-[1200px] mx-auto px-margin-desktop grid grid-cols-1 md:grid-cols-2 gap-md px-4 md:px-0">
+<div class="flex flex-col gap-4">
+<span class="font-label-md text-label-md font-extrabold text-primary dark:text-primary-fixed-dim">PHCTickets</span>
+<p class="font-body-md text-body-md text-secondary">© 2024 Powered by PHCTickets</p>
+</div>
+<div class="flex flex-wrap gap-4 md:justify-end items-center">
+<a class="font-label-sm text-label-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:underline hover:text-primary dark:hover:text-primary-fixed-dim" href="#">Termos de Uso</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:underline hover:text-primary dark:hover:text-primary-fixed-dim" href="#">Privacidade</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:underline hover:text-primary dark:hover:text-primary-fixed-dim" href="#">Ajuda</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant dark:text-secondary-fixed-dim hover:underline hover:text-primary dark:hover:text-primary-fixed-dim" href="#">Contato</a>
+</div>
+</div>
+</footer>
+</body></html>
