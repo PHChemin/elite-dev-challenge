@@ -1,0 +1,32 @@
+{
+  "name": "phctickets",
+  "private": true,
+  "workspaces": [
+    "apps/api",
+    "apps/web"
+  ],
+  "scripts": {
+    "dev:api": "npm run start:dev -w @phctickets/api",
+    "dev:web": "npm run dev -w @phctickets/web",
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test -w @phctickets/api",
+    "lint": "npm run lint --workspaces --if-present",
+    "prisma:generate": "npm run prisma:generate -w @phctickets/api",
+    "prisma:migrate": "npm run prisma:migrate -w @phctickets/api",
+    "prisma:studio": "npm run prisma:studio -w @phctickets/api",
+    "docker:up": "docker compose up --build",
+    "docker:up:db": "docker compose up db -d",
+    "docker:down": "docker compose down",
+    "docker:prod": "docker compose -f docker-compose.prod.yml --env-file .env.prod up --build -d",
+    "docker:prod:down": "docker compose -f docker-compose.prod.yml --env-file .env.prod down"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "overrides": {
+    "typescript": "5.9.3"
+  },
+  "devDependencies": {
+    "@types/jest": "^30.0.0"
+  }
+}
