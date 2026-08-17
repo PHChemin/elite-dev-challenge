@@ -1,0 +1,19 @@
+{
+  "validation": {
+    "invalidData": "Dados inválidos",
+    "email": {
+      "invalid": "Informe um e-mail válido"
+    },
+    "password": {
+      "required": "Informe a senha"
+    }
+  },
+  "auth": {
+    "invalidCredentials": "Credenciais inválidas",
+    "insufficientRole": "Papel insuficiente"
+  },
+  "errors": {
+    "internal": "Erro interno",
+    "databaseUnavailable": "Banco indisponível"
+  }
+}

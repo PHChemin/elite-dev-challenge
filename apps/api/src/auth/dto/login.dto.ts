@@ -7,11 +7,11 @@ export class LoginDto {
   @Transform(({ value }: { value: unknown }) =>
     typeof value === 'string' ? value.trim().toLowerCase() : value,
   )
-  @IsEmail({}, { message: 'Informe um e-mail válido' })
+  @IsEmail({}, { message: 'validation.email.invalid' })
   email!: string;
 
   @ApiProperty({ example: 'organizer123' })
-  @IsString({ message: 'Informe a senha' })
-  @MinLength(1, { message: 'Informe a senha' })
+  @IsString({ message: 'validation.password.required' })
+  @MinLength(1, { message: 'validation.password.required' })
   password!: string;
 }

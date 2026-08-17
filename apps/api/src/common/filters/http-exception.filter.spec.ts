@@ -1,4 +1,5 @@
 import { ArgumentsHost, BadRequestException } from '@nestjs/common';
+import { I18nService } from 'nestjs-i18n';
 import { AllExceptionsFilter } from './http-exception.filter';
 
 function createHost(path = '/api/auth/login'): {
@@ -18,7 +19,12 @@ function createHost(path = '/api/auth/login'): {
 }
 
 describe('AllExceptionsFilter', () => {
-  const filter = new AllExceptionsFilter();
+  const i18n = {
+    t: jest.fn((key: string) =>
+      key === 'errors.internal' ? 'Erro interno' : key,
+    ),
+  };
+  const filter = new AllExceptionsFilter(i18n as unknown as I18nService);
 
   it('forwards fieldErrors from a validation exception', () => {
     const { host, json } = createHost();

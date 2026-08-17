@@ -4,12 +4,17 @@ import {
   ExceptionFilter,
   HttpException,
   HttpStatus,
+  Injectable,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { I18nService } from 'nestjs-i18n';
 import type { FieldErrors } from '../validation/field-errors';
 
 @Catch()
+@Injectable()
 export class AllExceptionsFilter implements ExceptionFilter {
+  constructor(private readonly i18n: I18nService) {}
+
   catch(exception: unknown, host: ArgumentsHost): void {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
@@ -34,7 +39,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
   private resolveMessage(exception: unknown): string | string[] {
     if (!(exception instanceof HttpException)) {
-      return 'Erro interno';
+      return this.i18n.t('errors.internal');
     }
 
     const body = exception.getResponse();

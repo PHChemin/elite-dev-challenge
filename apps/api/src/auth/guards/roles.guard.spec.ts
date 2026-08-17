@@ -1,6 +1,7 @@
 import { ExecutionContext, ForbiddenException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Role } from '@prisma/client';
+import { I18nService } from 'nestjs-i18n';
 import { ROLES_KEY } from '../decorators/roles.decorator';
 import { RolesGuard } from './roles.guard';
 
@@ -23,7 +24,13 @@ describe('RolesGuard', () => {
   const reflector = {
     getAllAndOverride: jest.fn(),
   };
-  const guard = new RolesGuard(reflector as unknown as Reflector);
+  const i18n = {
+    t: jest.fn((key: string) => key),
+  };
+  const guard = new RolesGuard(
+    reflector as unknown as Reflector,
+    i18n as unknown as I18nService,
+  );
 
   beforeEach(() => {
     reflector.getAllAndOverride.mockReset();

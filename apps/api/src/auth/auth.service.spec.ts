@@ -3,6 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Role, UserStatus } from '@prisma/client';
 import { hash } from 'bcryptjs';
+import { I18nService } from 'nestjs-i18n';
 import { SEED_USERS } from '../../prisma/seed-users';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuthService } from './auth.service';
@@ -16,6 +17,9 @@ describe('AuthService', () => {
   };
   const jwt = {
     signAsync: jest.fn(),
+  };
+  const i18n = {
+    t: jest.fn((key: string) => key),
   };
 
   const usersByEmail = new Map<
@@ -61,6 +65,7 @@ describe('AuthService', () => {
         AuthService,
         { provide: PrismaService, useValue: prisma },
         { provide: JwtService, useValue: jwt },
+        { provide: I18nService, useValue: i18n },
       ],
     }).compile();
 
