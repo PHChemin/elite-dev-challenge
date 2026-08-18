@@ -1,4 +1,6 @@
+import axios, { isAxiosError } from "axios";
 import type { ApiErrorBody, FieldErrors } from "./types";
+import { readSession } from "../auth/storage";
 import i18n from "../i18n";
 
 const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3000/api";
@@ -19,6 +21,25 @@ export class ApiError extends Error {
   }
 }
 
+export const api = axios.create({
+  baseURL: API_URL,
+  timeout: 10_000,
+  headers: { "Content-Type": "application/json" },
+});
+
+api.interceptors.request.use((config) => {
+  const session = readSession();
+  if (session?.token) {
+    config.headers.Authorization = `Bearer ${session.token}`;
+  }
+  return config;
+});
+
+api.interceptors.response.use(
+  (response) => response,
+  (error: unknown) => Promise.reject(toApiError(error)),
+);
+
 function resolveMessage(
   body: ApiErrorBody | undefined,
   fallback: string,
@@ -35,33 +56,36 @@ function resolveMessage(
   return fallback;
 }
 
-export async function apiPost<T>(path: string, body: unknown): Promise<T> {
-  let response: Response;
-  try {
-    response = await fetch(`${API_URL}${path}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    });
-  } catch {
-    throw new ApiError(0, i18n.t("errors.api.connectionFailed"));
+function toApiError(error: unknown): ApiError {
+  if (!isAxiosError(error) || !error.response) {
+    return new ApiError(0, i18n.t("errors.api.connectionFailed"));
   }
 
-  let payload: unknown;
-  try {
-    payload = await response.json();
-  } catch {
-    throw new ApiError(response.status, i18n.t("errors.api.invalidResponse"));
-  }
-
-  if (!response.ok) {
-    const errorBody = payload as ApiErrorBody;
-    throw new ApiError(
-      errorBody.statusCode ?? response.status,
-      resolveMessage(errorBody, i18n.t("auth.login.fallback")),
-      errorBody.fieldErrors ?? {},
+  const payload = error.response.data;
+  if (!payload || typeof payload !== "object") {
+    return new ApiError(
+      error.response.status,
+      i18n.t("errors.api.invalidResponse"),
     );
   }
 
-  return payload as T;
+  const body = payload as ApiErrorBody;
+  return new ApiError(
+    body.statusCode ?? error.response.status,
+    resolveMessage(body, i18n.t("auth.login.fallback")),
+    body.fieldErrors ?? {},
+  );
+}
+
+export async function apiGet<T>(
+  path: string,
+  params?: Record<string, string>,
+): Promise<T> {
+  const { data } = await api.get<T>(path, { params });
+  return data;
+}
+
+export async function apiPost<T>(path: string, body: unknown): Promise<T> {
+  const { data } = await api.post<T>(path, body);
+  return data;
 }
