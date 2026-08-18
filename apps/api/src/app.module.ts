@@ -5,6 +5,7 @@ import { join } from 'path';
 import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
 import { validateEnv } from './config/env.validation';
+import { LocalesJsonLoader } from './locales/locales-json.loader';
 import { PrismaModule } from './prisma/prisma.module';
 import { UsersModule } from './users/users.module';
 
@@ -16,9 +17,9 @@ import { UsersModule } from './users/users.module';
     }),
     I18nModule.forRoot({
       fallbackLanguage: 'pt',
+      loader: LocalesJsonLoader,
       loaderOptions: {
-        path: join(__dirname, 'i18n/'),
-        watch: process.env.NODE_ENV !== 'production',
+        path: join(__dirname, 'locales'),
       },
       resolvers: [AcceptLanguageResolver],
     }),

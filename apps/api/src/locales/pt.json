@@ -6,11 +6,18 @@
     },
     "password": {
       "required": "Informe a senha"
+    },
+    "query": {
+      "required": "Informe o termo de busca"
     }
   },
   "auth": {
     "invalidCredentials": "Credenciais inválidas",
     "insufficientRole": "Papel insuficiente"
+  },
+  "catalog": {
+    "tmdbUnavailable": "Catálogo TMDb indisponível",
+    "movieNotFound": "Filme não encontrado no catálogo"
   },
   "errors": {
     "internal": "Erro interno",
