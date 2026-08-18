@@ -57,10 +57,10 @@ O objetivo do Must é o fluxo ponta a ponta: login por papel, sessão com mapa, 
 
 **Critérios de Aceitação:**
 
-- [ ] Busca TMDb devolve título e poster.
+- [x] Busca TMDb devolve título e poster.
 - [ ] Criar/editar/listar sessão com `priceFull`, `priceHalf`, `maxTicketsPerOrder` (padrão 6).
 - [ ] Sem `priceHalf` no request, a API grava `floor(priceFull / 2)`.
-- [ ] Falha da TMDb não apaga sessões já salvas.
+- [x] Falha da TMDb não apaga sessões já salvas.
 
 #### US03 — Compra: quantidade, mapa e retenção
 

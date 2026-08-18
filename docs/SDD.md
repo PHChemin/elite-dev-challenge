@@ -61,7 +61,8 @@ Sem MCP obrigatório neste projeto. Migrações via Prisma CLI; diagrama da seç
 - **QR (web ou api):** lib de geração de QR a partir do `code`  
 - **Fonte web:** `@fontsource/roboto` (ou equivalente)  
 - **Formulários web:** `@mantine/form`, `@mantine/notifications`
-- **Textos (i18n):** `nestjs-i18n` (API), `i18next` + `react-i18next` (web). Locale único `pt`; centraliza labels, validação e mensagens de erro reutilizáveis.
+- **Textos (i18n):** um arquivo `locales/pt.json` por app, chaves aninhadas. API: `nestjs-i18n`. Web: `i18next` + `react-i18next`. Locale único `pt`.
+- **HTTP:** `axios` — TMDb na API; chamadas do web para a API (JWT no interceptor).
 
 ### Fora do Must
 
@@ -217,7 +218,7 @@ Regra de preço: se `priceHalf` omitido na criação/atualização de `priceFull
 | ------- | ---------------- |
 | `PrismaService` | Conexão Postgres |
 | `AuthService` | Credenciais e JWT |
-| `CatalogService` | Busca TMDb |
+| `CatalogService` | Busca TMDb e detalhe por `tmdbId` (título e poster) |
 | `EventsService` | Sessão, preços, layout de assentos |
 | `ReservationsService` | Hold, unicidade, expiração |
 | `OrdersService` | Pagamento simulado → Ticket |
@@ -264,6 +265,8 @@ Regra de preço: se `priceHalf` omitido na criação/atualização de `priceFull
 - **GET** `/events` (público ou autenticado) — listar publicadas  
 - **GET** `/events/:id` — detalhe + mapa (status dos assentos)  
 - **PATCH** `/events/:id` (organizer)
+
+**Implementation:** a busca devolve `tmdbId`, `title`, `posterUrl` e `releaseDate`. `CatalogService.getMovie(tmdbId)` carrega o mesmo recorte por id. Título e poster da sessão ficam no `Event`. `GET /events` lê o banco e não chama a TMDb.
 
 ### Reserva e pagamento
 
