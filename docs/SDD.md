@@ -48,7 +48,7 @@ Sem MCP obrigatório neste projeto. Migrações via Prisma CLI; diagrama da seç
 - **Banco:** PostgreSQL  
 - **ORM:** Prisma  
 - **API:** NestJS + Express  
-- **Web:** React + TypeScript + Vite + Mantine  
+- **Web:** React + TypeScript + Vite + Mantine + React Router  
 - **Testes API:** Jest + Supertest (padrão Nest). Sem Vitest/Mocha no backend.  
 - **Catálogo:** TMDb (chave só no ambiente da API)
 
@@ -61,6 +61,7 @@ Sem MCP obrigatório neste projeto. Migrações via Prisma CLI; diagrama da seç
 - **QR (web ou api):** lib de geração de QR a partir do `code`  
 - **Fonte web:** `@fontsource/roboto` (ou equivalente)  
 - **Formulários web:** `@mantine/form`, `@mantine/notifications`
+- **Rotas web:** `react-router-dom`. Guard de papel na rota esconde a tela; a autorização continua na API.
 - **Textos (i18n):** um arquivo `locales/pt.json` por app, chaves aninhadas. API: `nestjs-i18n`. Web: `i18next` + `react-i18next`. Locale único `pt`.
 - **HTTP:** `axios` — TMDb na API; chamadas do web para a API (JWT no interceptor).
 
@@ -75,7 +76,8 @@ Ticketmaster, pista, websocket do mapa, entidade estabelecimento, Next.js, Fasti
 | Termo PRD | Entidade | Atributos principais |
 | --------- | -------- | -------------------- |
 | Usuário | `User` | `id, email, passwordHash, role, status, organizerId, mustChangePassword` |
-| Sessão | `Event` | `id, organizerId, tmdbId, title, posterUrl, startsAt, venueName, venueAddress, priceFull, priceHalf, maxTicketsPerOrder, publishStatus` |
+| Cartaz | `Exhibition` | `id, organizerId, tmdbId, title, posterUrl, publishStatus` |
+| Sessão | `Event` | `id, exhibitionId, startsAt, venueName, venueAddress, priceFull, priceHalf, maxTicketsPerOrder, publishStatus` |
 | Assento | `Seat` | `id, eventId, label` |
 | Retenção | `Hold` | `id, customerId, eventId, fullCount, halfCount, expiresAt, holdStatus` |
 | Assento retido | `HoldSeat` | `holdId, seatId` |
@@ -86,7 +88,7 @@ Ticketmaster, pista, websocket do mapa, entidade estabelecimento, Next.js, Fasti
 `holdStatus`: `active` \| `converted` \| `expired` \| `cancelled`  
 `kind`: `full` \| `half`  
 `User.organizerId`: preenchido em `gate`  
-Unique: `(eventId, label)` em Seat; HoldSeat por `seatId` com hold `active`; um Ticket não cancelado por `seatId`
+Unique: `(organizerId, tmdbId)` em Exhibition; `(exhibitionId, startsAt, venueName)` em Event; `(eventId, label)` em Seat; HoldSeat por `seatId` com hold `active`; um Ticket não cancelado por `seatId`
 
 ### 4.2. Modelagem (fonte do Prisma)
 
@@ -94,12 +96,13 @@ Unique: `(eventId, label)` em Seat; HoldSeat por `seatId` com hold `active`; um 
 
 ```mermaid
 erDiagram
-  User ||--o{ Event : organizes
+  User ||--o{ Exhibition : organizes
   User ||--o{ User : employsGate
   User ||--o{ Hold : places
   User ||--o{ Order : pays
   User ||--o{ Ticket : owns
   User ||--o{ Ticket : validates
+  Exhibition ||--o{ Event : schedules
   Event ||--|{ Seat : has
   Event ||--o{ Hold : receives
   Event ||--o{ Ticket : forSession
@@ -119,12 +122,18 @@ erDiagram
     boolean mustChangePassword
   }
 
-  Event {
+  Exhibition {
     uuid id PK
     uuid organizerId FK
     string tmdbId
     string title
     string posterUrl
+    enum publishStatus
+  }
+
+  Event {
+    uuid id PK
+    uuid exhibitionId FK
     datetime startsAt
     string venueName
     string venueAddress
@@ -179,21 +188,23 @@ erDiagram
   }
 ```
 
-**Implementação:** preços em centavos. `code` e `shareToken` com entropia alta (UUID v4 ou 32 bytes hex).
+**Implementação:** preços em centavos. `code` e `shareToken` com entropia alta (UUID v4 ou 32 bytes hex). `Exhibition.posterUrl` é opcional: a TMDb não tem pôster para todo filme. Título e pôster ficam no cartaz. Hold, ingresso e mapa apontam para a sessão.
 
 ## 5. Contratos Globais (DTOs)
 
 > Tipagem de entrada. ValidationPipe com `whitelist: true`.
 
 - **LoginDto:** `{ email, password }` → `{ accessToken, user: { id, email, role } }`
-- **CreateEventDto:** `{ tmdbId, startsAt, venueName, venueAddress?, priceFull, priceHalf?, maxTicketsPerOrder? }`
-- **UpdateEventDto:** campos parciais de CreateEventDto + `publishStatus?`
+- **CreateExhibitionDto:** `{ tmdbId }`
+- **UpdateExhibitionDto:** `{ tmdbId?, publishStatus? }`
+- **CreateEventsDto:** `{ events: [{ startsAt, venueName, venueAddress?, priceFull, priceHalf?, maxTicketsPerOrder? }] }` (1 a 62 itens)
+- **UpdateEventDto:** campos parciais de uma sessão + `publishStatus?`
 - **CreateHoldDto:** `{ eventId, seatLabels: string[], fullCount, halfCount }`
 - **PayOrderDto:** `{ holdId, result: "approved" | "declined" }`
 - **GateScanDto:** `{ eventId, code }`
 - **RegisterCustomerDto (Should):** `{ email, password, name? }`
 
-Regra de preço: se `priceHalf` omitido na criação/atualização de `priceFull`, API define `floor(priceFull / 2)`.
+Regra de preço: se `priceHalf` omitido na criação/atualização de `priceFull`, API define `floor(priceFull / 2)` na sessão.
 
 ## 6. Scaffolding da API
 
@@ -204,7 +215,8 @@ Regra de preço: se `priceHalf` omitido na criação/atualização de `priceFull
 - **`auth/`** — login, JWT, guards de papel  
 - **`users/`** — leitura de perfil; gestão Admin/org (Should)  
 - **`catalog/`** — proxy TMDb  
-- **`events/`** — CRUD de sessão + geração de Seats  
+- **`exhibitions/`** — CRUD de cartaz  
+- **`events/`** — sessões do cartaz + geração de Seats  
 - **`reservations/`** — Hold, HoldSeat, expiração  
 - **`orders/`** — pagamento simulado  
 - **`tickets/`** — meus ingressos, share público, QR payload  
@@ -219,6 +231,7 @@ Regra de preço: se `priceHalf` omitido na criação/atualização de `priceFull
 | `PrismaService` | Conexão Postgres |
 | `AuthService` | Credenciais e JWT |
 | `CatalogService` | Busca TMDb e detalhe por `tmdbId` (título e poster) |
+| `ExhibitionsService` | Cartaz, publicação, vitrine |
 | `EventsService` | Sessão, preços, layout de assentos |
 | `ReservationsService` | Hold, unicidade, expiração |
 | `OrdersService` | Pagamento simulado → Ticket |
@@ -258,15 +271,23 @@ Regra de preço: se `priceHalf` omitido na criação/atualização de `priceFull
 - **POST** `/auth/login` (público) — LoginDto → token + user  
 - **GET** `/users/me` (autenticado) — perfil
 
-### Catálogo e sessões
+### Catálogo, cartaz e sessões
 
 - **GET** `/catalog/movies?q=` (organizer) — busca TMDb  
-- **POST** `/events` (organizer) — cria sessão + seats  
-- **GET** `/events` (público ou autenticado) — listar publicadas  
-- **GET** `/events/:id` — detalhe + mapa (status dos assentos)  
+- **POST** `/exhibitions` (organizer) — cria cartaz draft  
+- **GET** `/exhibitions` (público) — cartazes publicados  
+- **GET** `/exhibitions/:id` (público) — detalhe do cartaz + sessões publicadas  
+- **GET** `/exhibitions/mine` (organizer)  
+- **GET** `/exhibitions/mine/:id` (organizer)  
+- **PATCH** `/exhibitions/:id` (organizer) — filme (só sem sessão) e publicação  
+- **POST** `/exhibitions/:id/events` (organizer) — uma ou várias sessões + seats  
 - **PATCH** `/events/:id` (organizer)
 
-**Implementation:** a busca devolve `tmdbId`, `title`, `posterUrl` e `releaseDate`. `CatalogService.getMovie(tmdbId)` carrega o mesmo recorte por id. Título e poster da sessão ficam no `Event`. `GET /events` lê o banco e não chama a TMDb.
+**Implementation:** a busca devolve `tmdbId`, `title`, `posterUrl` e `releaseDate`. `CatalogService.getMovie(tmdbId)` carrega o mesmo recorte por id. Título e poster ficam no `Exhibition`. `GET /exhibitions` lê o banco e não chama a TMDb.
+
+**Implementation:** o cartaz nasce `draft`. A vitrine lista cartaz `published` mesmo sem sessão publicada. `GET /exhibitions/:id` de draft responde 404. O detalhe público omite sessão draft. Um organizador, um `tmdbId`: unique no cartaz. Trocar o filme com sessão existente responde 409.
+
+**Implementation:** `POST /exhibitions/:id/events` recebe `events[]` (1 a 62). Cada item gera o evento e o layout de 96 assentos (fileiras A–H, 12 por fileira) na mesma transação. Mesmo `startsAt` e mesmo `venueName` no cartaz responde 409. Teto por compra entre 1 e 20.
 
 ### Reserva e pagamento
 

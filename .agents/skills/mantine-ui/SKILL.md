@@ -21,16 +21,31 @@ Seat map: free, held by me, taken, selected. Short legend.
 
 ## Frontend folders (`apps/web/src`)
 
-**Pages** — by domain, then screen: `pages/auth/login/LoginPage.tsx`, `pages/events/…`
+**Pages** — by actor and resource, then screen (`list` / `create` / `detail` / `edit`):
+
+| Folder | Screens |
+| ------ | ------- |
+| `pages/auth/login/` | Login |
+| `pages/exhibitions/{list,detail}/` | Public cartaz (vitrine and film page) |
+| `pages/organizer/exhibitions/{list,create,detail}/` | Organizer cartaz |
+| `pages/organizer/events/{create,edit}/` | Organizer sessão |
+
+Do not nest organizer screens under `pages/exhibitions/`. Do not mix create and list in the same folder. Mirror `apps/api/src` (`exhibitions` vs `events`).
 
 **Components**
 
 | Folder | Use |
 | ------ | --- |
-| `components/UI/` | Custom visual primitives (e.g. `PageTitle`) |
-| `components/Shared/` | Reused across domains (e.g. `BrandLogo`) |
-| `pages/<domain>/_*.tsx` | Colocated with the domain; `_` prefix (e.g. `pages/auth/_AuthCard.tsx` for login + register) |
+| `components/UI/` | Custom visual primitives (e.g. `PageTitle`, `AsyncSection`) |
+| `components/Shared/` | Reused across domains (e.g. `BrandLogo`, `AppLayout`) |
+| `pages/<domain>/_*.tsx` | Colocated UI (`pages/auth/_AuthCard.tsx`) |
+| `pages/<domain>/_*.ts` | Colocated helpers, form payload, batch expand |
+| `api/` | Axios client and request functions per resource (`exhibitions.ts`, `events.ts`, `catalog.ts`) |
+| `routes/` | Route table, path builders, `RequireRole` |
+| `utils/` | Cross-screen formatting (money, dates) |
 
 Imports: `@/` alias → `src/` (see `vite.config.ts`).
+
+Reads use `useApiResource` with a stable loader (module function or `useCallback`) and render through `AsyncSection`. Writes live in the submit handler: `ApiError.fieldErrors` go to `form.setErrors`, the rest to `notifications`.
 
 Must and Should screens are listed in `docs/visual.md`.

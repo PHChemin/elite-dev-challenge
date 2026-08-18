@@ -91,8 +91,12 @@ npm test
 
 ## O que já existe
 
-Scaffold do monorepo, schema Prisma, tema Mantine (Roboto e paleta PHCTickets), Docker Compose e tela de login. Auth JWT na API: `POST /api/auth/login`, `GET /api/users/me`, guards de papel. Catálogo TMDb: `GET /api/catalog/movies`, chave só na API. `GET /api/events` lista sessões gravadas sem consultar a TMDb.
+Scaffold do monorepo, schema Prisma, tema Mantine (Roboto e paleta PHCTickets) e Docker Compose.
+
+Auth JWT na API: `POST /api/auth/login`, `GET /api/users/me`, guards de papel. Catálogo TMDb: `GET /api/catalog/movies`, chave só na API.
+
+CRUD de cartaz e sessão: `POST /api/exhibitions`, `GET /api/exhibitions`, `GET /api/exhibitions/:id`, `GET /api/exhibitions/mine`, `GET /api/exhibitions/mine/:id`, `PATCH /api/exhibitions/:id`, `POST /api/exhibitions/:id/events`, `PATCH /api/events/:id`. O cartaz guarda o filme TMDb. A sessão guarda horário, local, preços e teto. Sem meia no request, a API grava `floor(priceFull / 2)`. Cada sessão gera 96 assentos. A vitrine lê o banco e não consulta a TMDb.
 
 ## O que falta
 
-CRUD de sessão, mapa, hold, pagamento, QR, portaria e seed completo da sessão. Ver [issues](docs/github-issues.md).
+Mapa de assentos, retenção, pagamento, ingresso com QR, portaria e sessão no seed. Ver [issues](docs/github-issues.md).
