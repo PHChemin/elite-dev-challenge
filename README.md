@@ -91,8 +91,8 @@ npm test
 
 ## O que já existe
 
-Scaffold do monorepo, schema Prisma, tema Mantine (Roboto e paleta PHCTickets), Docker Compose, Auth JWT na API (`POST /api/auth/login`, `GET /api/users/me`, guards de papel) e tela de login.
+Scaffold do monorepo, schema Prisma, tema Mantine (Roboto e paleta PHCTickets), Docker Compose e tela de login. Auth JWT na API: `POST /api/auth/login`, `GET /api/users/me`, guards de papel. Catálogo TMDb: `GET /api/catalog/movies`, chave só na API. `GET /api/events` lista sessões gravadas sem consultar a TMDb.
 
 ## O que falta
 
-Catálogo TMDb, mapa, hold, pagamento, QR, portaria e seed completo da sessão. Ver [issues](docs/github-issues.md).
+CRUD de sessão, mapa, hold, pagamento, QR, portaria e seed completo da sessão. Ver [issues](docs/github-issues.md).
