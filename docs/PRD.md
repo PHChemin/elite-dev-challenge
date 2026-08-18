@@ -46,9 +46,9 @@ O objetivo do Must é o fluxo ponta a ponta: login por papel, sessão com mapa, 
 
 **Critérios de Aceitação:**
 
-- [ ] Login emite JWT com `sub` e `role`.
-- [ ] Seed cobre os quatro papéis; README lista e-mails e senhas.
-- [ ] Rota protegida recusa token ausente, inválido ou papel errado.
+- [x] Login emite JWT com `sub` e `role`.
+- [x] Seed cobre os quatro papéis; README lista e-mails e senhas.
+- [x] Rota protegida recusa token ausente, inválido ou papel errado.
 
 #### US02 — Catálogo TMDb e CRUD de sessão
 
@@ -57,10 +57,10 @@ O objetivo do Must é o fluxo ponta a ponta: login por papel, sessão com mapa, 
 
 **Critérios de Aceitação:**
 
-- [ ] Busca TMDb devolve título e poster.
+- [x] Busca TMDb devolve título e poster.
 - [ ] Criar/editar/listar sessão com `priceFull`, `priceHalf`, `maxTicketsPerOrder` (padrão 6).
 - [ ] Sem `priceHalf` no request, a API grava `floor(priceFull / 2)`.
-- [ ] Falha da TMDb não apaga sessões já salvas.
+- [x] Falha da TMDb não apaga sessões já salvas.
 
 #### US03 — Compra: quantidade, mapa e retenção
 
@@ -129,7 +129,7 @@ Registro do consumidor. Admin cria/desativa organizador. Organizador cria/desati
 
 #### US09 — Busca, cancelamento e deploy
 
-Busca/filtro de sessões. Cancelamento até 24 h antes de `startsAt` com devolução do lugar. Docker Compose. Front na Vercel. Regenerar `shareToken`.
+Busca/filtro de sessões. Cancelamento até 24 h antes de `startsAt` com devolução do lugar. Docker Compose. Regenerar `shareToken`.
 
 ### Could Have
 
@@ -162,7 +162,7 @@ Won’t do enunciado e do prazo. Pista e Ticketmaster. Escala de staff por sess�
 - **Segurança:** DTO + ValidationPipe (`whitelist`); JWT Bearer; segredos só em ambiente.
 - **Integridade:** Transação no hold e na confirmação; unique de assento/ticket no Postgres.
 - **Qualidade:** Jest na API; success e fail por operação Must.
-- **Operação:** README local obrigatório; Docker e Vercel (front) são Should.
+- **Operação:** README local obrigatório; Docker Compose é Should.
 - **Visual:** [visual.md](visual.md) — Roboto, paleta PHCTickets, Mantine.
 
 ## 8. Fluxos Principais

@@ -1,0 +1,17 @@
+node_modules
+**/node_modules
+**/dist
+.git
+.gitignore
+**/.env
+**/.env.local
+coverage
+.agents
+docs
+*.md
+!README.md
+.vscode
+.cursor
+logo.png
+apps/web/.vite
+**/*.tsbuildinfo

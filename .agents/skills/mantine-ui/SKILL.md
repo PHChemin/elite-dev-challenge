@@ -19,4 +19,18 @@ Gate: active session name always visible. Scan result large.
 
 Seat map: free, held by me, taken, selected. Short legend.
 
+## Frontend folders (`apps/web/src`)
+
+**Pages** — by domain, then screen: `pages/auth/login/LoginPage.tsx`, `pages/events/…`
+
+**Components**
+
+| Folder | Use |
+| ------ | --- |
+| `components/UI/` | Custom visual primitives (e.g. `PageTitle`) |
+| `components/Shared/` | Reused across domains (e.g. `BrandLogo`) |
+| `pages/<domain>/_*.tsx` | Colocated with the domain; `_` prefix (e.g. `pages/auth/_AuthCard.tsx` for login + register) |
+
+Imports: `@/` alias → `src/` (see `vite.config.ts`).
+
 Must and Should screens are listed in `docs/visual.md`.

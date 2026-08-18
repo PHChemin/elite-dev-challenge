@@ -15,7 +15,7 @@ Source: `docs/SDD.md`.
 - Postgres. **Prisma only** (not TypeORM, not Mongoose). TMDb only on the API. ER diagram in `docs/SDD.md`; new field = migration + update the mermaid.
 - JWT Bearer with `role` (`admin` | `organizer` | `customer` | `gate`). Nest guards.
 - Must modules: auth, catalog, events, reservations, tickets, gate.
-- Front on Vercel (Should). API on a long-running host.
+- Deploy Should: Docker Compose (local and droplet). API stays on a long-running host.
 - API issues: Jest tests (success and fail) before controller/service. Skill `tdd-api`.
 
 ## Override vs community skills

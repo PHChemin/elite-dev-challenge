@@ -1,0 +1,39 @@
+{
+  "common": {
+    "email": "Email",
+    "password": "Senha",
+    "emailPlaceholder": "seu@email.com",
+    "passwordPlaceholder": "••••••••",
+    "submit": "Entrar",
+    "logout": "Sair",
+    "roles": {
+      "admin": "Admin",
+      "organizer": "Organizador",
+      "customer": "Consumidor",
+      "gate": "Portaria"
+    }
+  },
+  "validation": {
+    "email": {
+      "invalid": "Informe um e-mail válido"
+    },
+    "password": {
+      "required": "Informe a senha"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Acesse sua conta",
+      "sessionStarted": "Sessão iniciada",
+      "failed": "Não foi possível entrar",
+      "failedRetry": "Tente novamente.",
+      "fallback": "Não foi possível entrar"
+    }
+  },
+  "errors": {
+    "api": {
+      "connectionFailed": "Não foi possível conectar à API",
+      "invalidResponse": "Resposta inválida da API"
+    }
+  }
+}

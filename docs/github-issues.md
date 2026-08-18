@@ -38,7 +38,6 @@ Labels: `must` | `should` | `api` | `web` | `tdd`
 - [#14 Cancelamento de ingresso (24h antes)](https://github.com/PHChemin/elite-dev-challenge/issues/14)
 - [#15 Regenerar shareToken do ingresso](https://github.com/PHChemin/elite-dev-challenge/issues/15)
 - [#16 Docker Compose](https://github.com/PHChemin/elite-dev-challenge/issues/16)
-- [#17 Deploy do front na Vercel](https://github.com/PHChemin/elite-dev-challenge/issues/17)
 
 ## Molde (já aplicado no corpo de cada issue)
 
