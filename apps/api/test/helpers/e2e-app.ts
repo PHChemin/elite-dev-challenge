@@ -1,12 +1,14 @@
 import { INestApplication, Type } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
-import { Role, UserStatus } from '@prisma/client';
+import { PublishStatus, Role, UserStatus } from '@prisma/client';
 import { hash } from 'bcryptjs';
 import { App } from 'supertest/types';
+import { TMDB_AXIOS } from '../../src/catalog/tmdb/tmdb.constants';
 import { AppModule } from '../../src/app.module';
 import { setupApp } from '../../src/common/setup-app';
 import { PrismaService } from '../../src/prisma/prisma.service';
 import { SEED_USERS } from '../../prisma/seed-users';
+import { createTmdbAxiosMock, type TmdbAxiosMock } from './tmdb-axios';
 
 export type SeedUserRow = {
   id: string;
@@ -16,6 +18,21 @@ export type SeedUserRow = {
   status: UserStatus;
   organizerId: string | null;
   mustChangePassword: boolean;
+};
+
+export type SeedEventRow = {
+  id: string;
+  organizerId: string;
+  tmdbId: string;
+  title: string;
+  posterUrl: string;
+  startsAt: Date;
+  venueName: string;
+  venueAddress: string | null;
+  priceFull: number;
+  priceHalf: number;
+  maxTicketsPerOrder: number;
+  publishStatus: PublishStatus;
 };
 
 export type LoginBody = {
@@ -34,18 +51,19 @@ export type ProfileBody = {
 
 type UserWhere = { id?: string; email?: string };
 type UserSelect = Partial<Record<keyof SeedUserRow, boolean>>;
+type EventSelect = Partial<Record<keyof SeedEventRow, boolean>>;
 
-function pickUser(
-  user: SeedUserRow,
-  select?: UserSelect,
-): SeedUserRow | Record<string, unknown> {
+function pickFields<T extends object>(
+  row: T,
+  select?: Partial<Record<keyof T, boolean>>,
+): T | Record<string, unknown> {
   if (!select) {
-    return user;
+    return row;
   }
   const picked: Record<string, unknown> = {};
-  for (const key of Object.keys(select) as (keyof SeedUserRow)[]) {
+  for (const key of Object.keys(select) as (keyof T)[]) {
     if (select[key]) {
-      picked[key] = user[key];
+      picked[key as string] = row[key];
     }
   }
   return picked;
@@ -68,7 +86,10 @@ export async function createSeedUsers(): Promise<SeedUserRow[]> {
   return users;
 }
 
-export function createPrismaMock(users: SeedUserRow[]) {
+export function createPrismaMock(
+  users: SeedUserRow[],
+  events: SeedEventRow[] = [],
+) {
   return {
     $connect: jest.fn(),
     $disconnect: jest.fn(),
@@ -84,7 +105,37 @@ export function createPrismaMock(users: SeedUserRow[]) {
           if (!user) {
             return null;
           }
-          return pickUser(user, select);
+          return pickFields(user, select);
+        },
+      ),
+    },
+    event: {
+      findMany: jest.fn(
+        ({
+          where,
+          orderBy,
+          select,
+        }: {
+          where?: { publishStatus?: PublishStatus };
+          orderBy?: { startsAt?: 'asc' | 'desc' };
+          select?: EventSelect;
+        } = {}) => {
+          let rows = events.filter((event) =>
+            where?.publishStatus
+              ? event.publishStatus === where.publishStatus
+              : true,
+          );
+          if (orderBy?.startsAt === 'asc') {
+            rows = [...rows].sort(
+              (a, b) => a.startsAt.getTime() - b.startsAt.getTime(),
+            );
+          }
+          if (orderBy?.startsAt === 'desc') {
+            rows = [...rows].sort(
+              (a, b) => b.startsAt.getTime() - a.startsAt.getTime(),
+            );
+          }
+          return rows.map((row) => pickFields(row, select));
         },
       ),
     },
@@ -93,6 +144,8 @@ export function createPrismaMock(users: SeedUserRow[]) {
 
 export async function createE2eApp(options?: {
   controllers?: Type<unknown>[];
+  events?: SeedEventRow[];
+  tmdbAxios?: TmdbAxiosMock;
 }): Promise<{
   app: INestApplication;
   server: App;
@@ -104,7 +157,9 @@ export async function createE2eApp(options?: {
     controllers: options?.controllers ?? [],
   })
     .overrideProvider(PrismaService)
-    .useValue(createPrismaMock(users))
+    .useValue(createPrismaMock(users, options?.events ?? []))
+    .overrideProvider(TMDB_AXIOS)
+    .useValue(options?.tmdbAxios ?? createTmdbAxiosMock())
     .compile();
 
   const app = moduleRef.createNestApplication();
