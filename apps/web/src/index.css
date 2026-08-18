@@ -4,3 +4,97 @@ body {
   background: #f5f3f4;
   color: #161a1d;
 }
+
+.app-nav-link {
+  color: var(--mantine-color-black);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: var(--mantine-font-size-sm);
+  border-bottom: 2px solid transparent;
+  padding-bottom: 0.2rem;
+  line-height: 1.4;
+}
+
+.app-nav-link:hover,
+.app-nav-link--active {
+  color: var(--mantine-color-brand-6);
+  border-bottom-color: var(--mantine-color-brand-6);
+  text-decoration: none;
+}
+
+.app-nav-link--stacked {
+  display: block;
+  padding: 0.5rem 0;
+  border-bottom-width: 1px;
+}
+
+.table-fit th,
+.table-fit td {
+  white-space: nowrap;
+}
+
+.table-fit .mantine-Badge-root {
+  overflow: visible;
+  max-width: none;
+}
+
+.session-mode-control {
+  background: #fff;
+  border: 1px solid var(--mantine-color-gray-3);
+}
+
+.session-mode-control [data-active] {
+  font-weight: 700;
+}
+
+.date-strip {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.35rem;
+  -webkit-overflow-scrolling: touch;
+}
+
+.date-strip-tile {
+  flex: 0 0 4.5rem;
+  width: 4.5rem;
+  height: 4.5rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15rem;
+  border-radius: var(--mantine-radius-sm);
+  background: var(--mantine-color-gray-1);
+  color: var(--mantine-color-black);
+  text-align: center;
+}
+
+.date-strip-tile:hover {
+  background: var(--mantine-color-gray-2);
+}
+
+.date-strip-tile--active,
+.date-strip-tile--active:hover {
+  background: var(--mantine-color-brand-6);
+  color: #fff;
+}
+
+.date-strip-weekday {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+}
+
+.date-strip-date {
+  font-size: 0.8rem;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+.date-strip-tile--active .date-strip-date {
+  font-weight: 700;
+}
