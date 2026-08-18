@@ -3,21 +3,19 @@ import { PublishStatus, Role } from '@prisma/client';
 import request from 'supertest';
 import { App } from 'supertest/types';
 import { SEED_USERS } from '../../prisma/seed-users';
-import { createE2eApp, readLoginBody, SeedEventRow } from '../helpers/e2e-app';
+import {
+  createE2eApp,
+  readLoginBody,
+  type SeedExhibitionRow,
+} from '../helpers/e2e-app';
 import { createTmdbAxiosMock } from '../helpers/tmdb-axios';
 
-const savedSession: SeedEventRow = {
-  id: 'event-1',
+const savedExhibition: SeedExhibitionRow = {
+  id: 'exhibition-1',
   organizerId: 'user-organizer',
   tmdbId: '550',
   title: 'Clube da Luta',
   posterUrl: 'https://image.tmdb.org/t/p/w500/pB8BM7pdSp6B6Ih7QZ4DrQ3PmJK.jpg',
-  startsAt: new Date('2026-09-01T19:00:00.000Z'),
-  venueName: 'Cine PHC',
-  venueAddress: 'Rua A, 100',
-  priceFull: 4000,
-  priceHalf: 2000,
-  maxTicketsPerOrder: 6,
   publishStatus: PublishStatus.published,
 };
 
@@ -46,7 +44,7 @@ describe('Catalog (e2e)', () => {
     let server: App;
 
     beforeAll(async () => {
-      const created = await createE2eApp({ events: [savedSession] });
+      const created = await createE2eApp({ exhibitions: [savedExhibition] });
       app = created.app;
       server = created.server;
     });
@@ -108,7 +106,7 @@ describe('Catalog (e2e)', () => {
 
     beforeAll(async () => {
       const created = await createE2eApp({
-        events: [savedSession],
+        exhibitions: [savedExhibition],
         tmdbAxios: createTmdbAxiosMock({ unreachable: true }),
       });
       app = created.app;
@@ -136,20 +134,18 @@ describe('Catalog (e2e)', () => {
       });
     });
 
-    it('GET /api/events still lists saved sessions when TMDb is down', async () => {
-      const response = await request(server).get('/api/events').expect(200);
+    it('GET /api/exhibitions still lists saved exhibitions when TMDb is down', async () => {
+      const response = await request(server)
+        .get('/api/exhibitions')
+        .expect(200);
 
       expect(response.body).toEqual([
         {
-          id: savedSession.id,
-          title: savedSession.title,
-          posterUrl: savedSession.posterUrl,
-          startsAt: savedSession.startsAt.toISOString(),
-          venueName: savedSession.venueName,
-          venueAddress: savedSession.venueAddress,
-          priceFull: savedSession.priceFull,
-          priceHalf: savedSession.priceHalf,
-          maxTicketsPerOrder: savedSession.maxTicketsPerOrder,
+          id: savedExhibition.id,
+          title: savedExhibition.title,
+          posterUrl: savedExhibition.posterUrl,
+          nextStartsAt: null,
+          eventCount: 0,
         },
       ]);
     });

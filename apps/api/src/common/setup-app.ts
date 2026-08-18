@@ -24,7 +24,11 @@ export function setupApp(app: INestApplication): INestApplication {
         const i18n = I18nContext.current();
         const lang = i18n?.lang ?? 'pt';
         const service = i18n?.service ?? i18nService;
-        const translatedErrors = translateValidationErrors(errors, service, lang);
+        const translatedErrors = translateValidationErrors(
+          errors,
+          service,
+          lang,
+        );
         return new BadRequestException({
           message: service.t('validation.invalidData' as never, { lang }),
           fieldErrors: toFieldErrors(translatedErrors),
