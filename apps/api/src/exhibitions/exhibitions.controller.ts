@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import {
   ApiConflictResponse,
   ApiCreatedResponse,
@@ -14,6 +14,7 @@ import { Auth } from '../auth/decorators/auth.decorator';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import type { AuthUser } from '../auth/types/auth-user';
 import { CreateExhibitionDto } from './dto/create-exhibition.dto';
+import { ListPublishedQueryDto } from './dto/list-published-query.dto';
 import { UpdateExhibitionDto } from './dto/update-exhibition.dto';
 import { ExhibitionsService } from './exhibitions.service';
 
@@ -49,10 +50,20 @@ export class ExhibitionsController {
   constructor(private readonly exhibitionsService: ExhibitionsService) {}
 
   @Get()
-  @ApiOperation({ summary: 'Lista cartazes publicados' })
-  @ApiOkResponse({ schema: { example: [LIST_EXAMPLE] } })
-  listPublished() {
-    return this.exhibitionsService.listPublished();
+  @ApiOperation({ summary: 'Lista cartazes publicados com busca e paginação' })
+  @ApiOkResponse({
+    schema: {
+      example: {
+        items: [LIST_EXAMPLE],
+        page: 1,
+        pageSize: 12,
+        total: 1,
+        totalPages: 1,
+      },
+    },
+  })
+  listPublished(@Query() query: ListPublishedQueryDto) {
+    return this.exhibitionsService.listPublished(query);
   }
 
   @Get('mine')

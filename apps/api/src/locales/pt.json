@@ -55,6 +55,12 @@
     },
     "result": {
       "invalid": "Escolha aprovar ou recusar"
+    },
+    "page": {
+      "invalid": "Informe uma página válida"
+    },
+    "pageSize": {
+      "invalid": "Informe um tamanho de página entre 1 e 48"
     }
   },
   "auth": {

@@ -7,8 +7,11 @@ import {
 import { Prisma, PublishStatus } from '@prisma/client';
 import { I18nService } from 'nestjs-i18n';
 import { CatalogService } from '../catalog/catalog.service';
+import type { CatalogGenre } from '../catalog/catalog.types';
+import { paginateMeta } from '../common/pagination';
 import { PrismaService } from '../prisma/prisma.service';
 import type { CreateExhibitionDto } from './dto/create-exhibition.dto';
+import type { ListPublishedQueryDto } from './dto/list-published-query.dto';
 import type { UpdateExhibitionDto } from './dto/update-exhibition.dto';
 import {
   ORGANIZER_EXHIBITION_DETAIL_SELECT,
@@ -16,6 +19,7 @@ import {
   PUBLIC_EXHIBITION_DETAIL_SELECT,
   PUBLIC_EXHIBITION_SELECT,
 } from './exhibitions.select';
+import type { PaginatedExhibitions } from './exhibitions.types';
 
 type ExhibitionListRow = Prisma.ExhibitionGetPayload<{
   select: typeof PUBLIC_EXHIBITION_SELECT & {
@@ -26,6 +30,10 @@ type ExhibitionListRow = Prisma.ExhibitionGetPayload<{
   organizerId?: string;
   publishStatus?: PublishStatus;
 };
+
+const publishedEventFilter = {
+  some: { publishStatus: PublishStatus.published },
+} satisfies Prisma.EventListRelationFilter;
 
 function toListItem(row: ExhibitionListRow, withOrganizer: boolean) {
   const base = {
@@ -46,6 +54,43 @@ function toListItem(row: ExhibitionListRow, withOrganizer: boolean) {
   };
 }
 
+function toPublicDetail(exhibition: {
+  id: string;
+  tmdbId: string;
+  title: string;
+  posterUrl: string | null;
+  runtimeMinutes: number | null;
+  overview: string | null;
+  releaseDate: string | null;
+  genres: unknown;
+  events: unknown[];
+}) {
+  return {
+    id: exhibition.id,
+    tmdbId: exhibition.tmdbId,
+    title: exhibition.title,
+    posterUrl: exhibition.posterUrl,
+    runtimeMinutes: exhibition.runtimeMinutes,
+    overview: exhibition.overview,
+    releaseDate: exhibition.releaseDate,
+    genres: parseGenres(exhibition.genres),
+    events: exhibition.events,
+  };
+}
+
+function parseGenres(value: unknown): CatalogGenre[] {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+  return value.filter(
+    (row): row is CatalogGenre =>
+      typeof row === 'object' &&
+      row !== null &&
+      typeof (row as CatalogGenre).id === 'number' &&
+      typeof (row as CatalogGenre).name === 'string',
+  );
+}
+
 @Injectable()
 export class ExhibitionsService {
   constructor(
@@ -54,10 +99,27 @@ export class ExhibitionsService {
     private readonly i18n: I18nService,
   ) {}
 
-  async listPublished() {
+  async listPublished(
+    query: ListPublishedQueryDto,
+  ): Promise<PaginatedExhibitions> {
+    const page = query.page ?? 1;
+    const pageSize = query.pageSize ?? 12;
+    const where: Prisma.ExhibitionWhereInput = {
+      publishStatus: PublishStatus.published,
+      events: publishedEventFilter,
+    };
+    if (query.q) {
+      where.title = { contains: query.q, mode: 'insensitive' };
+    }
+
+    const total = await this.prisma.exhibition.count({ where });
+    const { skip, totalPages } = paginateMeta(total, page, pageSize);
+
     const rows = await this.prisma.exhibition.findMany({
-      where: { publishStatus: PublishStatus.published },
+      where,
       orderBy: { title: 'asc' },
+      skip,
+      take: pageSize,
       select: {
         ...PUBLIC_EXHIBITION_SELECT,
         events: {
@@ -67,7 +129,14 @@ export class ExhibitionsService {
         },
       },
     });
-    return rows.map((row) => toListItem(row, false));
+
+    return {
+      items: rows.map((row) => toListItem(row, false)),
+      page,
+      pageSize,
+      total,
+      totalPages,
+    };
   }
 
   async findPublished(id: string) {
@@ -78,13 +147,7 @@ export class ExhibitionsService {
     if (!exhibition) {
       throw new NotFoundException(this.i18n.t('exhibitions.notFound'));
     }
-    return {
-      id: exhibition.id,
-      tmdbId: exhibition.tmdbId,
-      title: exhibition.title,
-      posterUrl: exhibition.posterUrl,
-      events: exhibition.events,
-    };
+    return toPublicDetail(exhibition);
   }
 
   async listByOrganizer(organizerId: string) {
@@ -108,6 +171,7 @@ export class ExhibitionsService {
 
   async create(organizerId: string, dto: CreateExhibitionDto) {
     const movie = await this.catalog.getMovie(dto.tmdbId);
+    const metadata = this.catalog.toExhibitionMetadata(movie);
     try {
       return await this.prisma.exhibition.create({
         data: {
@@ -115,6 +179,8 @@ export class ExhibitionsService {
           tmdbId: movie.tmdbId,
           title: movie.title,
           posterUrl: movie.posterUrl,
+          ...metadata,
+          genres: metadata.genres,
         },
         select: ORGANIZER_EXHIBITION_SELECT,
       });
@@ -141,9 +207,14 @@ export class ExhibitionsService {
         throw new ConflictException(this.i18n.t('exhibitions.hasEvents'));
       }
       const movie = await this.catalog.getMovie(dto.tmdbId);
+      const metadata = this.catalog.toExhibitionMetadata(movie);
       data.tmdbId = movie.tmdbId;
       data.title = movie.title;
       data.posterUrl = movie.posterUrl;
+      data.runtimeMinutes = metadata.runtimeMinutes;
+      data.overview = metadata.overview;
+      data.releaseDate = metadata.releaseDate;
+      data.genres = metadata.genres;
     }
     if (dto.publishStatus !== undefined) {
       data.publishStatus = dto.publishStatus;

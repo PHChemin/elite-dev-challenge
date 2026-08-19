@@ -59,14 +59,18 @@ model User {
 }
 
 model Exhibition {
-  id            String        @id @default(uuid())
-  organizerId   String
-  organizer     User          @relation(fields: [organizerId], references: [id])
-  tmdbId        String
-  title         String
-  posterUrl     String?
-  publishStatus PublishStatus @default(draft)
-  events        Event[]
+  id             String        @id @default(uuid())
+  organizerId    String
+  organizer      User          @relation(fields: [organizerId], references: [id])
+  tmdbId         String
+  title          String
+  posterUrl      String?
+  runtimeMinutes Int?
+  overview       String?
+  releaseDate    String?
+  genres         Json?
+  publishStatus  PublishStatus @default(draft)
+  events         Event[]
 
   @@unique([organizerId, tmdbId])
 }

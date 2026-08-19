@@ -20,6 +20,9 @@ const fightClub = {
   title: 'Clube da Luta',
   posterUrl: 'https://image.tmdb.org/t/p/w500/pB8BM7pdSp6B6Ih7QZ4DrQ3PmJK.jpg',
   releaseDate: '1999-10-15',
+  runtimeMinutes: 139,
+  overview: 'Sinopse',
+  genres: [{ id: 18, name: 'Drama' }],
 };
 
 const exhibition = {
@@ -29,6 +32,10 @@ const exhibition = {
   title: 'Clube da Luta',
   posterUrl: fightClub.posterUrl,
   publishStatus: PublishStatus.published,
+  runtimeMinutes: 139,
+  overview: 'Sinopse',
+  releaseDate: '1999-10-15',
+  genres: fightClub.genres,
 };
 
 describe('ExhibitionsService', () => {
@@ -40,6 +47,7 @@ describe('ExhibitionsService', () => {
       findUnique: jest.fn(),
       create: jest.fn(),
       update: jest.fn(),
+      count: jest.fn(),
     },
     event: {
       count: jest.fn(),
@@ -47,6 +55,12 @@ describe('ExhibitionsService', () => {
   };
   const catalog = {
     getMovie: jest.fn(),
+    toExhibitionMetadata: jest.fn((movie: typeof fightClub) => ({
+      runtimeMinutes: movie.runtimeMinutes,
+      overview: movie.overview,
+      releaseDate: movie.releaseDate,
+      genres: movie.genres,
+    })),
   };
 
   beforeEach(async () => {
@@ -63,26 +77,35 @@ describe('ExhibitionsService', () => {
   });
 
   describe('listPublished', () => {
-    it('lists published exhibitions even without published events', async () => {
+    it('returns a paginated list of published exhibitions', async () => {
+      prisma.exhibition.count.mockResolvedValue(1);
       prisma.exhibition.findMany.mockResolvedValue([
         { ...exhibition, events: [] },
       ]);
 
-      await expect(service.listPublished()).resolves.toEqual([
-        {
-          id: exhibition.id,
-          title: exhibition.title,
-          posterUrl: exhibition.posterUrl,
-          nextStartsAt: null,
-          eventCount: 0,
-        },
-      ]);
+      await expect(
+        service.listPublished({ page: 1, pageSize: 12 }),
+      ).resolves.toEqual({
+        items: [
+          {
+            id: exhibition.id,
+            title: exhibition.title,
+            posterUrl: exhibition.posterUrl,
+            nextStartsAt: null,
+            eventCount: 0,
+          },
+        ],
+        page: 1,
+        pageSize: 12,
+        total: 1,
+        totalPages: 1,
+      });
       expect(catalog.getMovie).not.toHaveBeenCalled();
     });
   });
 
   describe('findPublished', () => {
-    it('returns published events only', async () => {
+    it('returns published events and metadata', async () => {
       const event = {
         id: 'event-1',
         startsAt: toDate(STARTS_AT),
@@ -102,6 +125,10 @@ describe('ExhibitionsService', () => {
         title: exhibition.title,
         posterUrl: exhibition.posterUrl,
         tmdbId: exhibition.tmdbId,
+        runtimeMinutes: 139,
+        overview: 'Sinopse',
+        releaseDate: '1999-10-15',
+        genres: fightClub.genres,
         events: [event],
       });
     });
@@ -132,6 +159,10 @@ describe('ExhibitionsService', () => {
           tmdbId: '550',
           title: 'Clube da Luta',
           posterUrl: fightClub.posterUrl,
+          runtimeMinutes: 139,
+          overview: 'Sinopse',
+          releaseDate: '1999-10-15',
+          genres: fightClub.genres,
         },
         select: ORGANIZER_EXHIBITION_SELECT,
       });

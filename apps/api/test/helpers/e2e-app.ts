@@ -36,6 +36,10 @@ export type SeedExhibitionRow = {
   title: string;
   posterUrl: string | null;
   publishStatus: PublishStatus;
+  runtimeMinutes?: number | null;
+  overview?: string | null;
+  releaseDate?: string | null;
+  genres?: unknown;
 };
 
 export type SeedEventRow = {
@@ -113,6 +117,8 @@ type ExhibitionWhere = {
   id?: string;
   organizerId?: string;
   publishStatus?: PublishStatus;
+  title?: { contains?: string; mode?: 'insensitive' };
+  events?: { some?: EventWhere };
 };
 type EventWhere = {
   id?: string;
@@ -177,14 +183,40 @@ export async function createSeedUsers(): Promise<SeedUserRow[]> {
 function matchesExhibition(
   row: SeedExhibitionRow,
   where?: ExhibitionWhere,
+  eventRows: SeedEventRow[] = [],
 ): boolean {
-  return (
-    (where?.id === undefined || row.id === where.id) &&
-    (where?.organizerId === undefined ||
-      row.organizerId === where.organizerId) &&
-    (where?.publishStatus === undefined ||
-      row.publishStatus === where.publishStatus)
-  );
+  if (where?.id !== undefined && row.id !== where.id) {
+    return false;
+  }
+  if (
+    where?.organizerId !== undefined &&
+    row.organizerId !== where.organizerId
+  ) {
+    return false;
+  }
+  if (
+    where?.publishStatus !== undefined &&
+    row.publishStatus !== where.publishStatus
+  ) {
+    return false;
+  }
+  if (where?.title?.contains !== undefined) {
+    const haystack = row.title.toLowerCase();
+    const needle = where.title.contains.toLowerCase();
+    if (!haystack.includes(needle)) {
+      return false;
+    }
+  }
+  if (where?.events?.some !== undefined) {
+    const hasEvent = eventRows.some(
+      (event) =>
+        event.exhibitionId === row.id && matchesEvent(event, where.events?.some),
+    );
+    if (!hasEvent) {
+      return false;
+    }
+  }
+  return true;
 }
 
 function matchesEvent(row: SeedEventRow, where?: EventWhere): boolean {
@@ -290,21 +322,36 @@ export function createPrismaMock(
       ),
     },
     exhibition: {
+      count: jest.fn(({ where }: { where?: ExhibitionWhere } = {}) => {
+        return exhibitionRows.filter((row) =>
+          matchesExhibition(row, where, eventRows),
+        ).length;
+      }),
       findMany: jest.fn(
         ({
           where,
           orderBy,
           select,
+          skip,
+          take,
         }: {
           where?: ExhibitionWhere;
           orderBy?: { title?: 'asc' | 'desc' };
           select?: Prisma.ExhibitionSelect;
+          skip?: number;
+          take?: number;
         } = {}) => {
           let rows = exhibitionRows.filter((row) =>
-            matchesExhibition(row, where),
+            matchesExhibition(row, where, eventRows),
           );
           if (orderBy?.title === 'asc') {
             rows = [...rows].sort((a, b) => a.title.localeCompare(b.title));
+          }
+          if (skip !== undefined) {
+            rows = rows.slice(skip);
+          }
+          if (take !== undefined) {
+            rows = rows.slice(0, take);
           }
           return rows.map((row) => mapExhibition(row, select));
         },
@@ -318,7 +365,7 @@ export function createPrismaMock(
           select?: Prisma.ExhibitionSelect;
         }) => {
           const row = exhibitionRows.find((exhibition) =>
-            matchesExhibition(exhibition, where),
+            matchesExhibition(exhibition, where, eventRows),
           );
           return row ? mapExhibition(row, select) : null;
         },
