@@ -17,4 +17,4 @@ Cap and prices enforced in the API. Omitted half price on the session = half of 
 
 Ticket: `code` in the QR; `shareToken` on the public GET. Scan marks used with `validatedByUserId` in the same transaction. Outcomes: valid, invalid, already_used, wrong_event (ticket.eventId ≠ gate session).
 
-**Implementation:** hold and uniqueness in Postgres. Release expired holds on checkout or a simple job. Role authorization in Nest.
+**Implementation:** hold and uniqueness in Postgres. Release expired holds on GET/POST or the 60s job (`ReservationsCleanupService`). The 10 minutes are `expiresAt`, not the job interval. Role authorization in Nest. Dates via `common/dates.ts` (dayjs).

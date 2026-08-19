@@ -90,6 +90,8 @@ Ticketmaster, pista, websocket do mapa, entidade estabelecimento, Next.js, Fasti
 `User.organizerId`: preenchido em `gate`  
 Unique: `(organizerId, tmdbId)` em Exhibition; `(exhibitionId, startsAt, venueName)` em Event; `(eventId, label)` em Seat; HoldSeat por `seatId` com hold `active`; um Ticket não cancelado por `seatId`
 
+**Implementation:** `HoldSeat.seatId` é único no Postgres. Hold expirado ou cancelado apaga as linhas de `HoldSeat`. O `Hold` permanece (`expired` ou `cancelled`).
+
 ### 4.2. Modelagem (fonte do Prisma)
 
 > **Instrução para a IA:** Gere `schema.prisma` e migrações a partir deste diagrama. Campo ou relação nova = migração + atualizar este mermaid na mesma mudança.
@@ -282,6 +284,8 @@ Regra de preço: se `priceHalf` omitido na criação/atualização de `priceFull
 - **PATCH** `/exhibitions/:id` (organizer) — filme (só sem sessão) e publicação  
 - **POST** `/exhibitions/:id/events` (organizer) — uma ou várias sessões + seats  
 - **PATCH** `/events/:id` (organizer)
+- **GET** `/events/:id` (público, JWT opcional) — sessão publicada, cartaz e `freeSeatCount`
+- **GET** `/events/:id/seats` (customer) — mapa: `free` \| `held_by_me` \| `taken`
 
 **Implementation:** a busca devolve `tmdbId`, `title`, `posterUrl` e `releaseDate`. `CatalogService.getMovie(tmdbId)` carrega o mesmo recorte por id. Título e poster ficam no `Exhibition`. `GET /exhibitions` lê o banco e não chama a TMDb.
 
@@ -289,10 +293,15 @@ Regra de preço: se `priceHalf` omitido na criação/atualização de `priceFull
 
 **Implementation:** `POST /exhibitions/:id/events` recebe `events[]` (1 a 62). Cada item gera o evento e o layout de 96 assentos (fileiras A–H, 12 por fileira) na mesma transação. Mesmo `startsAt` e mesmo `venueName` no cartaz responde 409. Teto por compra entre 1 e 20.
 
+**Implementation:** `GET /events/:id` de sessão ou cartaz draft responde 404. `freeSeatCount` conta poltronas sem ingresso e sem hold ativo vigente de outra pessoa. Hold do consumidor logado conta como disponível. A soma inteira + meia não pode passar do teto nem de `freeSeatCount`. `POST /reservations/holds` recusa sessão com `startsAt` já passado. Sem duração de filme, a venda fecha no horário de início.
+
 ### Reserva e pagamento
 
 - **POST** `/reservations/holds` (customer) — CreateHoldDto  
+- **GET** `/reservations/holds/:id` (customer) — pedido pendente do dono  
 - **POST** `/orders/pay` (customer) — PayOrderDto
+
+**Implementation:** hold de 10 minutos (`expiresAt`). Transação no POST. Unique de `HoldSeat.seatId` no Postgres: segundo insert no mesmo lugar responde 409. Hold `active` vencido: a API apaga os `HoldSeat` e marca `expired` no GET do mapa, no POST e num job a cada 60 s. O registro do `Hold` permanece. Um consumidor, uma sessão, um hold `active`: o POST novo cancela o anterior. `GET /events/:id/seats` exige `customer` e devolve `myHold` quando há hold vigente. `GET /reservations/holds/:id` de hold expirado, convertido, cancelado ou de outro dono não devolve checkout.
 
 ### Ingressos
 

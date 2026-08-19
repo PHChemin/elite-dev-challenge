@@ -17,6 +17,7 @@ Source: `docs/SDD.md`.
 - Must modules: auth, catalog, events, reservations, tickets, gate.
 - Deploy Should: Docker Compose (local and droplet). API stays on a long-running host.
 - API issues: Jest tests (success and fail) before controller/service. Skill `tdd-api`.
+- Dates in `apps/api`: **dayjs** via `common/dates.ts` (`toDate`, `nowUtc`, `toIsoString`, `addMs`, `isAfter`). Do not use `new Date()` / `Date.now()`. Prisma `DateTime` still takes a `Date` from those helpers.
 
 ## Override vs community skills
 

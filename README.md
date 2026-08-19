@@ -97,6 +97,8 @@ Auth JWT na API: `POST /api/auth/login`, `GET /api/users/me`, guards de papel. C
 
 CRUD de cartaz e sessão: `POST /api/exhibitions`, `GET /api/exhibitions`, `GET /api/exhibitions/:id`, `GET /api/exhibitions/mine`, `GET /api/exhibitions/mine/:id`, `PATCH /api/exhibitions/:id`, `POST /api/exhibitions/:id/events`, `PATCH /api/events/:id`. O cartaz guarda o filme TMDb. A sessão guarda horário, local, preços e teto. Sem meia no request, a API grava `floor(priceFull / 2)`. Cada sessão gera 96 assentos. A vitrine lê o banco e não consulta a TMDb.
 
+Mapa e retenção: `GET /api/events/:id` (sessão publicada e `freeSeatCount`), `GET /api/events/:id/seats` (customer), `POST /api/reservations/holds`, `GET /api/reservations/holds/:id`. O consumidor informa inteira e meia, escolhe o mapa 8×12 e retém os lugares por 10 minutos.
+
 ## O que falta
 
-Mapa de assentos, retenção, pagamento, ingresso com QR, portaria e sessão no seed. Ver [issues](docs/github-issues.md).
+Pagamento simulado, ingresso com QR, portaria e sessão no seed. Ver [issues](docs/github-issues.md).

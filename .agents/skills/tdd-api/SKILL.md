@@ -20,3 +20,5 @@ Order for every API module:
 Each operation has at least one success case (valid data) and one fail case (invalid data, wrong role, conflict, or business rule). Reservations, payment, and gate include seat races and second scan.
 
 Test stack: Nest Jest (+ Supertest as needed). No browser E2E in Must.
+
+Clock in tests: `toDate` / `nowUtc` / `addMs` from `common/dates.ts`. Do not construct `new Date(...)` in specs.

@@ -36,7 +36,7 @@ Do not nest organizer screens under `pages/exhibitions/`. Do not mix create and 
 
 | Folder | Use |
 | ------ | --- |
-| `components/UI/` | Custom visual primitives (e.g. `PageTitle`, `AsyncSection`) |
+| `components/UI/` | Custom visual primitives (e.g. `PageTitle`, `AsyncSection`, `QtyStepper`) |
 | `components/Shared/` | Reused across domains (e.g. `BrandLogo`, `AppLayout`) |
 | `pages/<domain>/_*.tsx` | Colocated UI (`pages/auth/_AuthCard.tsx`) |
 | `pages/<domain>/_*.ts` | Colocated helpers, form payload, batch expand |
