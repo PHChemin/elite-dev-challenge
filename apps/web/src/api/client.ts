@@ -79,7 +79,7 @@ function toApiError(error: unknown): ApiError {
 
 export async function apiGet<T>(
   path: string,
-  params?: Record<string, string>,
+  params?: Record<string, string | number | boolean | undefined>,
 ): Promise<T> {
   const { data } = await api.get<T>(path, { params });
   return data;

@@ -197,3 +197,53 @@ body {
   bottom: 0;
   z-index: 1;
 }
+
+.poster-carousel-card {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+  border-radius: var(--mantine-radius-md);
+  transition:
+    transform 220ms ease,
+    box-shadow 220ms ease;
+}
+
+.poster-carousel-card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 12px 28px rgb(22 26 29 / 14%);
+}
+
+.poster-carousel-card--static {
+  cursor: default;
+}
+
+.poster-carousel-card--static:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.poster-carousel-slide {
+  transition: transform 220ms ease;
+}
+
+.poster-carousel-control {
+  background: rgb(255 255 255 / 92%);
+  border: 1px solid var(--mantine-color-gray-3);
+}
+
+.poster-carousel-badge {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .poster-carousel-card,
+  .poster-carousel-slide {
+    transition: none;
+  }
+
+  .poster-carousel-card:hover {
+    transform: none;
+  }
+}

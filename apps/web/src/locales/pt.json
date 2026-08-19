@@ -86,7 +86,14 @@
     },
     "list": {
       "title": "Filmes em cartaz",
-      "empty": "Nenhum cartaz publicado no momento."
+      "empty": "Nenhum cartaz publicado no momento.",
+      "searchLabel": "Buscar filme",
+      "searchPlaceholder": "Buscar por título...",
+      "nowShowing": "Em cartaz",
+      "comingSoon": "Em breve",
+      "upcomingBadge": "Em breve",
+      "upcomingRelease": "Estreia {{date}}",
+      "upcomingEmpty": "Nenhum lançamento futuro disponível no momento."
     },
     "detail": {
       "events": "Sessões",
@@ -94,7 +101,11 @@
       "emptyDay": "Nenhuma sessão neste dia.",
       "today": "HOJE",
       "daysLabel": "Dias com sessão",
-      "cap": "Até {{max}} ingressos por compra"
+      "cap": "Até {{max}} ingressos por compra",
+      "readMore": "Ler mais",
+      "castTitle": "Elenco",
+      "castEmpty": "Elenco indisponível no momento.",
+      "viewAllCast": "Ver todos ({{count}})"
     },
     "organizer": {
       "title": "Meus cartazes",
@@ -144,7 +155,9 @@
     },
     "sale": {
       "startsSoon": "Inicia em breve",
-      "started": "Vendas encerradas"
+      "started": "Vendas encerradas",
+      "inProgress": "Em andamento",
+      "ended": "Encerrada"
     },
     "seats": {
       "title": "Mapa",

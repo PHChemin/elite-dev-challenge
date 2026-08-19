@@ -108,3 +108,34 @@ export function defaultDayKey(days: EventDay[]): string {
   const today = dayjs().format('YYYY-MM-DD');
   return days.find((day) => day.key >= today)?.key ?? days[0]?.key ?? '';
 }
+
+export function formatReleaseYear(releaseDate: string | null): string | null {
+  if (!releaseDate) {
+    return null;
+  }
+  const year = dayjs(releaseDate).format('YYYY');
+  return year === 'Invalid Date' ? null : year;
+}
+
+export function formatRuntime(minutes: number | null): string | null {
+  if (minutes === null || minutes <= 0) {
+    return null;
+  }
+  const hours = Math.floor(minutes / 60);
+  const rest = minutes % 60;
+  if (hours <= 0) {
+    return `${rest}min`;
+  }
+  if (rest === 0) {
+    return `${hours}h`;
+  }
+  return `${hours}h ${rest}min`;
+}
+
+export function formatReleaseDateShort(releaseDate: string | null): string | null {
+  if (!releaseDate) {
+    return null;
+  }
+  const parsed = dayjs(releaseDate);
+  return parsed.isValid() ? parsed.format('L') : null;
+}

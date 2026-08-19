@@ -13,15 +13,53 @@ export type LoginResponse = {
 
 export type PublishStatus = 'draft' | 'published';
 
+export type CatalogGenre = {
+  id: number;
+  name: string;
+};
+
 export type CatalogMovie = {
   tmdbId: string;
   title: string;
   posterUrl: string | null;
   releaseDate: string | null;
+  runtimeMinutes: number | null;
+  overview: string | null;
+  genres: CatalogGenre[];
 };
 
 export type CatalogSearchResponse = {
   results: CatalogMovie[];
+};
+
+export type CatalogUpcomingResponse = {
+  results: CatalogMovie[];
+  page: number;
+  totalPages: number;
+};
+
+export type CatalogCastMember = {
+  name: string;
+  character: string;
+  profileUrl: string | null;
+};
+
+export type CatalogCreditsResponse = {
+  cast: CatalogCastMember[];
+};
+
+export type PaginatedExhibitions = {
+  items: ExhibitionSummary[];
+  page: number;
+  pageSize: number;
+  total: number;
+  totalPages: number;
+};
+
+export type ListExhibitionsParams = {
+  q?: string;
+  page?: number;
+  pageSize?: number;
 };
 
 export type ExhibitionSummary = {
@@ -61,6 +99,7 @@ export type PublicEventDetail = PublicEvent & {
     id: string;
     title: string;
     posterUrl: string | null;
+    runtimeMinutes: number | null;
   };
   freeSeatCount: number;
 };
@@ -170,6 +209,10 @@ export type PublicExhibitionDetail = {
   tmdbId: string;
   title: string;
   posterUrl: string | null;
+  runtimeMinutes: number | null;
+  overview: string | null;
+  releaseDate: string | null;
+  genres: CatalogGenre[];
   events: PublicEvent[];
 };
 
