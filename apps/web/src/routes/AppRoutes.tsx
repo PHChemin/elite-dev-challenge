@@ -11,6 +11,9 @@ import { ExhibitionFormPage } from '@/pages/organizer/exhibitions/create/Exhibit
 import { OrganizerExhibitionPage } from '@/pages/organizer/exhibitions/detail/OrganizerExhibitionPage';
 import { OrganizerExhibitionsPage } from '@/pages/organizer/exhibitions/list/OrganizerExhibitionsPage';
 import { PendingHoldPage } from '@/pages/reservations/pending/PendingHoldPage';
+import { TicketDetailPage } from '@/pages/tickets/detail/TicketDetailPage';
+import { TicketsListPage } from '@/pages/tickets/list/TicketsListPage';
+import { TicketSharePage } from '@/pages/tickets/share/TicketSharePage';
 import { RequireRole } from './RequireRole';
 import { ROUTES } from './routes';
 
@@ -38,6 +41,23 @@ export function AppRoutes() {
           element={
             <RequireRole roles={['customer']}>
               <PendingHoldPage />
+            </RequireRole>
+          }
+        />
+        <Route path={ROUTES.ticketShare} element={<TicketSharePage />} />
+        <Route
+          path={ROUTES.tickets}
+          element={
+            <RequireRole roles={['customer']}>
+              <TicketsListPage />
+            </RequireRole>
+          }
+        />
+        <Route
+          path={ROUTES.ticketDetail}
+          element={
+            <RequireRole roles={['customer']}>
+              <TicketDetailPage />
             </RequireRole>
           }
         />

@@ -3,11 +3,11 @@ import { notifications } from '@mantine/notifications';
 import { mdiCheck, mdiClose } from '@mdi/js';
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { ApiError } from '@/api/client';
 import { payOrder } from '@/api/orders';
 import { getHold } from '@/api/reservations';
-import type { OrderResponse, PaymentStatus } from '@/api/types';
+import type { PaymentStatus } from '@/api/types';
 import { useApiResource } from '@/api/useApiResource';
 import { MoviePoster } from '@/components/Shared/MoviePoster';
 import { AppIcon } from '@/components/UI/AppIcon';
@@ -21,25 +21,26 @@ const POSTER_HEIGHT = 210;
 
 export function PendingHoldPage() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { holdId } = useParams<{ holdId: string }>();
   const load = useCallback(() => getHold(holdId ?? ''), [holdId]);
   const { data, loading, error } = useApiResource(load);
   const [clock, setClock] = useState(() =>
     data ? formatCountdown(data.expiresAt) : '10:00',
   );
-  const [order, setOrder] = useState<OrderResponse | null>(null);
+  const [declined, setDeclined] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const expired = clock === '00:00';
 
   useEffect(() => {
-    if (!data || order) {
+    if (!data || declined) {
       return;
     }
     const tick = () => setClock(formatCountdown(data.expiresAt));
     tick();
     const timer = window.setInterval(tick, 1000);
     return () => window.clearInterval(timer);
-  }, [data, order]);
+  }, [data, declined]);
 
   async function handlePay(result: PaymentStatus) {
     if (!holdId || expired || submitting) {
@@ -48,7 +49,16 @@ export function PendingHoldPage() {
     setSubmitting(true);
     try {
       const paid = await payOrder({ holdId, result });
-      setOrder(paid);
+      if (paid.paymentStatus === 'approved') {
+        notifications.show({
+          title: t('tickets.paymentApprovedTitle'),
+          message: t('tickets.paymentApproved'),
+          color: 'success',
+        });
+        void navigate(ROUTES.tickets);
+        return;
+      }
+      setDeclined(true);
     } catch (cause) {
       notifications.show({
         title: t('errors.title'),
@@ -63,7 +73,7 @@ export function PendingHoldPage() {
     }
   }
 
-  if (!loading && error && !order) {
+  if (!loading && error && !declined) {
     return (
       <Stack gap="lg">
         <Alert color="brand.4" title={t('errors.title')}>
@@ -77,13 +87,9 @@ export function PendingHoldPage() {
     );
   }
 
-  const approved = order?.paymentStatus === 'approved';
-  const declined = order?.paymentStatus === 'declined';
-  const titleKey = approved
-    ? 'reservations.pending.approvedTitle'
-    : declined
-      ? 'reservations.pending.declinedTitle'
-      : 'reservations.pending.title';
+  const titleKey = declined
+    ? 'reservations.pending.declinedTitle'
+    : 'reservations.pending.title';
 
   return (
     <Stack gap="lg">
@@ -110,12 +116,7 @@ export function PendingHoldPage() {
                     height={POSTER_HEIGHT}
                   />
                   <Stack gap="sm" flex={1} miw={240}>
-                    <Title
-                      order={1}
-                      fz={{ base: 'h3', sm: 'h2' }}
-                      ta="left"
-                      c={approved ? 'success.5' : undefined}
-                    >
+                    <Title order={1} fz={{ base: 'h3', sm: 'h2' }} ta="left">
                       {t(titleKey)}
                     </Title>
                     <Text>{data.exhibition.title}</Text>
@@ -132,21 +133,11 @@ export function PendingHoldPage() {
                         seats: data.seatLabels.join(', '),
                       })}
                     </Text>
-                    {approved &&
-                      order.tickets.map((ticket) => (
-                        <Text key={ticket.id}>
-                          {t('reservations.pending.ticket', {
-                            seat: ticket.seatLabel,
-                            kind: t(`events.buy.${ticket.kind}`),
-                          })}
-                        </Text>
-                      ))}
                     <Text fw={700}>
                       {t('events.buy.total', {
                         total: formatCents(
-                          order?.totalCents ??
-                            (data.fullCount * data.event.priceFull +
-                              data.halfCount * data.event.priceHalf),
+                          data.fullCount * data.event.priceFull +
+                            data.halfCount * data.event.priceHalf,
                         ),
                       })}
                     </Text>
@@ -155,7 +146,7 @@ export function PendingHoldPage() {
                         {t('reservations.pending.declinedBody')}
                       </Alert>
                     )}
-                    {!order && (
+                    {!declined && (
                       <>
                         <Text
                           fw={700}
@@ -191,15 +182,6 @@ export function PendingHoldPage() {
                         </Group>
                       </>
                     )}
-                    {approved && (
-                      <Button
-                        component={Link}
-                        to={ROUTES.exhibitions}
-                        variant="outline"
-                      >
-                        {t('reservations.pending.home')}
-                      </Button>
-                    )}
                     {declined && (
                       <Button
                         component={Link}
@@ -209,7 +191,7 @@ export function PendingHoldPage() {
                         {t('reservations.pending.back')}
                       </Button>
                     )}
-                    {!order && expired && (
+                    {!declined && expired && (
                       <Button
                         component={Link}
                         to={toExhibitionDetail(data.exhibition.id)}

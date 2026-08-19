@@ -123,6 +123,44 @@ export type OrderResponse = {
   tickets: OrderTicket[];
 };
 
+export type TicketEvent = {
+  id: string;
+  startsAt: string;
+  venueName: string;
+  venueAddress: string | null;
+};
+
+export type TicketExhibition = {
+  id: string;
+  title: string;
+  posterUrl: string | null;
+};
+
+export type MyTicket = {
+  id: string;
+  kind: TicketKind;
+  code: string;
+  shareToken: string;
+  usedAt: string | null;
+  seatLabel: string;
+  event: TicketEvent;
+  exhibition: TicketExhibition;
+};
+
+export type SharedTicket = {
+  kind: TicketKind;
+  code: string;
+  usedAt: string | null;
+  seatLabel: string;
+  event: TicketEvent;
+  exhibition: TicketExhibition;
+};
+
+export type TicketsPageData = {
+  holds: HoldResponse[];
+  tickets: MyTicket[];
+};
+
 export type OrganizerEvent = PublicEvent & {
   publishStatus: PublishStatus;
 };

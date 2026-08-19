@@ -19,7 +19,8 @@
   },
   "nav": {
     "home": "Início",
-    "exhibitions": "Em cartaz",
+    "exhibitions": "Filmes em cartaz",
+    "tickets": "Meus ingressos",
     "myExhibitions": "Meus cartazes",
     "login": "Entrar",
     "menu": "Menu",
@@ -84,7 +85,7 @@
       "published": "Publicado"
     },
     "list": {
-      "title": "Em cartaz",
+      "title": "Filmes em cartaz",
       "empty": "Nenhum cartaz publicado no momento."
     },
     "detail": {
@@ -238,8 +239,40 @@
       "approvedTitle": "Pagamento aprovado",
       "declinedTitle": "Pagamento recusado",
       "declinedBody": "Os assentos voltaram a ficar livres. Escolha de novo para tentar outra vez.",
-      "ticket": "{{seat}} · {{kind}}",
-      "home": "Voltar ao início"
+      "ticket": "{{seat}} · {{kind}}"
+    }
+  },
+  "tickets": {
+    "valid": "Válido",
+    "used": "Utilizado",
+    "copyLink": "Copiar link",
+    "copiedTitle": "Link copiado",
+    "copied": "O link deste ingresso foi copiado.",
+    "paymentApprovedTitle": "Pagamento aprovado",
+    "paymentApproved": "Seus ingressos estão em Meus ingressos.",
+    "list": {
+      "title": "Meus ingressos",
+      "subtitle": "Gerencie suas sessões e acesse seus ingressos digitais.",
+      "section": "Ingressos confirmados",
+      "viewTicket": "Ver ingresso",
+      "empty": "Você ainda não tem ingressos nem pedidos pendentes."
+    },
+    "pending": {
+      "section": "Pagamento pendente",
+      "badge": "Pagamento pendente",
+      "timer": "Tempo restante {{time}}",
+      "finishCheckout": "Finalizar compra"
+    },
+    "detail": {
+      "title": "Ingresso",
+      "seat": "Assento {{seat}}",
+      "scanHint": "Apresente este código na entrada da sala para validação.",
+      "notFound": "Ingresso não encontrado.",
+      "back": "Voltar aos ingressos"
+    },
+    "share": {
+      "title": "Ingresso compartilhado",
+      "back": "Ver filmes em cartaz"
     }
   },
   "errors": {

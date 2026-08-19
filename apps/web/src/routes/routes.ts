@@ -12,6 +12,9 @@ export const ROUTES = {
   eventDetail: '/cartazes/:exhibitionId/sessoes/:eventId',
   eventSeats: '/cartazes/:exhibitionId/sessoes/:eventId/assentos',
   pendingHold: '/pedidos/:holdId',
+  tickets: '/ingressos',
+  ticketDetail: '/ingressos/:ticketId',
+  ticketShare: '/ingresso/:shareToken',
 } as const;
 
 export function toExhibitionDetail(id: string): string {
@@ -52,6 +55,18 @@ export function toEventSeats(
 
 export function toPendingHold(holdId: string): string {
   return `/pedidos/${holdId}`;
+}
+
+export function toTicketDetail(ticketId: string): string {
+  return `/ingressos/${ticketId}`;
+}
+
+export function toTicketShare(shareToken: string): string {
+  return `/ingresso/${shareToken}`;
+}
+
+export function ticketShareUrl(shareToken: string): string {
+  return `${window.location.origin}${toTicketShare(shareToken)}`;
 }
 
 export function homeForRole(role: Role): string {
