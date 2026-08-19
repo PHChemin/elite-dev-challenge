@@ -6,6 +6,8 @@ import {
   Role,
   UserStatus,
   HoldStatus,
+  PaymentStatus,
+  TicketKind,
 } from '@prisma/client';
 import { hash } from 'bcryptjs';
 import { App } from 'supertest/types';
@@ -73,6 +75,21 @@ export type SeedTicketRow = {
   id: string;
   seatId: string;
   cancelledAt: Date | null;
+  orderId?: string;
+  eventId?: string;
+  customerId?: string;
+  kind?: TicketKind;
+  code?: string;
+  shareToken?: string;
+};
+
+export type SeedOrderRow = {
+  id: string;
+  customerId: string;
+  holdId: string;
+  paymentStatus: PaymentStatus;
+  totalCents: number;
+  paidAt: Date | null;
 };
 
 export type LoginBody = {
@@ -189,6 +206,7 @@ export function createPrismaMock(
   const seatRows: SeedSeatRow[] = [];
   const holdRows: SeedHoldRow[] = [];
   const holdSeatRows: SeedHoldSeatRow[] = [];
+  const orderRows: SeedOrderRow[] = [];
   const ticketRows: SeedTicketRow[] = [];
   let sequence = 0;
   const nextId = (prefix: string): string => `${prefix}-${(sequence += 1)}`;
@@ -414,9 +432,8 @@ export function createPrismaMock(
             );
             const nestedSelect =
               select.exhibition === true ? undefined : select.exhibition.select;
-            (picked as unknown as { exhibition: unknown }).exhibition = exhibition
-              ? pickSelected(exhibition, nestedSelect)
-              : null;
+            (picked as unknown as { exhibition: unknown }).exhibition =
+              exhibition ? pickSelected(exhibition, nestedSelect) : null;
           }
           return picked;
         },
@@ -613,13 +630,98 @@ export function createPrismaMock(
         },
       ),
     },
+    order: {
+      create: jest.fn(
+        ({
+          data,
+          select,
+        }: {
+          data: Omit<SeedOrderRow, 'id'>;
+          select?: object;
+        }) => {
+          if (orderRows.some((row) => row.holdId === data.holdId)) {
+            throw new Prisma.PrismaClientKnownRequestError(
+              'Unique constraint failed',
+              { code: 'P2002', clientVersion: 'test' },
+            );
+          }
+          const row: SeedOrderRow = { ...data, id: nextId('order') };
+          orderRows.push(row);
+          return Promise.resolve(pickSelected(row, select));
+        },
+      ),
+      findUnique: jest.fn(
+        ({
+          where,
+          select,
+        }: {
+          where: { id?: string; holdId?: string };
+          select?: object;
+        }) => {
+          const row = orderRows.find(
+            (order) =>
+              (where.id !== undefined && order.id === where.id) ||
+              (where.holdId !== undefined && order.holdId === where.holdId),
+          );
+          return Promise.resolve(row ? pickSelected(row, select) : null);
+        },
+      ),
+    },
     ticket: {
       createMany: jest.fn(({ data }: { data: Omit<SeedTicketRow, 'id'>[] }) => {
         for (const row of data) {
+          if (
+            ticketRows.some(
+              (item) => item.seatId === row.seatId && item.cancelledAt === null,
+            )
+          ) {
+            throw new Prisma.PrismaClientKnownRequestError(
+              'Unique constraint failed',
+              { code: 'P2002', clientVersion: 'test' },
+            );
+          }
           ticketRows.push({ ...row, id: nextId('ticket') });
         }
         return Promise.resolve({ count: data.length });
       }),
+      create: jest.fn(
+        ({
+          data,
+          select,
+        }: {
+          data: Omit<SeedTicketRow, 'id' | 'cancelledAt'> & {
+            cancelledAt?: Date | null;
+          };
+          select?: object;
+        }) => {
+          if (
+            ticketRows.some(
+              (item) =>
+                item.seatId === data.seatId && item.cancelledAt === null,
+            )
+          ) {
+            throw new Prisma.PrismaClientKnownRequestError(
+              'Unique constraint failed',
+              { code: 'P2002', clientVersion: 'test' },
+            );
+          }
+          const row: SeedTicketRow = {
+            ...data,
+            id: nextId('ticket'),
+            cancelledAt: data.cancelledAt ?? null,
+          };
+          ticketRows.push(row);
+          const seat = seatRows.find((item) => item.id === row.seatId);
+          const picked = pickSelected(row, select);
+          if (select && 'seat' in select) {
+            return Promise.resolve({
+              ...picked,
+              seat: { label: seat?.label ?? '' },
+            });
+          }
+          return Promise.resolve(picked);
+        },
+      ),
     },
   };
 
@@ -654,13 +756,17 @@ export function createPrismaMock(
     const exhibition = event
       ? exhibitionRows.find((item) => item.id === event.exhibitionId)
       : undefined;
+    const order = orderRows.find((item) => item.holdId === row.id);
     return {
       ...picked,
+      order: order ? { id: order.id } : null,
       holdSeats: holdSeatRows
         .filter((item) => item.holdId === row.id)
         .map((item) => {
           const seat = seatRows.find((s) => s.id === item.seatId);
-          return { seat: { label: seat?.label ?? '' } };
+          return {
+            seat: { id: seat?.id ?? item.seatId, label: seat?.label ?? '' },
+          };
         }),
       event: event
         ? {

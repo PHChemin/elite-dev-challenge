@@ -49,6 +49,12 @@
     },
     "halfCount": {
       "invalid": "Informe a quantidade de meias"
+    },
+    "holdId": {
+      "invalid": "Informe o pedido"
+    },
+    "result": {
+      "invalid": "Escolha aprovar ou recusar"
     }
   },
   "auth": {
@@ -73,6 +79,9 @@
     "quantityMismatch": "A quantidade de inteira e meia deve ser igual ao número de assentos",
     "unknownSeats": "Há assentos que não existem nesta sessão",
     "eventStarted": "Esta sessão já começou"
+  },
+  "orders": {
+    "alreadyPaid": "Este pedido já foi pago"
   },
   "exhibitions": {
     "notFound": "Cartaz não encontrado",
