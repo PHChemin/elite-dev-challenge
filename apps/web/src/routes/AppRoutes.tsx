@@ -1,6 +1,8 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { AppLayout } from '@/components/Shared/AppLayout';
 import { LoginPage } from '@/pages/auth/login/LoginPage';
+import { EventDetailPage } from '@/pages/events/detail/EventDetailPage';
+import { SeatMapPage } from '@/pages/events/seats/SeatMapPage';
 import { ExhibitionDetailPage } from '@/pages/exhibitions/detail/ExhibitionDetailPage';
 import { ExhibitionsListPage } from '@/pages/exhibitions/list/ExhibitionsListPage';
 import { CreateEventsPage } from '@/pages/organizer/events/create/CreateEventsPage';
@@ -8,6 +10,7 @@ import { EventFormPage } from '@/pages/organizer/events/edit/EventFormPage';
 import { ExhibitionFormPage } from '@/pages/organizer/exhibitions/create/ExhibitionFormPage';
 import { OrganizerExhibitionPage } from '@/pages/organizer/exhibitions/detail/OrganizerExhibitionPage';
 import { OrganizerExhibitionsPage } from '@/pages/organizer/exhibitions/list/OrganizerExhibitionsPage';
+import { PendingHoldPage } from '@/pages/reservations/pending/PendingHoldPage';
 import { RequireRole } from './RequireRole';
 import { ROUTES } from './routes';
 
@@ -20,6 +23,23 @@ export function AppRoutes() {
         <Route
           path={ROUTES.exhibitionDetail}
           element={<ExhibitionDetailPage />}
+        />
+        <Route path={ROUTES.eventDetail} element={<EventDetailPage />} />
+        <Route
+          path={ROUTES.eventSeats}
+          element={
+            <RequireRole roles={['customer']}>
+              <SeatMapPage />
+            </RequireRole>
+          }
+        />
+        <Route
+          path={ROUTES.pendingHold}
+          element={
+            <RequireRole roles={['customer']}>
+              <PendingHoldPage />
+            </RequireRole>
+          }
         />
         <Route
           path={ROUTES.organizerExhibitions}

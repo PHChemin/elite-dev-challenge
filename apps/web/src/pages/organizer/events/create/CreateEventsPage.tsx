@@ -27,18 +27,18 @@ import {
   DEFAULT_MAX_TICKETS_PER_ORDER,
   MAX_EVENTS_PER_REQUEST,
 } from '@/utils/tickets';
-import { SessionModelCard } from '../_SessionModelCard';
+import { EventModelCard } from '../_EventModelCard';
 import { DailyBatchPanel } from './_DailyBatchPanel';
 import { batchFormValidate, expandFailureMessage } from './_helpers';
 import {
-  emptySessionModel,
-  expandSessionModels,
+  emptyEventModel,
+  expandEventModels,
   maxModelsForPeriod,
   previewEventCount,
   resizeModels,
   type BatchFormValues,
-  type SessionMode,
-} from './_session-batch';
+  type EventBatchMode,
+} from './_event-batch';
 
 export function CreateEventsPage() {
   const { t } = useTranslation();
@@ -64,7 +64,7 @@ export function CreateEventsPage() {
       samePrice: false,
       sharedPriceFull: '',
       sharedPriceHalf: '',
-      models: [emptySessionModel(DEFAULT_MAX_TICKETS_PER_ORDER)],
+      models: [emptyEventModel(DEFAULT_MAX_TICKETS_PER_ORDER)],
     },
     validate: batchFormValidate(t),
   });
@@ -78,7 +78,7 @@ export function CreateEventsPage() {
   );
   const backTo = toOrganizerExhibition(id ?? '');
 
-  function setMode(mode: SessionMode) {
+  function setMode(mode: EventBatchMode) {
     if (mode === 'manual') {
       form.setFieldValue(
         'models',
@@ -174,7 +174,7 @@ export function CreateEventsPage() {
     if (!id || overLimit) {
       return;
     }
-    const expanded = expandSessionModels(values);
+    const expanded = expandEventModels(values);
     if (expanded.ok === false) {
       notifications.show({
         title: t('events.batch.failed'),
@@ -233,9 +233,9 @@ export function CreateEventsPage() {
                 <SegmentedControl
                   fullWidth
                   color="brand"
-                  className="session-mode-control"
+                  className="event-mode-control"
                   value={form.values.mode}
-                  onChange={(value) => setMode(value as SessionMode)}
+                  onChange={(value) => setMode(value as EventBatchMode)}
                   data={[
                     {
                       value: 'manual',
@@ -271,7 +271,7 @@ export function CreateEventsPage() {
 
                 <Stack gap="md">
                   {form.values.models.map((_, index) => (
-                    <SessionModelCard
+                    <EventModelCard
                       key={index}
                       index={index}
                       form={form}

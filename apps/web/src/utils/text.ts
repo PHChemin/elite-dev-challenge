@@ -1,11 +1,11 @@
 import type { TFunction } from 'i18next';
 
-export function formatSessionCount(count: number, t: TFunction): string {
+export function formatEventCount(count: number, t: TFunction): string {
   if (count === 0) {
-    return t('exhibitions.sessionCountNone');
+    return t('exhibitions.eventCountNone');
   }
   if (count === 1) {
-    return t('exhibitions.sessionCountOne');
+    return t('exhibitions.eventCountOne');
   }
-  return t('exhibitions.sessionCountMany', { count });
+  return t('exhibitions.eventCountMany', { count });
 }

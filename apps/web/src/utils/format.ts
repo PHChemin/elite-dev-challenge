@@ -18,6 +18,13 @@ export function formatDateTime(iso: string): string {
   return dayjs(iso).format('L LT');
 }
 
+export function formatCountdown(iso: string): string {
+  const totalSeconds = Math.max(0, dayjs(iso).diff(dayjs(), 'second'));
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+}
+
 export function formatLongDateTime(iso: string): string {
   return dayjs(iso).format('LLLL');
 }
@@ -79,12 +86,12 @@ export function isToday(iso: string): boolean {
   return dayjs(iso).isSame(dayjs(), 'day');
 }
 
-export type SessionDay = {
+export type EventDay = {
   key: string;
   sampleIso: string;
 };
 
-export function dayOptionsFromStartsAt(startsAtList: string[]): SessionDay[] {
+export function dayOptionsFromStartsAt(startsAtList: string[]): EventDay[] {
   const seen = new Map<string, string>();
   for (const iso of startsAtList) {
     const key = calendarDayKey(iso);
@@ -97,7 +104,7 @@ export function dayOptionsFromStartsAt(startsAtList: string[]): SessionDay[] {
     .map(([key, sampleIso]) => ({ key, sampleIso }));
 }
 
-export function defaultDayKey(days: SessionDay[]): string {
+export function defaultDayKey(days: EventDay[]): string {
   const today = dayjs().format('YYYY-MM-DD');
   return days.find((day) => day.key >= today)?.key ?? days[0]?.key ?? '';
 }

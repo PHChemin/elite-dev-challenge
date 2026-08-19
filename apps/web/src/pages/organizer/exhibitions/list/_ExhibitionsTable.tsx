@@ -7,7 +7,7 @@ import { AppBadge } from '@/components/UI/AppBadge';
 import { AppIcon } from '@/components/UI/AppIcon';
 import { toOrganizerExhibition } from '@/routes/routes';
 import { formatDateTime } from '@/utils/format';
-import { formatSessionCount } from '@/utils/text';
+import { formatEventCount } from '@/utils/text';
 import { PublishToggle } from '../_PublishToggle';
 
 type ExhibitionsTableProps = {
@@ -35,7 +35,7 @@ export function ExhibitionsTable({
               <Table.Th>{t('exhibitions.organizer.columns.movie')}</Table.Th>
               <Table.Th>{t('exhibitions.organizer.columns.next')}</Table.Th>
               <Table.Th>
-                {t('exhibitions.organizer.columns.sessions')}
+                {t('exhibitions.organizer.columns.events')}
               </Table.Th>
               <Table.Th>{t('exhibitions.organizer.columns.status')}</Table.Th>
               <Table.Th />
@@ -53,7 +53,7 @@ export function ExhibitionsTable({
                     : t('exhibitions.noNextSession')}
                 </Table.Td>
                 <Table.Td>
-                  {formatSessionCount(exhibition.eventCount, t)}
+                  {formatEventCount(exhibition.eventCount, t)}
                 </Table.Td>
                 <Table.Td>
                   <AppBadge

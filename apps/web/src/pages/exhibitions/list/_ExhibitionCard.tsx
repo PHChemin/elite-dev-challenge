@@ -7,7 +7,7 @@ import { MoviePoster } from '@/components/Shared/MoviePoster';
 import { AppIcon } from '@/components/UI/AppIcon';
 import { toExhibitionDetail } from '@/routes/routes';
 import { formatDateTime } from '@/utils/format';
-import { formatSessionCount } from '@/utils/text';
+import { formatEventCount } from '@/utils/text';
 
 const POSTER_HEIGHT = 260;
 
@@ -32,13 +32,13 @@ export function ExhibitionCard({
         <Stack gap={2}>
           <Text size="sm" fw={500}>
             {exhibition.nextStartsAt
-              ? t('exhibitions.nextSession', {
+              ? t('exhibitions.nextEvent', {
                   when: formatDateTime(exhibition.nextStartsAt),
                 })
-              : t('exhibitions.noNextSession')}
+              : t('exhibitions.noNextEvent')}
           </Text>
           <Text size="sm" c="dimmed">
-            {formatSessionCount(exhibition.eventCount, t)}
+            {formatEventCount(exhibition.eventCount, t)}
           </Text>
         </Stack>
         <Button

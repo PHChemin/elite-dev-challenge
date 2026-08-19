@@ -13,8 +13,8 @@ import {
   dayOptionsFromStartsAt,
   defaultDayKey,
 } from '@/utils/format';
-import { SessionCard } from './_SessionCard';
-import { SessionDayStrip } from './_SessionDayStrip';
+import { EventCard } from './_EventCard';
+import { EventDayStrip } from './_EventDayStrip';
 
 const POSTER_WIDTH = 220;
 const POSTER_HEIGHT = 330;
@@ -37,7 +37,7 @@ export function ExhibitionDetailPage() {
     selectedDay && days.some((day) => day.key === selectedDay)
       ? selectedDay
       : defaultDayKey(days);
-  const sessions = (data?.events ?? [])
+  const dayEvents = (data?.events ?? [])
     .filter((event) => calendarDayKey(event.startsAt) === activeDay)
     .sort((left, right) => left.startsAt.localeCompare(right.startsAt));
 
@@ -69,19 +69,23 @@ export function ExhibitionDetailPage() {
                 </Group>
                 <Divider />
                 <Title order={2} fz="h4" ta="left">
-                  {t('exhibitions.detail.sessions')}
+                  {t('exhibitions.detail.events')}
                 </Title>
                 {data.events.length > 0 ? (
                   <Stack gap="md">
-                    <SessionDayStrip
+                    <EventDayStrip
                       days={days}
                       selected={activeDay}
                       onSelect={setSelectedDay}
                     />
-                    {sessions.length > 0 ? (
+                    {dayEvents.length > 0 ? (
                       <SimpleGrid cols={{ base: 1, sm: 2, lg: 3 }} spacing="md">
-                        {sessions.map((event) => (
-                          <SessionCard key={event.id} event={event} />
+                        {dayEvents.map((event) => (
+                          <EventCard
+                            key={event.id}
+                            exhibitionId={data.id}
+                            event={event}
+                          />
                         ))}
                       </SimpleGrid>
                     ) : (
@@ -91,7 +95,7 @@ export function ExhibitionDetailPage() {
                     )}
                   </Stack>
                 ) : (
-                  <Text c="dimmed">{t('exhibitions.detail.emptySessions')}</Text>
+                  <Text c="dimmed">{t('exhibitions.detail.emptyEvents')}</Text>
                 )}
               </Stack>
             </Paper>

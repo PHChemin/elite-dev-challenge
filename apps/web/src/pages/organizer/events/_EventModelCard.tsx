@@ -12,10 +12,10 @@ import { mdiClose } from '@mdi/js';
 import { useTranslation } from 'react-i18next';
 import { AppIcon } from '@/components/UI/AppIcon';
 import { MoneyInput } from '@/components/UI/MoneyInput';
-import type { BatchFormValues } from './create/_session-batch';
+import type { BatchFormValues } from './create/_event-batch';
 import { MAX_TICKETS_PER_ORDER_LIMIT } from '@/utils/tickets';
 
-type SessionModelCardProps = {
+type EventModelCardProps = {
   index: number;
   form: UseFormReturnType<BatchFormValues>;
   hideVenue: boolean;
@@ -28,7 +28,7 @@ type SessionModelCardProps = {
   onPriceHalfChange: (value: number | string) => void;
 };
 
-export function SessionModelCard({
+export function EventModelCard({
   index,
   form,
   hideVenue,
@@ -39,7 +39,7 @@ export function SessionModelCard({
   onPriceFullChange,
   onPriceFullBlur,
   onPriceHalfChange,
-}: SessionModelCardProps) {
+}: EventModelCardProps) {
   const { t } = useTranslation();
   const daily = form.values.mode === 'daily';
   const halfValue = form.values.models[index]?.priceHalf;
@@ -48,7 +48,7 @@ export function SessionModelCard({
     <Paper p={{ base: 'md', sm: 'lg' }} withBorder>
       <Group justify="space-between" align="flex-start" wrap="nowrap" mb="md">
         <Title order={3} fz="h5" ta="left">
-          {t('events.batch.sessionLabel', { n: index + 1 })}
+          {t('events.batch.eventLabel', { n: index + 1 })}
         </Title>
         {canRemove && (
           <ActionIcon

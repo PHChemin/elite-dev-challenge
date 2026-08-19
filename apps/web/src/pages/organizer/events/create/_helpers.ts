@@ -2,10 +2,10 @@ import type { TFunction } from 'i18next';
 import { daysInRange, reaisToCents } from '@/utils/format';
 import { toNumber } from '@/utils/number';
 import { MAX_EVENTS_PER_REQUEST } from '@/utils/tickets';
-import type { BatchFormValues, ExpandSessionFailure } from './_session-batch';
+import type { BatchFormValues, ExpandEventFailure } from './_event-batch';
 
 export function expandFailureMessage(
-  reason: ExpandSessionFailure,
+  reason: ExpandEventFailure,
   t: TFunction,
 ): string {
   switch (reason) {

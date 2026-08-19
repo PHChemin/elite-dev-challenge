@@ -74,11 +74,11 @@
   "exhibitions": {
     "noPoster": "Sem pôster",
     "buyTickets": "Comprar ingressos",
-    "sessionCountNone": "Nenhuma sessão",
-    "sessionCountOne": "1 sessão",
-    "sessionCountMany": "{{count}} sessões",
-    "nextSession": "Próxima: {{when}}",
-    "noNextSession": "Sem sessão publicada",
+    "eventCountNone": "Nenhuma sessão",
+    "eventCountOne": "1 sessão",
+    "eventCountMany": "{{count}} sessões",
+    "nextEvent": "Próxima: {{when}}",
+    "noNextEvent": "Sem sessão publicada",
     "status": {
       "draft": "Rascunho",
       "published": "Publicado"
@@ -88,8 +88,8 @@
       "empty": "Nenhum cartaz publicado no momento."
     },
     "detail": {
-      "sessions": "Sessões",
-      "emptySessions": "Este cartaz ainda não tem sessão publicada.",
+      "events": "Sessões",
+      "emptyEvents": "Este cartaz ainda não tem sessão publicada.",
       "emptyDay": "Nenhuma sessão neste dia.",
       "today": "HOJE",
       "daysLabel": "Dias com sessão",
@@ -109,7 +109,7 @@
       "columns": {
         "movie": "Filme",
         "next": "Próxima sessão",
-        "sessions": "Sessões",
+        "events": "Sessões",
         "status": "Situação"
       }
     },
@@ -126,6 +126,40 @@
   },
   "events": {
     "priceLine": "Inteira {{full}} · Meia {{half}}",
+    "buy": {
+      "chooseSeats": "Escolher assentos",
+      "full": "Inteira",
+      "half": "Meia",
+      "total": "Total {{total}}",
+      "freeSeats": "{{count}} lugares livres",
+      "qtyRequired": "Informe pelo menos um ingresso",
+      "overCap": "A quantidade passa do teto desta sessão",
+      "notEnoughSeats": "Só há {{count}} lugares livres nesta sessão.",
+      "soldOut": "Não há lugares livres nesta sessão.",
+      "customerOnly": "Entre como consumidor para escolher assentos.",
+      "eventStarted": "Esta sessão já começou. A venda está encerrada.",
+      "minus": "Diminuir",
+      "plus": "Aumentar"
+    },
+    "sale": {
+      "startsSoon": "Inicia em breve",
+      "started": "Vendas encerradas"
+    },
+    "seats": {
+      "title": "Mapa",
+      "summary": "Resumo",
+      "free": "Livre",
+      "selected": "Selecionado",
+      "heldByMe": "Retido por você",
+      "taken": "Ocupado",
+      "counts": "{{full}} inteira(s) · {{half}} meia(s)",
+      "picked": "{{current}} de {{needed}} assentos",
+      "none": "Nenhum",
+      "confirm": "Confirmar assentos",
+      "existingHold": "Você já tem um pedido nesta sessão.",
+      "continueHold": "Continuar pedido",
+      "conflictTitle": "Assento indisponível"
+    },
     "status": {
       "draft": "Rascunho",
       "published": "Publicada"
@@ -179,7 +213,7 @@
       "sameVenue": "Mesmo local para todas?",
       "samePrice": "Mesmo preço para todas?",
       "dailyPlaceholder": "Diariamente no período selecionado",
-      "sessionLabel": "Sessão {{n}}",
+      "eventLabel": "Sessão {{n}}",
       "add": "Adicionar sessão",
       "remove": "Remover",
       "preview": "{{count}} sessões serão criadas",
@@ -190,6 +224,15 @@
       "created_other": "{{count}} sessões criadas",
       "failed": "Não foi possível criar as sessões",
       "duplicate": "Há duas sessões no mesmo horário e no mesmo local."
+    }
+  },
+  "reservations": {
+    "pending": {
+      "title": "Aguardando pagamento",
+      "seats": "Assentos: {{seats}}",
+      "timer": "Tempo restante {{time}}",
+      "expired": "O prazo acabou. Escolha os assentos de novo.",
+      "back": "Voltar ao cartaz"
     }
   },
   "errors": {

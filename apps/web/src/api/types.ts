@@ -56,6 +56,49 @@ export type PublicEvent = {
   maxTicketsPerOrder: number;
 };
 
+export type PublicEventDetail = PublicEvent & {
+  exhibition: {
+    id: string;
+    title: string;
+    posterUrl: string | null;
+  };
+  freeSeatCount: number;
+};
+
+export type SeatStatus = 'free' | 'held_by_me' | 'taken';
+
+export type SeatMapSeat = {
+  label: string;
+  status: SeatStatus;
+};
+
+export type SeatMapResponse = {
+  myHold: { id: string; expiresAt: string } | null;
+  seats: SeatMapSeat[];
+};
+
+export type HoldResponse = {
+  id: string;
+  eventId: string;
+  fullCount: number;
+  halfCount: number;
+  expiresAt: string;
+  seatLabels: string[];
+  event: PublicEvent;
+  exhibition: {
+    id: string;
+    title: string;
+    posterUrl: string | null;
+  };
+};
+
+export type CreateHoldPayload = {
+  eventId: string;
+  seatLabels: string[];
+  fullCount: number;
+  halfCount: number;
+};
+
 export type OrganizerEvent = PublicEvent & {
   publishStatus: PublishStatus;
 };

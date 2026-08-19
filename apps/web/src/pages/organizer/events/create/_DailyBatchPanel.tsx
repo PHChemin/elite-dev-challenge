@@ -11,7 +11,7 @@ import {
 import type { UseFormReturnType } from '@mantine/form';
 import { useTranslation } from 'react-i18next';
 import { MoneyInput } from '@/components/UI/MoneyInput';
-import type { BatchFormValues } from './_session-batch';
+import type { BatchFormValues } from './_event-batch';
 
 type DailyBatchPanelProps = {
   form: UseFormReturnType<BatchFormValues>;

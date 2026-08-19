@@ -1,18 +1,18 @@
 import { UnstyledButton } from '@mantine/core';
 import { useTranslation } from 'react-i18next';
-import { dayAndMonth, isToday, weekdayShort, type SessionDay } from '@/utils/format';
+import { dayAndMonth, isToday, weekdayShort, type EventDay } from '@/utils/format';
 
-type SessionDayStripProps = {
-  days: SessionDay[];
+type EventDayStripProps = {
+  days: EventDay[];
   selected: string;
   onSelect: (key: string) => void;
 };
 
-export function SessionDayStrip({
+export function EventDayStrip({
   days,
   selected,
   onSelect,
-}: SessionDayStripProps) {
+}: EventDayStripProps) {
   const { t } = useTranslation();
 
   return (

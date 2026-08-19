@@ -20,7 +20,9 @@ import { PageTitle } from '@/components/UI/PageTitle';
 import { homeForRole, ROUTES } from '@/routes/routes';
 import { AuthCard } from '../_AuthCard';
 
-type LoginLocationState = { from?: { pathname: string } } | null;
+type LoginLocationState = {
+  from?: { pathname: string; search?: string };
+} | null;
 
 export function LoginPage() {
   const { t } = useTranslation();
@@ -39,8 +41,11 @@ export function LoginPage() {
   });
 
   if (user) {
-    const from = (location.state as LoginLocationState)?.from?.pathname;
-    return <Navigate to={from ?? homeForRole(user.role)} replace />;
+    const from = (location.state as LoginLocationState)?.from;
+    const target = from
+      ? `${from.pathname}${from.search ?? ''}`
+      : homeForRole(user.role);
+    return <Navigate to={target} replace />;
   }
 
   return (

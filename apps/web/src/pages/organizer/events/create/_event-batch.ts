@@ -6,11 +6,11 @@ import {
   reaisToCents,
 } from '@/utils/format';
 import { toNumber } from '@/utils/number';
-import { MAX_EVENTS_PER_REQUEST, MAX_SESSION_MODELS } from '@/utils/tickets';
+import { MAX_EVENTS_PER_REQUEST, MAX_EVENT_MODELS } from '@/utils/tickets';
 
-export type SessionMode = 'manual' | 'daily';
+export type EventBatchMode = 'manual' | 'daily';
 
-export type SessionModelValues = {
+export type EventModelValues = {
   startsAt: string;
   time: string;
   venueName: string;
@@ -21,7 +21,7 @@ export type SessionModelValues = {
 };
 
 export type BatchFormValues = {
-  mode: SessionMode;
+  mode: EventBatchMode;
   periodFrom: string;
   periodTo: string;
   quantity: number;
@@ -31,40 +31,40 @@ export type BatchFormValues = {
   samePrice: boolean;
   sharedPriceFull: number | string;
   sharedPriceHalf: number | string;
-  models: SessionModelValues[];
+  models: EventModelValues[];
 };
 
 export function maxModelsForPeriod(from: string, to: string): number {
   const days = daysInRange(from, to).length;
   if (days === 0) {
-    return MAX_SESSION_MODELS;
+    return MAX_EVENT_MODELS;
   }
   return Math.min(
-    MAX_SESSION_MODELS,
+    MAX_EVENT_MODELS,
     Math.max(1, Math.floor(MAX_EVENTS_PER_REQUEST / days)),
   );
 }
 
 export function resizeModels(
-  models: SessionModelValues[],
+  models: EventModelValues[],
   quantity: number,
   maxTicketsPerOrder: number,
-): SessionModelValues[] {
-  const next = Math.min(MAX_SESSION_MODELS, Math.max(1, quantity));
+): EventModelValues[] {
+  const next = Math.min(MAX_EVENT_MODELS, Math.max(1, quantity));
   if (next > models.length) {
     return [
       ...models,
       ...Array.from({ length: next - models.length }, () =>
-        emptySessionModel(maxTicketsPerOrder),
+        emptyEventModel(maxTicketsPerOrder),
       ),
     ];
   }
   return models.slice(0, next);
 }
 
-export function emptySessionModel(
+export function emptyEventModel(
   maxTicketsPerOrder: number,
-): SessionModelValues {
+): EventModelValues {
   return {
     startsAt: '',
     time: '',
@@ -85,7 +85,7 @@ export function previewEventCount(values: BatchFormValues): number {
 
 function venueOf(
   values: BatchFormValues,
-  model: SessionModelValues,
+  model: EventModelValues,
 ): { venueName: string; venueAddress: string } {
   if (values.mode === 'daily' && values.sameVenue) {
     return {
@@ -101,7 +101,7 @@ function venueOf(
 
 function priceOf(
   values: BatchFormValues,
-  model: SessionModelValues,
+  model: EventModelValues,
 ): { priceFull: number | string; priceHalf: number | string } {
   if (values.mode === 'daily' && values.samePrice) {
     return {
@@ -147,11 +147,11 @@ function toPayload(
   return payload;
 }
 
-export type ExpandSessionResult =
+export type ExpandEventResult =
   | { ok: true; events: CreateEventItemPayload[] }
-  | { ok: false; reason: ExpandSessionFailure };
+  | { ok: false; reason: ExpandEventFailure };
 
-export type ExpandSessionFailure =
+export type ExpandEventFailure =
   | 'period'
   | 'time'
   | 'startsAt'
@@ -160,9 +160,9 @@ export type ExpandSessionFailure =
   | 'limit'
   | 'duplicate';
 
-export function expandSessionModels(
+export function expandEventModels(
   values: BatchFormValues,
-): ExpandSessionResult {
+): ExpandEventResult {
   if (values.mode === 'daily') {
     const days = daysInRange(values.periodFrom, values.periodTo);
     if (days.length === 0) {

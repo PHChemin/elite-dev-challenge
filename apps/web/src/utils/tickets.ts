@@ -4,4 +4,4 @@ export const MAX_TICKETS_PER_ORDER_LIMIT = 20;
 
 export const MAX_EVENTS_PER_REQUEST = 62;
 
-export const MAX_SESSION_MODELS = 10;
+export const MAX_EVENT_MODELS = 10;
