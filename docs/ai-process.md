@@ -16,7 +16,7 @@ O enunciado pede ferramentas, o que a IA gerou e o que foi decisão humana.
 - Must: TMDb, mapa, quantidade inteira/meia antes dos assentos.
 - Ticketmaster, pista e estabelecimento ficam fora do Must.
 - Fonte Roboto. Paleta com Sucesso `#2D6A4F` para válido e pagamento aprovado.
-- Teto de ingressos por sessão, padrão 6. O organizador altera. Meia começa na metade da inteira.
+- Teto por compra na sessão, padrão 6. O organizador altera. Não é cota da conta. Meia começa na metade da inteira.
 - Retenção de 10 minutos no checkout.
 - Link do ingresso: GET público por `shareToken`. QR na página. Meus ingressos autenticado.
 - API em TDD: casos na issue, testes, implementação.

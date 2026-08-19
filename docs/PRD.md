@@ -1,7 +1,7 @@
 # Product Requirements Document (PRD) — PHCTickets
 
 **Projeto:** PHCTickets (sessões de cinema e ingressos)  
-**Versão:** 1.2.0  
+**Versão:** 1.3.0  
 **Status:** Definido (Must do desafio Elite Dev / Verzel)  
 **Referências:** [SDD](SDD.md) · [Visual](visual.md) · [Issues](github-issues.md) · enunciado em `docs/Desafio-Elite-Dev-2026.pdf`
 
@@ -22,7 +22,7 @@ O objetivo do Must é o fluxo ponta a ponta: login por papel, sessão com mapa, 
 - **Pedido (`Order`):** Pagamento simulado (`approved` ou `declined`) ligado a um hold.
 - **Ingresso (`Ticket`):** Código opaco + QR; pode ser inteira ou meia (`kind`).
 - **shareToken:** Token do link público de um ingresso.
-- **Teto:** Máximo de ingressos por compra na sessão (padrão 6).
+- **Teto:** Máximo de ingressos por compra na sessão (padrão 6). Não é cota da conta do consumidor. Capacidade da sala é outra regra.
 - **Portaria:** Papel que escolhe a sessão ativa e valida o QR.
 - **Must / Should / Could / Won’t:** Prioridade MoSCoW deste PRD.
 
@@ -85,8 +85,8 @@ O objetivo do Must é o fluxo ponta a ponta: login por papel, sessão com mapa, 
 
 **Critérios de Aceitação:**
 
-- [ ] `approved` gera um ticket por assento (`kind` full ou half).
-- [ ] `declined` não vende; o lugar volta a livre conforme a regra do hold.
+- [x] `approved` gera um ticket por assento (`kind` full ou half).
+- [x] `declined` não vende; o lugar volta a livre conforme a regra do hold.
 
 #### US05 — Meus ingressos, QR e link
 
@@ -147,7 +147,7 @@ Nota fiscal, revenda entre usuários, app nativo, recuperação de senha, e-mail
 - **RN01 — Papel:** Operação privada exige JWT válido e `role` adequado.
 - **RN02 — Unicidade:** Dois consumidores não compram o mesmo assento na mesma sessão.
 - **RN03 — Retenção:** Hold de 10 minutos; sucesso vende; recusa, cancelamento do hold ou expiração libera.
-- **RN04 — Teto:** Soma da compra ≤ `maxTicketsPerOrder` da sessão.
+- **RN04 — Teto:** Soma da compra ≤ `maxTicketsPerOrder` da sessão. O mesmo consumidor pode fazer outro pedido.
 - **RN05 — Preço meia:** Default `floor(priceFull / 2)`; valor enviado pelo organizador prevalece.
 - **RN06 — Meia na compra:** Declaração do consumidor (`Ticket.kind`). A portaria valida o QR, não a categoria.
 - **RN07 — Ingresso:** `code` na porta; `shareToken` no link público; um ingresso valida uma vez.

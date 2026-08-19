@@ -1,7 +1,7 @@
 # Software Design Document (SDD) — PHCTickets
 
 **Projeto:** PHCTickets (sessões de cinema e ingressos)  
-**Versão:** 1.2.0  
+**Versão:** 1.3.0  
 **Status:** Pronto para implementação do Must  
 **Stack:** NestJS (Express), React, Vite, Mantine, Prisma, PostgreSQL, TMDb  
 **Produto:** [PRD](PRD.md) · **Visual:** [visual.md](visual.md)
@@ -90,7 +90,7 @@ Ticketmaster, pista, websocket do mapa, entidade estabelecimento, Next.js, Fasti
 `User.organizerId`: preenchido em `gate`  
 Unique: `(organizerId, tmdbId)` em Exhibition; `(exhibitionId, startsAt, venueName)` em Event; `(eventId, label)` em Seat; HoldSeat por `seatId` com hold `active`; um Ticket não cancelado por `seatId`
 
-**Implementation:** `HoldSeat.seatId` é único no Postgres. Hold expirado ou cancelado apaga as linhas de `HoldSeat`. O `Hold` permanece (`expired` ou `cancelled`).
+**Implementation:** `HoldSeat.seatId` é único no Postgres. Hold expirado, cancelado ou convertido apaga as linhas de `HoldSeat`. O `Hold` permanece (`expired`, `cancelled` ou `converted`).
 
 ### 4.2. Modelagem (fonte do Prisma)
 
@@ -302,6 +302,8 @@ Regra de preço: se `priceHalf` omitido na criação/atualização de `priceFull
 - **POST** `/orders/pay` (customer) — PayOrderDto
 
 **Implementation:** hold de 10 minutos (`expiresAt`). Transação no POST. Unique de `HoldSeat.seatId` no Postgres: segundo insert no mesmo lugar responde 409. Hold `active` vencido: a API apaga os `HoldSeat` e marca `expired` no GET do mapa, no POST e num job a cada 60 s. O registro do `Hold` permanece. Um consumidor, uma sessão, um hold `active`: o POST novo cancela o anterior. `GET /events/:id/seats` exige `customer` e devolve `myHold` quando há hold vigente. `GET /reservations/holds/:id` de hold expirado, convertido, cancelado ou de outro dono não devolve checkout.
+
+**Implementation:** `POST /orders/pay` exige `customer` e hold do dono ainda `active`. A transação chama `releaseExpired`, grava `Order` e converte o hold. `approved` emite um `Ticket` por assento e preenche `paidAt`. `declined` não cria ticket; os lugares voltam a livres. `totalCents` usa os preços da sessão. Os primeiros `fullCount` assentos, em ordem de label (`en`), recebem `kind` full. `code` e `shareToken` nascem com 32 hex; a resposta do pay não os inclui. O JSON devolve `id`, `holdId`, `paymentStatus`, `totalCents`, `paidAt` e `tickets` com `seatLabel` e `kind`. Segundo pay no mesmo hold responde 409.
 
 ### Ingressos
 
