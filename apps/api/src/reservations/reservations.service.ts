@@ -56,6 +56,7 @@ export class ReservationsService {
         id: event.exhibition.id,
         title: event.exhibition.title,
         posterUrl: event.exhibition.posterUrl,
+        runtimeMinutes: event.exhibition.runtimeMinutes,
       },
       freeSeatCount: countFreeSeats(seats, now, customerId),
     };
