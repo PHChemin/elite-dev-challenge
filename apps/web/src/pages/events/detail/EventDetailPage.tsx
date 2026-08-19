@@ -57,8 +57,10 @@ export function EventDetailPage() {
   const fullCount = form.values.fullCount;
   const halfCount = form.values.halfCount;
   const quantity = fullCount + halfCount;
-  const sale = data ? eventSaleState(data.startsAt) : 'open';
-  const started = sale === 'started';
+  const sale = data
+    ? eventSaleState(data.startsAt, data.exhibition.runtimeMinutes)
+    : 'open';
+  const started = data ? !canBuyEvent(data.startsAt) : false;
   const soldOut = (data?.freeSeatCount ?? 0) === 0;
   const overCap =
     data != null && quantity > data.maxTicketsPerOrder;
@@ -153,9 +155,14 @@ export function EventDetailPage() {
                         {t('events.sale.startsSoon')}
                       </Text>
                     )}
-                    {started && (
+                    {sale === 'in_progress' && (
+                      <Text size="sm" c="success.6" fw={700}>
+                        {t('events.sale.inProgress')}
+                      </Text>
+                    )}
+                    {sale === 'ended' && (
                       <Text size="sm" c="dimmed" fw={700}>
-                        {t('events.sale.started')}
+                        {t('events.sale.ended')}
                       </Text>
                     )}
                     <Text>{formatDateTime(data.startsAt)}</Text>

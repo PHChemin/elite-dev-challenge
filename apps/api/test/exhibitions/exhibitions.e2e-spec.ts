@@ -82,7 +82,14 @@ async function loginAs(server: App, role: Role): Promise<string> {
 }
 
 function readIds(body: unknown): string[] {
-  return (body as { id: string }[]).map((row) => row.id);
+  if (Array.isArray(body)) {
+    return body.map((row) => (row as { id: string }).id);
+  }
+  return readPaginatedItems(body).map((row) => row.id);
+}
+
+function readPaginatedItems(body: unknown): { id: string }[] {
+  return (body as { items: { id: string }[] }).items;
 }
 
 function readPublicEvents(body: unknown): { id: string }[] {
@@ -140,13 +147,17 @@ describe('Exhibitions (e2e)', () => {
   });
 
   describe('GET /api/exhibitions', () => {
-    it('lists published exhibitions without a token, including those without extra events', async () => {
+    it('lists published exhibitions with published events in a paginated envelope', async () => {
       const response = await request(server)
         .get('/api/exhibitions')
         .expect(200);
 
-      expect(response.body).toEqual(
-        expect.arrayContaining([
+      expect(response.body).toMatchObject({
+        page: 1,
+        pageSize: 12,
+        total: 1,
+        totalPages: 1,
+        items: [
           {
             id: publishedExhibition.id,
             title: publishedExhibition.title,
@@ -154,16 +165,46 @@ describe('Exhibitions (e2e)', () => {
             nextStartsAt: toIsoString(publishedEvent.startsAt),
             eventCount: 1,
           },
-          {
-            id: otherExhibition.id,
-            title: otherExhibition.title,
-            posterUrl: otherExhibition.posterUrl,
-            nextStartsAt: null,
-            eventCount: 0,
-          },
-        ]),
-      );
+        ],
+      });
       expect(readIds(response.body)).not.toContain(draftExhibition.id);
+      expect(readIds(response.body)).not.toContain(otherExhibition.id);
+    });
+
+    it('filters exhibitions by title', async () => {
+      const response = await request(server)
+        .get('/api/exhibitions')
+        .query({ q: 'clube' })
+        .expect(200);
+
+      expect(readIds(response.body)).toEqual([publishedExhibition.id]);
+    });
+
+    it('returns an empty page when the title filter matches nothing', async () => {
+      const response = await request(server)
+        .get('/api/exhibitions')
+        .query({ q: 'matrix' })
+        .expect(200);
+
+      expect(response.body).toMatchObject({
+        items: [],
+        total: 0,
+        totalPages: 0,
+      });
+    });
+
+    it('rejects an invalid page with 400', async () => {
+      const response = await request(server)
+        .get('/api/exhibitions')
+        .query({ page: 0 })
+        .expect(400);
+
+      expect(response.body).toMatchObject({
+        statusCode: 400,
+        fieldErrors: {
+          page: ['Informe uma página válida'],
+        },
+      });
     });
   });
 

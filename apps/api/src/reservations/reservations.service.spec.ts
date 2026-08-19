@@ -392,4 +392,59 @@ describe('ReservationsService', () => {
       ).rejects.toBeInstanceOf(NotFoundException);
     });
   });
+
+  describe('listMineHolds', () => {
+    it('lists active pending holds for the owner', async () => {
+      prisma.hold.findMany.mockResolvedValue([
+        {
+          id: 'hold-1',
+          eventId: EVENT_ID,
+          customerId: CUSTOMER_ID,
+          fullCount: 1,
+          halfCount: 1,
+          expiresAt: addMs(NOW, HOLD_TTL_MS),
+          holdStatus: HoldStatus.active,
+          holdSeats: [
+            { seat: { label: 'A1' } },
+            { seat: { label: 'A2' } },
+          ],
+          event: eventRow,
+        },
+      ]);
+
+      const result = await service.listMineHolds(CUSTOMER_ID);
+
+      expect(prisma.hold.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: expect.objectContaining({
+            customerId: CUSTOMER_ID,
+            holdStatus: HoldStatus.active,
+            order: null,
+          }),
+        }),
+      );
+      expect(result).toHaveLength(1);
+      expect(result[0].id).toBe('hold-1');
+    });
+
+    it('returns an empty list when the customer has no active hold', async () => {
+      prisma.hold.findMany.mockResolvedValue([]);
+
+      const result = await service.listMineHolds(CUSTOMER_ID);
+
+      expect(result).toEqual([]);
+    });
+
+    it('scopes pending holds to the authenticated customer', async () => {
+      prisma.hold.findMany.mockResolvedValue([]);
+
+      await service.listMineHolds(OTHER_ID);
+
+      expect(prisma.hold.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: expect.objectContaining({ customerId: OTHER_ID }),
+        }),
+      );
+    });
+  });
 });

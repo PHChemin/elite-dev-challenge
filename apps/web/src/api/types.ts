@@ -13,15 +13,53 @@ export type LoginResponse = {
 
 export type PublishStatus = 'draft' | 'published';
 
+export type CatalogGenre = {
+  id: number;
+  name: string;
+};
+
 export type CatalogMovie = {
   tmdbId: string;
   title: string;
   posterUrl: string | null;
   releaseDate: string | null;
+  runtimeMinutes: number | null;
+  overview: string | null;
+  genres: CatalogGenre[];
 };
 
 export type CatalogSearchResponse = {
   results: CatalogMovie[];
+};
+
+export type CatalogUpcomingResponse = {
+  results: CatalogMovie[];
+  page: number;
+  totalPages: number;
+};
+
+export type CatalogCastMember = {
+  name: string;
+  character: string;
+  profileUrl: string | null;
+};
+
+export type CatalogCreditsResponse = {
+  cast: CatalogCastMember[];
+};
+
+export type PaginatedExhibitions = {
+  items: ExhibitionSummary[];
+  page: number;
+  pageSize: number;
+  total: number;
+  totalPages: number;
+};
+
+export type ListExhibitionsParams = {
+  q?: string;
+  page?: number;
+  pageSize?: number;
 };
 
 export type ExhibitionSummary = {
@@ -61,6 +99,7 @@ export type PublicEventDetail = PublicEvent & {
     id: string;
     title: string;
     posterUrl: string | null;
+    runtimeMinutes: number | null;
   };
   freeSeatCount: number;
 };
@@ -99,6 +138,68 @@ export type CreateHoldPayload = {
   halfCount: number;
 };
 
+export type TicketKind = 'full' | 'half';
+
+export type PaymentStatus = 'approved' | 'declined';
+
+export type PayOrderPayload = {
+  holdId: string;
+  result: PaymentStatus;
+};
+
+export type OrderTicket = {
+  id: string;
+  seatLabel: string;
+  kind: TicketKind;
+};
+
+export type OrderResponse = {
+  id: string;
+  holdId: string;
+  paymentStatus: PaymentStatus;
+  totalCents: number;
+  paidAt: string | null;
+  tickets: OrderTicket[];
+};
+
+export type TicketEvent = {
+  id: string;
+  startsAt: string;
+  venueName: string;
+  venueAddress: string | null;
+};
+
+export type TicketExhibition = {
+  id: string;
+  title: string;
+  posterUrl: string | null;
+};
+
+export type MyTicket = {
+  id: string;
+  kind: TicketKind;
+  code: string;
+  shareToken: string;
+  usedAt: string | null;
+  seatLabel: string;
+  event: TicketEvent;
+  exhibition: TicketExhibition;
+};
+
+export type SharedTicket = {
+  kind: TicketKind;
+  code: string;
+  usedAt: string | null;
+  seatLabel: string;
+  event: TicketEvent;
+  exhibition: TicketExhibition;
+};
+
+export type TicketsPageData = {
+  holds: HoldResponse[];
+  tickets: MyTicket[];
+};
+
 export type OrganizerEvent = PublicEvent & {
   publishStatus: PublishStatus;
 };
@@ -108,6 +209,10 @@ export type PublicExhibitionDetail = {
   tmdbId: string;
   title: string;
   posterUrl: string | null;
+  runtimeMinutes: number | null;
+  overview: string | null;
+  releaseDate: string | null;
+  genres: CatalogGenre[];
   events: PublicEvent[];
 };
 

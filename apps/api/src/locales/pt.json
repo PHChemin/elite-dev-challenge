@@ -49,6 +49,18 @@
     },
     "halfCount": {
       "invalid": "Informe a quantidade de meias"
+    },
+    "holdId": {
+      "invalid": "Informe o pedido"
+    },
+    "result": {
+      "invalid": "Escolha aprovar ou recusar"
+    },
+    "page": {
+      "invalid": "Informe uma página válida"
+    },
+    "pageSize": {
+      "invalid": "Informe um tamanho de página entre 1 e 48"
     }
   },
   "auth": {
@@ -74,6 +86,12 @@
     "unknownSeats": "Há assentos que não existem nesta sessão",
     "eventStarted": "Esta sessão já começou"
   },
+  "orders": {
+    "alreadyPaid": "Este pedido já foi pago"
+  },
+  "tickets": {
+    "notFound": "Ingresso não encontrado"
+  },
   "exhibitions": {
     "notFound": "Cartaz não encontrado",
     "notOwner": "Cartaz de outro organizador",
@@ -82,6 +100,7 @@
   },
   "errors": {
     "internal": "Erro interno",
-    "databaseUnavailable": "Banco indisponível"
+    "databaseUnavailable": "Banco indisponível",
+    "tooManyRequests": "Muitas requisições. Tente de novo em instantes."
   }
 }

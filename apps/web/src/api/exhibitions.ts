@@ -2,15 +2,19 @@ import { apiGet, apiPatch, apiPost } from './client';
 import type {
   CreateExhibitionPayload,
   ExhibitionSummary,
+  ListExhibitionsParams,
   OrganizerExhibition,
   OrganizerExhibitionDetail,
   OrganizerExhibitionSummary,
+  PaginatedExhibitions,
   PublicExhibitionDetail,
   UpdateExhibitionPayload,
 } from './types';
 
-export function listPublishedExhibitions(): Promise<ExhibitionSummary[]> {
-  return apiGet<ExhibitionSummary[]>('/exhibitions');
+export function listPublishedExhibitions(
+  params: ListExhibitionsParams = {},
+): Promise<PaginatedExhibitions> {
+  return apiGet<PaginatedExhibitions>('/exhibitions', params);
 }
 
 export function getPublishedExhibition(
@@ -41,3 +45,5 @@ export function updateExhibition(
 ): Promise<OrganizerExhibition> {
   return apiPatch<OrganizerExhibition>(`/exhibitions/${id}`, payload);
 }
+
+export type { ExhibitionSummary };

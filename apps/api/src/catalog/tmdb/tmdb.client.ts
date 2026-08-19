@@ -2,7 +2,12 @@ import { Inject, Injectable } from '@nestjs/common';
 import axios, { type AxiosInstance } from 'axios';
 import { TMDB_AXIOS } from './tmdb.constants';
 import { TmdbNotFoundError, TmdbUnavailableError } from './tmdb.errors';
-import type { TmdbMovie, TmdbSearchResponse } from './tmdb.types';
+import type {
+  TmdbCreditsResponse,
+  TmdbMovie,
+  TmdbSearchResponse,
+  TmdbUpcomingResponse,
+} from './tmdb.types';
 
 @Injectable()
 export class TmdbClient {
@@ -22,6 +27,20 @@ export class TmdbClient {
     }
   }
 
+  async getUpcomingMovies(page: number): Promise<TmdbUpcomingResponse> {
+    try {
+      const { data } = await this.http.get<TmdbUpcomingResponse>(
+        '/movie/upcoming',
+        {
+          params: { page },
+        },
+      );
+      return data;
+    } catch (error) {
+      this.rethrow(error);
+    }
+  }
+
   async getMovie(tmdbId: string): Promise<TmdbMovie> {
     try {
       const { data } = await this.http.get<TmdbMovie>(
@@ -30,6 +49,17 @@ export class TmdbClient {
       if (typeof data.id !== 'number' || typeof data.title !== 'string') {
         throw new TmdbUnavailableError();
       }
+      return data;
+    } catch (error) {
+      this.rethrow(error, { notFound: true });
+    }
+  }
+
+  async getMovieCredits(tmdbId: string): Promise<TmdbCreditsResponse> {
+    try {
+      const { data } = await this.http.get<TmdbCreditsResponse>(
+        `/movie/${encodeURIComponent(tmdbId)}/credits`,
+      );
       return data;
     } catch (error) {
       this.rethrow(error, { notFound: true });

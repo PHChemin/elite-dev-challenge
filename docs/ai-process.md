@@ -16,9 +16,9 @@ O enunciado pede ferramentas, o que a IA gerou e o que foi decisão humana.
 - Must: TMDb, mapa, quantidade inteira/meia antes dos assentos.
 - Ticketmaster, pista e estabelecimento ficam fora do Must.
 - Fonte Roboto. Paleta com Sucesso `#2D6A4F` para válido e pagamento aprovado.
-- Teto de ingressos por sessão, padrão 6. O organizador altera. Meia começa na metade da inteira.
+- Teto por compra na sessão, padrão 6. O organizador altera. Não é cota da conta. Meia começa na metade da inteira.
 - Retenção de 10 minutos no checkout.
-- Link do ingresso: GET público por `shareToken`. QR na página. Meus ingressos autenticado.
+- Link do ingresso: GET público por `shareToken`. QR na página (`code`). Meus ingressos autenticado. Hold pendente na mesma lista.
 - API em TDD: casos na issue, testes, implementação.
 - Portaria: um login por pessoa. A pessoa escolhe a sessão e lê o QR.
 - Registro do consumidor e cadastro de portaria pelo organizador são Should.
@@ -28,5 +28,7 @@ O enunciado pede ferramentas, o que a IA gerou e o que foi decisão humana.
 - PRD, SDD, visual, skills em `.agents/skills/`, texto das issues.
 - Monorepo `apps/api` + `apps/web` e schema Prisma.
 - Auth JWT na API: `POST /api/auth/login`, `GET /api/users/me`, guards de papel, testes Jest, seed dos quatro papéis no README.
+- Módulo `tickets/`: listagem do dono, share público, throttler no share; holds pendentes em `GET /api/reservations/holds/mine`.
+- Telas Meus ingressos, detalhe com QR e link, share público; nav e hold pendente na lista.
 - Docker Compose local, Compose de produção na droplet, dependências hoisted na raiz.
 - Prisma no Nest (`PrismaService`). Prisma Studio em `http://localhost:5555`. Swagger em `/api/docs`.

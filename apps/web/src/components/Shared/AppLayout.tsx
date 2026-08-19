@@ -28,6 +28,7 @@ export function AppLayout() {
   const navigate = useNavigate();
   const [menuOpened, { toggle, close }] = useDisclosure(false);
   const home = user ? homeForRole(user.role) : ROUTES.exhibitions;
+  const isCustomer = user?.role === 'customer';
 
   function handleLogout() {
     close();
@@ -49,9 +50,16 @@ export function AppLayout() {
     }
 
     return (
-      <AppNavLink to={ROUTES.exhibitions} stacked={stacked} onClick={close}>
-        {t('nav.exhibitions')}
-      </AppNavLink>
+      <>
+        <AppNavLink to={ROUTES.exhibitions} stacked={stacked} onClick={close}>
+          {t('nav.exhibitions')}
+        </AppNavLink>
+        {isCustomer && (
+          <AppNavLink to={ROUTES.tickets} stacked={stacked} onClick={close}>
+            {t('nav.tickets')}
+          </AppNavLink>
+        )}
+      </>
     );
   }
 
@@ -70,15 +78,63 @@ export function AppLayout() {
       </Button>
     </>
   ) : (
-    <Button
-      component={Link}
-      to={ROUTES.login}
-      size="compact-sm"
-      leftSection={<AppIcon path={mdiLogin} />}
-      onClick={close}
-    >
-      {t('nav.login')}
-    </Button>
+    <>
+      <Button
+        component={Link}
+        to={ROUTES.login}
+        variant="subtle"
+        size="compact-sm"
+        leftSection={<AppIcon path={mdiLogin} />}
+        onClick={close}
+      >
+        {t('nav.login')}
+      </Button>
+      <Button
+        component={Link}
+        to={ROUTES.tickets}
+        size="compact-sm"
+        onClick={close}
+      >
+        {t('nav.tickets')}
+      </Button>
+    </>
+  );
+
+  const drawerAuth = user ? (
+    <>
+      <AppBadge color="brand" w="fit-content">
+        {t(`common.roles.${user.role}`, { defaultValue: user.role })}
+      </AppBadge>
+      <Button
+        variant="subtle"
+        justify="flex-start"
+        leftSection={<AppIcon path={mdiLogout} />}
+        onClick={handleLogout}
+      >
+        {t('common.logout')}
+      </Button>
+    </>
+  ) : (
+    <>
+      <Button
+        component={Link}
+        to={ROUTES.tickets}
+        justify="flex-start"
+        onClick={close}
+      >
+        {t('nav.tickets')}
+      </Button>
+      <Button
+        component={Link}
+        to={ROUTES.login}
+        variant="subtle"
+        justify="flex-start"
+        leftSection={<AppIcon path={mdiLogin} />}
+        onClick={close}
+      >
+        {t('nav.login')}
+      </Button>
+    </>
   );
 
   return (
@@ -128,33 +184,7 @@ export function AppLayout() {
       >
         <Stack gap="lg" mt="md">
           <Stack gap="sm">{navLinks(true)}</Stack>
-          <Stack gap="sm">
-            {user ? (
-              <>
-                <AppBadge color="brand" w="fit-content">
-                  {t(`common.roles.${user.role}`, { defaultValue: user.role })}
-                </AppBadge>
-                <Button
-                  variant="subtle"
-                  justify="flex-start"
-                  leftSection={<AppIcon path={mdiLogout} />}
-                  onClick={handleLogout}
-                >
-                  {t('common.logout')}
-                </Button>
-              </>
-            ) : (
-              <Button
-                component={Link}
-                to={ROUTES.login}
-                justify="flex-start"
-                leftSection={<AppIcon path={mdiLogin} />}
-                onClick={close}
-              >
-                {t('nav.login')}
-              </Button>
-            )}
-          </Stack>
+          <Stack gap="sm">{drawerAuth}</Stack>
         </Stack>
       </Drawer>
 

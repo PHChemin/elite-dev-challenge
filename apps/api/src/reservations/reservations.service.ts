@@ -56,6 +56,7 @@ export class ReservationsService {
         id: event.exhibition.id,
         title: event.exhibition.title,
         posterUrl: event.exhibition.posterUrl,
+        runtimeMinutes: event.exhibition.runtimeMinutes,
       },
       freeSeatCount: countFreeSeats(seats, now, customerId),
     };
@@ -208,6 +209,21 @@ export class ReservationsService {
       throw new NotFoundException(this.i18n.t('reservations.notFound'));
     }
     return this.toHoldResponse(hold);
+  }
+
+  async listMineHolds(customerId: string) {
+    await this.releaseExpired(this.prisma);
+    const holds = await this.prisma.hold.findMany({
+      where: {
+        customerId,
+        holdStatus: HoldStatus.active,
+        expiresAt: { gt: nowUtc() },
+        order: null,
+      },
+      select: HOLD_DETAIL_SELECT,
+      orderBy: { expiresAt: 'asc' },
+    });
+    return holds.map((hold) => this.toHoldResponse(hold));
   }
 
   async releaseExpired(client: DbClient = this.prisma, eventId?: string) {

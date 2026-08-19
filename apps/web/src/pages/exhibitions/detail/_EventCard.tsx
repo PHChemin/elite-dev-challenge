@@ -7,18 +7,20 @@ import { AppBadge } from '@/components/UI/AppBadge';
 import { AppIcon } from '@/components/UI/AppIcon';
 import { toEventDetail } from '@/routes/routes';
 import { formatCents, formatTime } from '@/utils/format';
-import { eventSaleState } from '@/utils/event-sale';
+import { canBuyEvent, eventSaleState } from '@/utils/event-sale';
 
 export function EventCard({
   exhibitionId,
   event,
+  runtimeMinutes,
 }: {
   exhibitionId: string;
   event: PublicEvent;
+  runtimeMinutes?: number | null;
 }) {
   const { t } = useTranslation();
-  const sale = eventSaleState(event.startsAt);
-  const started = sale === 'started';
+  const sale = eventSaleState(event.startsAt, runtimeMinutes);
+  const started = !canBuyEvent(event.startsAt);
   const detailPath = toEventDetail(exhibitionId, event.id);
 
   return (
@@ -33,9 +35,14 @@ export function EventCard({
               {t('events.sale.startsSoon')}
             </AppBadge>
           )}
-          {started && (
+          {sale === 'in_progress' && (
+            <AppBadge color="success" variant="light">
+              {t('events.sale.inProgress')}
+            </AppBadge>
+          )}
+          {sale === 'ended' && (
             <AppBadge color="gray" variant="light">
-              {t('events.sale.started')}
+              {t('events.sale.ended')}
             </AppBadge>
           )}
         </Group>

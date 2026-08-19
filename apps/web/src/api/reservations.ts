@@ -8,3 +8,7 @@ export function createHold(payload: CreateHoldPayload): Promise<HoldResponse> {
 export function getHold(id: string): Promise<HoldResponse> {
   return apiGet<HoldResponse>(`/reservations/holds/${id}`);
 }
+
+export function listMyHolds(): Promise<HoldResponse[]> {
+  return apiGet<HoldResponse[]>('/reservations/holds/mine');
+}

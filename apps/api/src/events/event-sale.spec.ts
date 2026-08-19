@@ -1,6 +1,10 @@
 import { addMs, toDate } from '../common/dates';
 import { STARTS_SOON_MS } from './events.constants';
-import { hasEventStarted, isEventStartingSoon } from './event-sale';
+import {
+  eventSaleState,
+  hasEventStarted,
+  isEventStartingSoon,
+} from './event-sale';
 
 const NOW = toDate('2026-09-01T19:00:00.000Z');
 
@@ -17,6 +21,16 @@ describe('event-sale', () => {
     expect(isEventStartingSoon(addMs(NOW, 30 * 60 * 1000), NOW)).toBe(true);
     expect(isEventStartingSoon(addMs(NOW, 2 * STARTS_SOON_MS), NOW)).toBe(
       false,
+    );
+  });
+
+  it('marks a running session as in progress', () => {
+    expect(eventSaleState(NOW, NOW, 120)).toBe('in_progress');
+  });
+
+  it('marks a finished session as ended', () => {
+    expect(eventSaleState(addMs(NOW, -3 * 60 * 60 * 1000), NOW, 120)).toBe(
+      'ended',
     );
   });
 });

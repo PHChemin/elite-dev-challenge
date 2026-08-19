@@ -49,8 +49,8 @@ Landing institucional. Carrossel de destaques. Dark mode. Mapa em 3D.
 4. Criar / editar sessão (organizador): busca TMDb, preço inteira, meia preenchida com a metade (editável)
 5. Mapa de assentos
 6. Pagamento simulado (aprovar / recusar)
-7. Meus ingressos
-8. Ingresso (QR + copiar link)
+7. Meus ingressos — `/ingressos`: pedidos pendentes (hold) e ingressos confirmados; nav com botão primário deslogado
+8. Ingresso — `/ingressos/:id` (QR + copiar link) e `/ingresso/:shareToken` (público)
 9. Portaria: escolher sessão
 10. Portaria: câmera e código, com o nome da sessão no topo
 

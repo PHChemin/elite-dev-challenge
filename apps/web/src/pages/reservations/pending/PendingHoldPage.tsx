@@ -1,10 +1,16 @@
 import { Alert, Button, Group, Paper, Stack, Text, Title } from '@mantine/core';
+import { notifications } from '@mantine/notifications';
+import { mdiCheck, mdiClose } from '@mdi/js';
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { ApiError } from '@/api/client';
+import { payOrder } from '@/api/orders';
 import { getHold } from '@/api/reservations';
+import type { PaymentStatus } from '@/api/types';
 import { useApiResource } from '@/api/useApiResource';
 import { MoviePoster } from '@/components/Shared/MoviePoster';
+import { AppIcon } from '@/components/UI/AppIcon';
 import { AsyncSection } from '@/components/UI/AsyncSection';
 import { PageBreadcrumbs } from '@/components/UI/PageBreadcrumbs';
 import { ROUTES, toExhibitionDetail } from '@/routes/routes';
@@ -15,24 +21,59 @@ const POSTER_HEIGHT = 210;
 
 export function PendingHoldPage() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { holdId } = useParams<{ holdId: string }>();
   const load = useCallback(() => getHold(holdId ?? ''), [holdId]);
   const { data, loading, error } = useApiResource(load);
   const [clock, setClock] = useState(() =>
     data ? formatCountdown(data.expiresAt) : '10:00',
   );
+  const [declined, setDeclined] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const expired = clock === '00:00';
 
   useEffect(() => {
-    if (!data) {
+    if (!data || declined) {
       return;
     }
     const tick = () => setClock(formatCountdown(data.expiresAt));
     tick();
     const timer = window.setInterval(tick, 1000);
     return () => window.clearInterval(timer);
-  }, [data]);
+  }, [data, declined]);
 
-  if (!loading && error) {
+  async function handlePay(result: PaymentStatus) {
+    if (!holdId || expired || submitting) {
+      return;
+    }
+    setSubmitting(true);
+    try {
+      const paid = await payOrder({ holdId, result });
+      if (paid.paymentStatus === 'approved') {
+        notifications.show({
+          title: t('tickets.paymentApprovedTitle'),
+          message: t('tickets.paymentApproved'),
+          color: 'success',
+        });
+        void navigate(ROUTES.tickets);
+        return;
+      }
+      setDeclined(true);
+    } catch (cause) {
+      notifications.show({
+        title: t('errors.title'),
+        message:
+          cause instanceof ApiError
+            ? cause.message
+            : t('errors.api.requestFailed'),
+        color: 'brand.4',
+      });
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  if (!loading && error && !declined) {
     return (
       <Stack gap="lg">
         <Alert color="brand.4" title={t('errors.title')}>
@@ -46,6 +87,10 @@ export function PendingHoldPage() {
     );
   }
 
+  const titleKey = declined
+    ? 'reservations.pending.declinedTitle'
+    : 'reservations.pending.title';
+
   return (
     <Stack gap="lg">
       <AsyncSection loading={loading} error={null}>
@@ -58,7 +103,7 @@ export function PendingHoldPage() {
                   label: data.exhibition.title,
                   to: toExhibitionDetail(data.exhibition.id),
                 },
-                { label: t('reservations.pending.title') },
+                { label: t(titleKey) },
               ]}
             />
             <Paper p={{ base: 'md', sm: 'xl' }}>
@@ -72,7 +117,7 @@ export function PendingHoldPage() {
                   />
                   <Stack gap="sm" flex={1} miw={240}>
                     <Title order={1} fz={{ base: 'h3', sm: 'h2' }} ta="left">
-                      {t('reservations.pending.title')}
+                      {t(titleKey)}
                     </Title>
                     <Text>{data.exhibition.title}</Text>
                     <Text>{formatDateTime(data.event.startsAt)}</Text>
@@ -96,21 +141,65 @@ export function PendingHoldPage() {
                         ),
                       })}
                     </Text>
-                    <Text fw={700} c={clock === '00:00' ? 'brand.4' : 'black'}>
-                      {t('reservations.pending.timer', { time: clock })}
-                    </Text>
-                    {clock === '00:00' && (
-                      <Text c="dimmed">
-                        {t('reservations.pending.expired')}
-                      </Text>
+                    {declined && (
+                      <Alert color="brand.4">
+                        {t('reservations.pending.declinedBody')}
+                      </Alert>
                     )}
-                    <Button
-                      component={Link}
-                      to={toExhibitionDetail(data.exhibition.id)}
-                      variant="outline"
-                    >
-                      {t('reservations.pending.back')}
-                    </Button>
+                    {!declined && (
+                      <>
+                        <Text
+                          fw={700}
+                          c={expired ? 'brand.4' : 'black'}
+                        >
+                          {t('reservations.pending.timer', { time: clock })}
+                        </Text>
+                        {expired && (
+                          <Text c="dimmed">
+                            {t('reservations.pending.expired')}
+                          </Text>
+                        )}
+                        <Group gap="sm">
+                          <Button
+                            color="success"
+                            leftSection={<AppIcon path={mdiCheck} />}
+                            loading={submitting}
+                            disabled={expired}
+                            onClick={() => void handlePay('approved')}
+                          >
+                            {t('reservations.pending.approve')}
+                          </Button>
+                          <Button
+                            variant="outline"
+                            color="brand.4"
+                            leftSection={<AppIcon path={mdiClose} />}
+                            loading={submitting}
+                            disabled={expired}
+                            onClick={() => void handlePay('declined')}
+                          >
+                            {t('reservations.pending.decline')}
+                          </Button>
+                        </Group>
+                      </>
+                    )}
+                    {declined && (
+                      <Button
+                        component={Link}
+                        to={toExhibitionDetail(data.exhibition.id)}
+                        variant="outline"
+                      >
+                        {t('reservations.pending.back')}
+                      </Button>
+                    )}
+                    {!declined && expired && (
+                      <Button
+                        component={Link}
+                        to={toExhibitionDetail(data.exhibition.id)}
+                        variant="outline"
+                      >
+                        {t('reservations.pending.back')}
+                      </Button>
+                    )}
                   </Stack>
                 </Group>
               </Stack>

@@ -11,6 +11,7 @@ export const HOLD_EVENT_SELECT = {
       title: true,
       posterUrl: true,
       publishStatus: true,
+      runtimeMinutes: true,
     },
   },
 } satisfies Prisma.EventSelect;

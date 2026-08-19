@@ -1,5 +1,10 @@
 import { AxiosError, type AxiosInstance, type AxiosResponse } from 'axios';
-import { TMDB_FIGHT_CLUB, TMDB_SEARCH_OK } from './tmdb-fixtures';
+import {
+  TMDB_CREDITS_OK,
+  TMDB_FIGHT_CLUB,
+  TMDB_SEARCH_OK,
+  TMDB_UPCOMING_OK,
+} from './tmdb-fixtures';
 
 export { TMDB_FIGHT_CLUB, TMDB_SEARCH_OK };
 
@@ -27,8 +32,12 @@ export type TmdbAxiosMock = Pick<AxiosInstance, 'get'> & {
 export function createTmdbAxiosMock(options?: {
   search?: unknown;
   movie?: unknown;
+  upcoming?: unknown;
+  credits?: unknown;
   searchStatus?: number;
   movieStatus?: number;
+  upcomingStatus?: number;
+  creditsStatus?: number;
   unreachable?: boolean;
 }): TmdbAxiosMock {
   const get = jest.fn((url: string) => {
@@ -39,6 +48,24 @@ export function createTmdbAxiosMock(options?: {
     if (url.includes('/search/movie')) {
       const status = options?.searchStatus ?? 200;
       const data = options?.search ?? TMDB_SEARCH_OK;
+      if (status >= 400) {
+        return Promise.reject(httpError(status, data));
+      }
+      return Promise.resolve(asResponse(data, status));
+    }
+
+    if (url.includes('/movie/upcoming')) {
+      const status = options?.upcomingStatus ?? 200;
+      const data = options?.upcoming ?? TMDB_UPCOMING_OK;
+      if (status >= 400) {
+        return Promise.reject(httpError(status, data));
+      }
+      return Promise.resolve(asResponse(data, status));
+    }
+
+    if (url.includes('/credits')) {
+      const status = options?.creditsStatus ?? 200;
+      const data = options?.credits ?? TMDB_CREDITS_OK;
       if (status >= 400) {
         return Promise.reject(httpError(status, data));
       }
