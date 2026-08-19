@@ -15,6 +15,8 @@ export const ROUTES = {
   tickets: '/ingressos',
   ticketDetail: '/ingressos/:ticketId',
   ticketShare: '/ingresso/:shareToken',
+  gateSessions: '/portaria',
+  gateScan: '/portaria/sessoes/:eventId',
 } as const;
 
 export function toExhibitionDetail(id: string): string {
@@ -65,10 +67,20 @@ export function toTicketShare(shareToken: string): string {
   return `/ingresso/${shareToken}`;
 }
 
+export function toGateScan(eventId: string): string {
+  return `/portaria/sessoes/${eventId}`;
+}
+
 export function ticketShareUrl(shareToken: string): string {
   return `${window.location.origin}${toTicketShare(shareToken)}`;
 }
 
 export function homeForRole(role: Role): string {
-  return role === 'organizer' ? ROUTES.organizerExhibitions : ROUTES.exhibitions;
+  if (role === 'organizer') {
+    return ROUTES.organizerExhibitions;
+  }
+  if (role === 'gate') {
+    return ROUTES.gateSessions;
+  }
+  return ROUTES.exhibitions;
 }

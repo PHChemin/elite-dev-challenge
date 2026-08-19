@@ -49,6 +49,14 @@ export function AppLayout() {
       );
     }
 
+    if (user?.role === 'gate') {
+      return (
+        <AppNavLink to={ROUTES.gateSessions} stacked={stacked} onClick={close}>
+          {t('nav.gate')}
+        </AppNavLink>
+      );
+    }
+
     return (
       <>
         <AppNavLink to={ROUTES.exhibitions} stacked={stacked} onClick={close}>

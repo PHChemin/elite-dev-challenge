@@ -242,6 +242,41 @@ export type UpdateEventPayload = Partial<CreateEventItemPayload> & {
   publishStatus?: PublishStatus;
 };
 
+export type GateScanStatus =
+  | 'valid'
+  | 'invalid'
+  | 'already_used'
+  | 'wrong_event';
+
+export type GateEventSaleState = 'open' | 'starts_soon' | 'in_progress';
+
+export type GateEventItem = {
+  id: string;
+  startsAt: string;
+  venueName: string;
+  venueAddress: string | null;
+  exhibition: {
+    title: string;
+    posterUrl: string | null;
+    runtimeMinutes: number | null;
+  };
+  saleState: GateEventSaleState;
+};
+
+export type GateEventsPage = {
+  items: GateEventItem[];
+  page: number;
+  pageSize: number;
+  total: number;
+  totalPages: number;
+};
+
+export type GateScanResult = {
+  status: GateScanStatus;
+  seatLabel?: string;
+  kind?: string;
+};
+
 export type FieldErrors = Record<string, string[]>;
 
 export type ApiErrorBody = {

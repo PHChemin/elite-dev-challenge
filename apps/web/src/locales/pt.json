@@ -23,6 +23,7 @@
     "tickets": "Meus ingressos",
     "myExhibitions": "Meus cartazes",
     "login": "Entrar",
+    "gate": "Portaria",
     "menu": "Menu",
     "closeMenu": "Fechar menu"
   },
@@ -286,6 +287,34 @@
     "share": {
       "title": "Ingresso compartilhado",
       "back": "Ver filmes em cartaz"
+    }
+  },
+  "gate": {
+    "sessions": {
+      "title": "Selecionar sessão",
+      "subtitle": "Escolha qual sessão você irá monitorar na portaria.",
+      "empty": "Não há sessões ativas no momento.",
+      "open": "Abrir validação"
+    },
+    "scan": {
+      "title": "Validação de ingresso",
+      "loadingSession": "Carregando sessão…",
+      "changeSession": "Trocar sessão",
+      "camera": "Leitura por câmera",
+      "startCamera": "Iniciar câmera",
+      "stopCamera": "Parar câmera",
+      "manual": "Digitar código",
+      "codeLabel": "Código do ingresso",
+      "codePlaceholder": "Cole ou digite o código do QR",
+      "validate": "Validar",
+      "next": "Validar próximo ingresso",
+      "seat": "Assento {{seat}}",
+      "result": {
+        "valid": "Válido",
+        "invalid": "Inválido",
+        "already_used": "Já utilizado",
+        "wrong_event": "Evento errado"
+      }
     }
   },
   "errors": {

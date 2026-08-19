@@ -14,6 +14,8 @@ import { PendingHoldPage } from '@/pages/reservations/pending/PendingHoldPage';
 import { TicketDetailPage } from '@/pages/tickets/detail/TicketDetailPage';
 import { TicketsListPage } from '@/pages/tickets/list/TicketsListPage';
 import { TicketSharePage } from '@/pages/tickets/share/TicketSharePage';
+import { GateSessionsPage } from '@/pages/gate/list/GateSessionsPage';
+import { GateScanPage } from '@/pages/gate/scan/GateScanPage';
 import { RequireRole } from './RequireRole';
 import { ROUTES } from './routes';
 
@@ -98,6 +100,22 @@ export function AppRoutes() {
           element={
             <RequireRole roles={['organizer']}>
               <EventFormPage />
+            </RequireRole>
+          }
+        />
+        <Route
+          path={ROUTES.gateSessions}
+          element={
+            <RequireRole roles={['gate']}>
+              <GateSessionsPage />
+            </RequireRole>
+          }
+        />
+        <Route
+          path={ROUTES.gateScan}
+          element={
+            <RequireRole roles={['gate']}>
+              <GateScanPage />
             </RequireRole>
           }
         />
