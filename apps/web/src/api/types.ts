@@ -99,6 +99,30 @@ export type CreateHoldPayload = {
   halfCount: number;
 };
 
+export type TicketKind = 'full' | 'half';
+
+export type PaymentStatus = 'approved' | 'declined';
+
+export type PayOrderPayload = {
+  holdId: string;
+  result: PaymentStatus;
+};
+
+export type OrderTicket = {
+  id: string;
+  seatLabel: string;
+  kind: TicketKind;
+};
+
+export type OrderResponse = {
+  id: string;
+  holdId: string;
+  paymentStatus: PaymentStatus;
+  totalCents: number;
+  paidAt: string | null;
+  tickets: OrderTicket[];
+};
+
 export type OrganizerEvent = PublicEvent & {
   publishStatus: PublishStatus;
 };

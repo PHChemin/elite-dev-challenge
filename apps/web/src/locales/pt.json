@@ -232,7 +232,14 @@
       "seats": "Assentos: {{seats}}",
       "timer": "Tempo restante {{time}}",
       "expired": "O prazo acabou. Escolha os assentos de novo.",
-      "back": "Voltar ao cartaz"
+      "back": "Voltar ao cartaz",
+      "approve": "Aprovar pagamento",
+      "decline": "Recusar",
+      "approvedTitle": "Pagamento aprovado",
+      "declinedTitle": "Pagamento recusado",
+      "declinedBody": "Os assentos voltaram a ficar livres. Escolha de novo para tentar outra vez.",
+      "ticket": "{{seat}} · {{kind}}",
+      "home": "Voltar ao início"
     }
   },
   "errors": {
