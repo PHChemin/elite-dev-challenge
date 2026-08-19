@@ -99,8 +99,10 @@ CRUD de cartaz e sessão: `POST /api/exhibitions`, `GET /api/exhibitions`, `GET 
 
 Mapa e retenção: `GET /api/events/:id` (sessão publicada e `freeSeatCount`), `GET /api/events/:id/seats` (customer), `POST /api/reservations/holds`, `GET /api/reservations/holds/:id`. O consumidor informa inteira e meia, escolhe o mapa 8×12 e retém os lugares por 10 minutos.
 
-Pagamento simulado: `POST /api/orders/pay` com `approved` ou `declined`. Aprovação gera um ingresso por assento. Recusa não vende e libera o lugar. Teto é por compra na sessão (padrão 6), não cota da conta. Capacidade da sala é outra regra.
+- Pagamento simulado: `POST /api/orders/pay` com `approved` ou `declined`. Aprovação gera um ingresso por assento. Recusa não vende e libera o lugar. Teto é por compra na sessão (padrão 6), não cota da conta. Capacidade da sala é outra regra.
+
+Ingressos: `GET /api/tickets/mine` (customer), `GET /api/tickets/share/:shareToken` (público, rate limit). `GET /api/reservations/holds/mine` lista holds pendentes. QR no web a partir do `code`. Telas `/ingressos`, `/ingressos/:id` e `/ingresso/:shareToken`. Após pagamento aprovado, o consumidor vai para Meus ingressos.
 
 ## O que falta
 
-Ingresso com QR, portaria e sessão no seed. Ver [issues](docs/github-issues.md).
+Portaria e sessão no seed. Ver [issues](docs/github-issues.md).

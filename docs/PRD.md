@@ -95,10 +95,10 @@ O objetivo do Must é o fluxo ponta a ponta: login por papel, sessão com mapa, 
 
 **Critérios de Aceitação:**
 
-- [ ] Meus ingressos exige JWT do dono.
-- [ ] `code` e `shareToken` são opacos e únicos.
-- [ ] `GET` público por `shareToken` devolve sessão, assento, kind e QR.
-- [ ] A resposta pública não inclui e-mail, senha nem outros ingressos.
+- [x] Meus ingressos exige JWT do dono.
+- [x] `code` e `shareToken` são opacos e únicos.
+- [x] `GET` público por `shareToken` devolve sessão, assento, kind e QR.
+- [x] A resposta pública não inclui e-mail, senha nem outros ingressos.
 
 #### US06 — Portaria
 
@@ -177,7 +177,7 @@ Won’t do enunciado e do prazo. Pista e Ticketmaster. Escala de staff por sess�
 1. Lista cartazes publicados → detalhe do cartaz.
 2. Escolhe a sessão. Quantidade inteira e meia → mapa.
 3. Prosseguir → hold 10 min → pagamento.
-4. Sucesso → ingresso, QR, link.
+4. Sucesso → Meus ingressos: QR por assento e link de compartilhamento. Hold pendente aparece na lista até pagar ou expirar.
 
 ### Organizador publica
 
