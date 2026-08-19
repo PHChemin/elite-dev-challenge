@@ -4,7 +4,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { Role, UserStatus } from '@prisma/client';
 import { hash } from 'bcryptjs';
 import { I18nService } from 'nestjs-i18n';
-import { SEED_USERS } from '../../prisma/seed-users';
+import { SEED_USERS, seedUserIdFromEmail } from '../../prisma/seed-users';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuthService } from './auth.service';
 
@@ -36,7 +36,7 @@ describe('AuthService', () => {
   beforeAll(async () => {
     for (const seed of SEED_USERS) {
       usersByEmail.set(seed.email, {
-        id: `user-${seed.role}`,
+        id: seedUserIdFromEmail(seed.email),
         email: seed.email,
         passwordHash: await hash(seed.password, 4),
         role: seed.role,
@@ -80,14 +80,15 @@ describe('AuthService', () => {
         password: seed.password,
       });
 
-      expect(result.accessToken).toBe(`token-for-user-${seed.role}`);
+      const userId = seedUserIdFromEmail(seed.email);
+      expect(result.accessToken).toBe(`token-for-${userId}`);
       expect(result.user).toEqual({
-        id: `user-${seed.role}`,
+        id: userId,
         email: seed.email,
         role: seed.role,
       });
       expect(jwt.signAsync).toHaveBeenCalledWith({
-        sub: `user-${seed.role}`,
+        sub: userId,
         role: seed.role,
       });
     },

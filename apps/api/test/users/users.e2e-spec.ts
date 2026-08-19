@@ -2,7 +2,7 @@ import { INestApplication } from '@nestjs/common';
 import { Role, UserStatus } from '@prisma/client';
 import request from 'supertest';
 import { App } from 'supertest/types';
-import { SEED_USERS } from '../../prisma/seed-users';
+import { SEED_USERS, seedUserIdFromEmail } from '../../prisma/seed-users';
 import {
   createE2eApp,
   readLoginBody,
@@ -39,7 +39,7 @@ describe('Users (e2e)', () => {
 
       const body = readProfileBody(response.body);
       expect(body).toEqual({
-        id: `user-${seed.role}`,
+        id: seedUserIdFromEmail(seed.email),
         email: seed.email,
         role: seed.role,
         status: UserStatus.active,

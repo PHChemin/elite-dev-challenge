@@ -3,7 +3,7 @@ import { Role } from '@prisma/client';
 import request from 'supertest';
 import { App } from 'supertest/types';
 import { Auth } from '../../src/auth/decorators/auth.decorator';
-import { SEED_USERS } from '../../prisma/seed-users';
+import { SEED_USERS, seedUserIdFromEmail } from '../../prisma/seed-users';
 import {
   createE2eApp,
   decodeJwtPayload,
@@ -45,14 +45,15 @@ describe('Auth (e2e)', () => {
 
       const body = readLoginBody(response.body);
       expect(body.accessToken).toEqual(expect.any(String));
+      const userId = seedUserIdFromEmail(seed.email);
       expect(body.user).toEqual({
-        id: `user-${seed.role}`,
+        id: userId,
         email: seed.email,
         role: seed.role,
       });
 
       const payload = decodeJwtPayload(body.accessToken);
-      expect(payload.sub).toBe(`user-${seed.role}`);
+      expect(payload.sub).toBe(userId);
       expect(payload.role).toBe(seed.role);
     },
   );
