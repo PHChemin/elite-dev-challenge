@@ -14,3 +14,4 @@ apps/api/generated/
 .vscode/*
 !.vscode/settings.json
 *.swp
+docs/pr-*.md
