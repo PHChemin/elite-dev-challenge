@@ -379,4 +379,28 @@ describe('Reservations (e2e)', () => {
       })
       .expect(403);
   });
+
+  it('GET /api/reservations/holds/mine lists the active pending hold', async () => {
+    const token = await loginAs(server, Role.customer);
+    const hold = await request(server)
+      .post('/api/reservations/holds')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        eventId: publishedEvent.id,
+        seatLabels: ['A1', 'A2'],
+        fullCount: 1,
+        halfCount: 1,
+      })
+      .expect(201);
+
+    const response = await request(server)
+      .get('/api/reservations/holds/mine')
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200);
+
+    const body = response.body as { id: string; expiresAt: string }[];
+    expect(body).toHaveLength(1);
+    expect(body[0].id).toBe((hold.body as { id: string }).id);
+    expect(body[0].expiresAt).toEqual(expect.any(String));
+  });
 });

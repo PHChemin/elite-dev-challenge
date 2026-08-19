@@ -210,6 +210,21 @@ export class ReservationsService {
     return this.toHoldResponse(hold);
   }
 
+  async listMineHolds(customerId: string) {
+    await this.releaseExpired(this.prisma);
+    const holds = await this.prisma.hold.findMany({
+      where: {
+        customerId,
+        holdStatus: HoldStatus.active,
+        expiresAt: { gt: nowUtc() },
+        order: null,
+      },
+      select: HOLD_DETAIL_SELECT,
+      orderBy: { expiresAt: 'asc' },
+    });
+    return holds.map((hold) => this.toHoldResponse(hold));
+  }
+
   async releaseExpired(client: DbClient = this.prisma, eventId?: string) {
     const expired = await client.hold.findMany({
       where: {

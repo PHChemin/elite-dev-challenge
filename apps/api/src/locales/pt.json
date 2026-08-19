@@ -83,6 +83,9 @@
   "orders": {
     "alreadyPaid": "Este pedido já foi pago"
   },
+  "tickets": {
+    "notFound": "Ingresso não encontrado"
+  },
   "exhibitions": {
     "notFound": "Cartaz não encontrado",
     "notOwner": "Cartaz de outro organizador",
@@ -91,6 +94,7 @@
   },
   "errors": {
     "internal": "Erro interno",
-    "databaseUnavailable": "Banco indisponível"
+    "databaseUnavailable": "Banco indisponível",
+    "tooManyRequests": "Muitas requisições. Tente de novo em instantes."
   }
 }

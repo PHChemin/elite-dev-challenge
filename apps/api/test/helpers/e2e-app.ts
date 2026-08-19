@@ -75,6 +75,7 @@ export type SeedTicketRow = {
   id: string;
   seatId: string;
   cancelledAt: Date | null;
+  usedAt?: Date | null;
   orderId?: string;
   eventId?: string;
   customerId?: string;
@@ -128,6 +129,13 @@ type HoldWhere = {
   eventId?: string;
   holdStatus?: HoldStatus;
   expiresAt?: { lte?: Date; gt?: Date };
+  order?: null;
+};
+
+type TicketWhere = {
+  customerId?: string;
+  shareToken?: string;
+  cancelledAt?: null;
 };
 
 type EventNestedSelect = {
@@ -533,12 +541,21 @@ export function createPrismaMock(
         }: {
           where?: HoldWhere;
           select?: object;
-        } = {}) =>
-          Promise.resolve(
-            holdRows
-              .filter((row) => matchesHold(row, where))
-              .map((row) => pickSelected(row, select)),
-          ),
+        } = {}) => {
+          let rows = holdRows.filter((row) => matchesHold(row, where));
+          if (where?.order === null) {
+            rows = rows.filter(
+              (row) => !orderRows.some((order) => order.holdId === row.id),
+            );
+          }
+          return Promise.resolve(
+            rows.map((row) =>
+              select && ('holdSeats' in select || 'event' in select)
+                ? mapHoldDetail(row, select)
+                : pickSelected(row, select),
+            ),
+          );
+        },
       ),
       findFirst: jest.fn(
         ({ where, select }: { where?: HoldWhere; select?: object }) => {
@@ -722,8 +739,104 @@ export function createPrismaMock(
           return Promise.resolve(picked);
         },
       ),
+      findMany: jest.fn(
+        ({
+          where,
+          select,
+          orderBy,
+        }: {
+          where?: TicketWhere;
+          select?: object;
+          orderBy?: unknown;
+        } = {}) => {
+          let rows = ticketRows.filter((row) => matchesTicket(row, where));
+          if (orderBy) {
+            rows = sortTickets(rows);
+          }
+          return Promise.resolve(
+            rows.map((row) => mapTicketDetail(row, select)),
+          );
+        },
+      ),
+      findFirst: jest.fn(
+        ({
+          where,
+          select,
+        }: {
+          where?: TicketWhere;
+          select?: object;
+        }) => {
+          const row = ticketRows.find((ticket) => matchesTicket(ticket, where));
+          return Promise.resolve(row ? mapTicketDetail(row, select) : null);
+        },
+      ),
     },
   };
+
+  function matchesTicket(row: SeedTicketRow, where?: TicketWhere): boolean {
+    if (!where) {
+      return true;
+    }
+    if (where.customerId !== undefined && row.customerId !== where.customerId) {
+      return false;
+    }
+    if (where.shareToken !== undefined && row.shareToken !== where.shareToken) {
+      return false;
+    }
+    if (where.cancelledAt === null && row.cancelledAt !== null) {
+      return false;
+    }
+    return true;
+  }
+
+  function sortTickets(rows: SeedTicketRow[]) {
+    return [...rows].sort((left, right) => {
+      const leftEvent = eventRows.find((event) => event.id === left.eventId);
+      const rightEvent = eventRows.find((event) => event.id === right.eventId);
+      const leftTime = leftEvent?.startsAt.getTime() ?? 0;
+      const rightTime = rightEvent?.startsAt.getTime() ?? 0;
+      if (leftTime !== rightTime) {
+        return rightTime - leftTime;
+      }
+      const leftSeat = seatRows.find((seat) => seat.id === left.seatId);
+      const rightSeat = seatRows.find((seat) => seat.id === right.seatId);
+      return (leftSeat?.label ?? '').localeCompare(
+        rightSeat?.label ?? '',
+        'en',
+      );
+    });
+  }
+
+  function mapTicketDetail(row: SeedTicketRow, select?: object | null) {
+    const picked = pickSelected(row, select);
+    const seat = seatRows.find((item) => item.id === row.seatId);
+    const event = eventRows.find((item) => item.id === row.eventId);
+    const exhibition = event
+      ? exhibitionRows.find((item) => item.id === event.exhibitionId)
+      : undefined;
+    const mapped = { ...picked } as Record<string, unknown>;
+    if (select && 'seat' in select) {
+      mapped.seat = { label: seat?.label ?? '' };
+    }
+    if (select && 'event' in select && event) {
+      const eventSelect =
+        select.event === true
+          ? undefined
+          : (select.event as { select?: object }).select;
+      mapped.event = {
+        ...pickSelected(event, eventSelect),
+        exhibition: exhibition
+          ? pickSelected(
+              exhibition,
+              eventSelect && 'exhibition' in eventSelect
+                ? (eventSelect.exhibition as { select?: object }).select
+                : undefined,
+            )
+          : null,
+      };
+    }
+    return mapped;
+  }
 
   function mapOccupancySeat(seat: SeedSeatRow) {
     const ticket = ticketRows.find((row) => row.seatId === seat.id) ?? null;

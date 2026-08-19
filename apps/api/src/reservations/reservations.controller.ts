@@ -44,6 +44,16 @@ export class ReservationsController {
     return this.reservationsService.createHold(user.id, dto);
   }
 
+  @Get('reservations/holds/mine')
+  @Auth(Role.customer)
+  @ApiOperation({ summary: 'Lista pedidos pendentes do consumidor' })
+  @ApiOkResponse()
+  @ApiUnauthorizedResponse({ description: 'Token ausente ou inválido' })
+  @ApiForbiddenResponse({ description: 'Papel insuficiente' })
+  listMineHolds(@CurrentUser() user: AuthUser) {
+    return this.reservationsService.listMineHolds(user.id);
+  }
+
   @Get('reservations/holds/:id')
   @Auth(Role.customer)
   @ApiOperation({ summary: 'Pedido pendente do consumidor' })
