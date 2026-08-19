@@ -7,7 +7,7 @@ import {
   TicketKind,
 } from '@prisma/client';
 import { hash } from 'bcryptjs';
-import { SEAT_LABELS } from '../src/events/events.constants';
+import { SEAT_LABELS } from './seed.constants';
 import { SEED_DEMO, SEED_USERS } from './seed-users';
 
 const prisma = new PrismaClient();
