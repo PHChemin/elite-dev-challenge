@@ -40,6 +40,9 @@
     "eventId": {
       "invalid": "Informe a sessão"
     },
+    "code": {
+      "invalid": "Informe o código do ingresso"
+    },
     "seatLabels": {
       "invalid": "Escolha os assentos",
       "duplicate": "Há assentos repetidos"
@@ -91,6 +94,10 @@
   },
   "tickets": {
     "notFound": "Ingresso não encontrado"
+  },
+  "gate": {
+    "noOrganizer": "Portaria sem organizador vinculado",
+    "eventNotAllowed": "Sessão não permitida para esta portaria"
   },
   "exhibitions": {
     "notFound": "Cartaz não encontrado",

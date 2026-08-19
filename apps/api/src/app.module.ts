@@ -11,6 +11,7 @@ import { EventsModule } from './events/events.module';
 import { ExhibitionsModule } from './exhibitions/exhibitions.module';
 import { OrdersModule } from './orders/orders.module';
 import { ReservationsModule } from './reservations/reservations.module';
+import { GateModule } from './gate/gate.module';
 import { LocalesJsonLoader } from './locales/locales-json.loader';
 import { PrismaModule } from './prisma/prisma.module';
 import { TicketsModule } from './tickets/tickets.module';
@@ -45,6 +46,7 @@ import { UsersModule } from './users/users.module';
     ReservationsModule,
     OrdersModule,
     TicketsModule,
+    GateModule,
   ],
   controllers: [AppController],
 })

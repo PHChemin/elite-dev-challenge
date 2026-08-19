@@ -16,7 +16,7 @@ import { AppModule } from '../../src/app.module';
 import { setupApp } from '../../src/common/setup-app';
 import { SEAT_LABELS } from '../../src/events/events.constants';
 import { PrismaService } from '../../src/prisma/prisma.service';
-import { SEED_USERS } from '../../prisma/seed-users';
+import { SEED_USERS, seedUserIdFromEmail } from '../../prisma/seed-users';
 import { createTmdbAxiosMock, type TmdbAxiosMock } from './tmdb-axios';
 
 export type SeedUserRow = {
@@ -80,6 +80,7 @@ export type SeedTicketRow = {
   seatId: string;
   cancelledAt: Date | null;
   usedAt?: Date | null;
+  validatedByUserId?: string | null;
   orderId?: string;
   eventId?: string;
   customerId?: string;
@@ -127,6 +128,10 @@ type EventWhere = {
   startsAt?: Date;
   venueName?: string;
   NOT?: { id?: string };
+  exhibition?: {
+    organizerId?: string;
+    publishStatus?: PublishStatus;
+  };
 };
 
 type HoldWhere = {
@@ -141,7 +146,11 @@ type HoldWhere = {
 type TicketWhere = {
   customerId?: string;
   shareToken?: string;
+  code?: string;
+  eventId?: string;
   cancelledAt?: null;
+  id?: string;
+  usedAt?: null;
 };
 
 type EventNestedSelect = {
@@ -168,7 +177,7 @@ export async function createSeedUsers(): Promise<SeedUserRow[]> {
   const users: SeedUserRow[] = [];
   for (const seed of SEED_USERS) {
     users.push({
-      id: `user-${seed.role}`,
+      id: seedUserIdFromEmail(seed.email),
       email: seed.email,
       passwordHash: await hash(seed.password, 4),
       role: seed.role,
@@ -210,7 +219,8 @@ function matchesExhibition(
   if (where?.events?.some !== undefined) {
     const hasEvent = eventRows.some(
       (event) =>
-        event.exhibitionId === row.id && matchesEvent(event, where.events?.some),
+        event.exhibitionId === row.id &&
+        matchesEvent(event, where.events?.some),
     );
     if (!hasEvent) {
       return false;
@@ -219,8 +229,13 @@ function matchesExhibition(
   return true;
 }
 
-function matchesEvent(row: SeedEventRow, where?: EventWhere): boolean {
-  return (
+function matchesEvent(
+  row: SeedEventRow,
+  where?: EventWhere,
+  eventRows: SeedEventRow[] = [],
+  exhibitionRows: SeedExhibitionRow[] = [],
+): boolean {
+  const base =
     (where?.id === undefined || row.id === where.id) &&
     (where?.exhibitionId === undefined ||
       row.exhibitionId === where.exhibitionId) &&
@@ -229,8 +244,33 @@ function matchesEvent(row: SeedEventRow, where?: EventWhere): boolean {
     (where?.startsAt === undefined ||
       row.startsAt.getTime() === where.startsAt.getTime()) &&
     (where?.venueName === undefined || row.venueName === where.venueName) &&
-    (where?.NOT?.id === undefined || row.id !== where.NOT.id)
+    (where?.NOT?.id === undefined || row.id !== where.NOT.id);
+
+  if (!base) {
+    return false;
+  }
+  if (!where?.exhibition) {
+    return true;
+  }
+  const exhibition = exhibitionRows.find(
+    (item) => item.id === row.exhibitionId,
   );
+  if (!exhibition) {
+    return false;
+  }
+  if (
+    where.exhibition.organizerId !== undefined &&
+    exhibition.organizerId !== where.exhibition.organizerId
+  ) {
+    return false;
+  }
+  if (
+    where.exhibition.publishStatus !== undefined &&
+    exhibition.publishStatus !== where.exhibition.publishStatus
+  ) {
+    return false;
+  }
+  return true;
 }
 
 export function createPrismaMock(
@@ -290,10 +330,15 @@ export function createPrismaMock(
     ) as EventNestedSelect;
     const nested = sortEvents(
       eventRows.filter((event) =>
-        matchesEvent(event, {
-          exhibitionId: row.id,
-          ...nestedArgs.where,
-        }),
+        matchesEvent(
+          event,
+          {
+            exhibitionId: row.id,
+            ...nestedArgs.where,
+          },
+          eventRows,
+          exhibitionRows,
+        ),
       ),
       nestedArgs.orderBy,
     );
@@ -303,6 +348,26 @@ export function createPrismaMock(
         pickSelected(event, nestedArgs.select ?? undefined),
       ),
     };
+  };
+
+  const mapEventDetail = (
+    row: SeedEventRow,
+    select?: Prisma.EventSelect & {
+      exhibition?: boolean | { select?: Prisma.ExhibitionSelect };
+    },
+  ) => {
+    const picked = pickSelected(row, select);
+    if (select?.exhibition) {
+      const exhibition = exhibitionRows.find(
+        (item) => item.id === row.exhibitionId,
+      );
+      const nestedSelect =
+        select.exhibition === true ? undefined : select.exhibition.select;
+      (picked as unknown as { exhibition: unknown }).exhibition = exhibition
+        ? pickSelected(exhibition, nestedSelect)
+        : null;
+    }
+    return picked;
   };
 
   const models = {
@@ -447,10 +512,12 @@ export function createPrismaMock(
           select?: Prisma.EventSelect;
         } = {}) => {
           const rows = sortEvents(
-            eventRows.filter((row) => matchesEvent(row, where)),
+            eventRows.filter((row) =>
+              matchesEvent(row, where, eventRows, exhibitionRows),
+            ),
             orderBy,
           );
-          return rows.map((row) => pickSelected(row, select));
+          return rows.map((row) => mapEventDetail(row, select));
         },
       ),
       findFirst: jest.fn(
@@ -461,8 +528,10 @@ export function createPrismaMock(
           where?: EventWhere;
           select?: Prisma.EventSelect;
         }) => {
-          const row = eventRows.find((event) => matchesEvent(event, where));
-          return row ? pickSelected(row, select) : null;
+          const row = eventRows.find((event) =>
+            matchesEvent(event, where, eventRows, exhibitionRows),
+          );
+          return row ? mapEventDetail(row, select) : null;
         },
       ),
       findUnique: jest.fn(
@@ -480,22 +549,24 @@ export function createPrismaMock(
           if (!row) {
             return null;
           }
-          const picked = pickSelected(row, select);
-          if (select?.exhibition) {
-            const exhibition = exhibitionRows.find(
-              (item) => item.id === row.exhibitionId,
+          const picked = mapEventDetail(row, select);
+          if (select?.seats) {
+            const seats = seatRows.filter((seat) => seat.eventId === row.id);
+            (picked as unknown as { seats: unknown }).seats = seats.map((seat) =>
+              pickSelected(
+                seat,
+                select.seats === true ? undefined : select.seats.select,
+              ),
             );
-            const nestedSelect =
-              select.exhibition === true ? undefined : select.exhibition.select;
-            (picked as unknown as { exhibition: unknown }).exhibition =
-              exhibition ? pickSelected(exhibition, nestedSelect) : null;
           }
           return picked;
         },
       ),
       count: jest.fn(
         ({ where }: { where?: EventWhere } = {}) =>
-          eventRows.filter((row) => matchesEvent(row, where)).length,
+          eventRows.filter((row) =>
+            matchesEvent(row, where, eventRows, exhibitionRows),
+          ).length,
       ),
       create: jest.fn(
         ({
@@ -817,12 +888,51 @@ export function createPrismaMock(
           return Promise.resolve(row ? mapTicketDetail(row, select) : null);
         },
       ),
+      updateMany: jest.fn(
+        ({
+          where,
+          data,
+        }: {
+          where?: TicketWhere;
+          data: {
+            usedAt?: Date | null;
+            validatedByUserId?: string | null;
+          };
+        }) => {
+          let count = 0;
+          for (const row of ticketRows) {
+            if (!matchesTicket(row, where)) {
+              continue;
+            }
+            if (data.usedAt !== undefined) {
+              row.usedAt = data.usedAt;
+            }
+            if (data.validatedByUserId !== undefined) {
+              row.validatedByUserId = data.validatedByUserId;
+            }
+            count += 1;
+          }
+          return Promise.resolve({ count });
+        },
+      ),
     },
   };
 
   function matchesTicket(row: SeedTicketRow, where?: TicketWhere): boolean {
     if (!where) {
       return true;
+    }
+    if (where.id !== undefined && row.id !== where.id) {
+      return false;
+    }
+    if (where.code !== undefined && row.code !== where.code) {
+      return false;
+    }
+    if (where.eventId !== undefined && row.eventId !== where.eventId) {
+      return false;
+    }
+    if (where.usedAt === null && row.usedAt != null) {
+      return false;
     }
     if (where.customerId !== undefined && row.customerId !== where.customerId) {
       return false;
