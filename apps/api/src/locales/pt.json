@@ -36,6 +36,19 @@
     },
     "events": {
       "invalid": "Informe de 1 a 62 eventos"
+    },
+    "eventId": {
+      "invalid": "Informe a sessão"
+    },
+    "seatLabels": {
+      "invalid": "Escolha os assentos",
+      "duplicate": "Há assentos repetidos"
+    },
+    "fullCount": {
+      "invalid": "Informe a quantidade de inteiras"
+    },
+    "halfCount": {
+      "invalid": "Informe a quantidade de meias"
     }
   },
   "auth": {
@@ -50,6 +63,16 @@
     "notFound": "Evento não encontrado",
     "notOwner": "Evento de outro organizador",
     "scheduleConflict": "Já existe evento neste horário e local"
+  },
+  "reservations": {
+    "notFound": "Pedido não encontrado",
+    "notOwner": "Pedido de outro consumidor",
+    "seatConflict": "Um ou mais assentos já foram retidos",
+    "capExceeded": "A quantidade passa do teto desta sessão",
+    "notEnoughSeats": "Só há {count} lugares livres nesta sessão.",
+    "quantityMismatch": "A quantidade de inteira e meia deve ser igual ao número de assentos",
+    "unknownSeats": "Há assentos que não existem nesta sessão",
+    "eventStarted": "Esta sessão já começou"
   },
   "exhibitions": {
     "notFound": "Cartaz não encontrado",

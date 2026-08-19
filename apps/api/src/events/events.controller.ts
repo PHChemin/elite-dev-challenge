@@ -1,4 +1,12 @@
-import { Body, Controller, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiConflictResponse,
   ApiCreatedResponse,
@@ -12,7 +20,9 @@ import {
 import { Role } from '@prisma/client';
 import { Auth } from '../auth/decorators/auth.decorator';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { OptionalJwtAuthGuard } from '../auth/guards/optional-jwt-auth.guard';
 import type { AuthUser } from '../auth/types/auth-user';
+import { ReservationsService } from '../reservations/reservations.service';
 import { CreateEventsDto } from './dto/create-events.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { EventsService } from './events.service';
@@ -20,7 +30,22 @@ import { EventsService } from './events.service';
 @ApiTags('events')
 @Controller()
 export class EventsController {
-  constructor(private readonly eventsService: EventsService) {}
+  constructor(
+    private readonly eventsService: EventsService,
+    private readonly reservationsService: ReservationsService,
+  ) {}
+
+  @Get('events/:id')
+  @UseGuards(OptionalJwtAuthGuard)
+  @ApiOperation({ summary: 'Detalhe público da sessão publicada' })
+  @ApiOkResponse()
+  @ApiNotFoundResponse({ description: 'Sessão não encontrada' })
+  findPublished(@Param('id') id: string, @CurrentUser() user?: AuthUser) {
+    return this.reservationsService.findPublishedEvent(
+      id,
+      user?.role === Role.customer ? user.id : undefined,
+    );
+  }
 
   @Post('exhibitions/:exhibitionId/events')
   @Auth(Role.organizer)

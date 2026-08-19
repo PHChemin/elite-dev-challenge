@@ -14,6 +14,8 @@ export const SEAT_LABELS: string[] = SEAT_ROWS.flatMap((row) =>
   Array.from({ length: SEATS_PER_ROW }, (_, index) => `${row}${index + 1}`),
 );
 
+export const STARTS_SOON_MS = 60 * 60 * 1000;
+
 export function eventScheduleKey(startsAt: Date, venueName: string): string {
   return `${toIsoString(startsAt)}|${venueName.trim()}`;
 }

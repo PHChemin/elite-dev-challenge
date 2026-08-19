@@ -1,11 +1,18 @@
 import { INestApplication, Type } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
-import { Prisma, PublishStatus, Role, UserStatus } from '@prisma/client';
+import {
+  Prisma,
+  PublishStatus,
+  Role,
+  UserStatus,
+  HoldStatus,
+} from '@prisma/client';
 import { hash } from 'bcryptjs';
 import { App } from 'supertest/types';
 import { TMDB_AXIOS } from '../../src/catalog/tmdb/tmdb.constants';
 import { AppModule } from '../../src/app.module';
 import { setupApp } from '../../src/common/setup-app';
+import { SEAT_LABELS } from '../../src/events/events.constants';
 import { PrismaService } from '../../src/prisma/prisma.service';
 import { SEED_USERS } from '../../prisma/seed-users';
 import { createTmdbAxiosMock, type TmdbAxiosMock } from './tmdb-axios';
@@ -47,6 +54,27 @@ export type SeedSeatRow = {
   label: string;
 };
 
+export type SeedHoldRow = {
+  id: string;
+  customerId: string;
+  eventId: string;
+  fullCount: number;
+  halfCount: number;
+  expiresAt: Date;
+  holdStatus: HoldStatus;
+};
+
+export type SeedHoldSeatRow = {
+  holdId: string;
+  seatId: string;
+};
+
+export type SeedTicketRow = {
+  id: string;
+  seatId: string;
+  cancelledAt: Date | null;
+};
+
 export type LoginBody = {
   accessToken: string;
   user: { id: string; email: string; role: Role };
@@ -77,23 +105,28 @@ type EventWhere = {
   NOT?: { id?: string };
 };
 
+type HoldWhere = {
+  id?: string | { in?: string[] };
+  customerId?: string;
+  eventId?: string;
+  holdStatus?: HoldStatus;
+  expiresAt?: { lte?: Date; gt?: Date };
+};
+
 type EventNestedSelect = {
   where?: EventWhere;
   orderBy?: Prisma.EventOrderByWithRelationInput;
   select?: Prisma.EventSelect;
 };
 
-function pickSelected<T extends object>(
-  row: T,
-  select?: object | null,
-): Record<string, unknown> {
+function pickSelected<T extends object>(row: T, select?: object | null): T {
   if (!select) {
     return { ...row };
   }
-  const picked: Record<string, unknown> = {};
+  const picked = {} as T;
   for (const [key, value] of Object.entries(select)) {
     if (value === true && key in row) {
-      picked[key] = row[key as keyof T];
+      picked[key as keyof T] = row[key as keyof T];
     }
   }
   return picked;
@@ -147,14 +180,26 @@ export function createPrismaMock(
   users: SeedUserRow[],
   exhibitions: SeedExhibitionRow[] = [],
   events: SeedEventRow[] = [],
+  options?: { seedSeats?: boolean },
 ) {
   const exhibitionRows: SeedExhibitionRow[] = exhibitions.map((row) => ({
     ...row,
   }));
   const eventRows: SeedEventRow[] = events.map((row) => ({ ...row }));
   const seatRows: SeedSeatRow[] = [];
+  const holdRows: SeedHoldRow[] = [];
+  const holdSeatRows: SeedHoldSeatRow[] = [];
+  const ticketRows: SeedTicketRow[] = [];
   let sequence = 0;
   const nextId = (prefix: string): string => `${prefix}-${(sequence += 1)}`;
+
+  if (options?.seedSeats) {
+    for (const event of eventRows) {
+      for (const label of SEAT_LABELS) {
+        seatRows.push({ id: nextId('seat'), eventId: event.id, label });
+      }
+    }
+  }
 
   const sortEvents = (
     rows: SeedEventRow[],
@@ -182,8 +227,9 @@ export function createPrismaMock(
     if (!eventsSelect) {
       return picked;
     }
-    const nestedArgs: EventNestedSelect =
-      eventsSelect === true ? {} : eventsSelect;
+    const nestedArgs = (
+      eventsSelect === true ? {} : eventsSelect
+    ) as EventNestedSelect;
     const nested = sortEvents(
       eventRows.filter((event) =>
         matchesEvent(event, {
@@ -353,7 +399,8 @@ export function createPrismaMock(
         }: {
           where: EventWhere;
           select?: Prisma.EventSelect & {
-            exhibition?: { select?: { organizerId?: boolean } };
+            exhibition?: boolean | { select?: Prisma.ExhibitionSelect };
+            seats?: boolean | { select?: Prisma.SeatSelect };
           };
         }) => {
           const row = eventRows.find((event) => event.id === where.id);
@@ -365,13 +412,11 @@ export function createPrismaMock(
             const exhibition = exhibitionRows.find(
               (item) => item.id === row.exhibitionId,
             );
-            return {
-              ...(picked as object),
-              exhibitionId: row.exhibitionId,
-              exhibition: exhibition
-                ? { organizerId: exhibition.organizerId }
-                : null,
-            };
+            const nestedSelect =
+              select.exhibition === true ? undefined : select.exhibition.select;
+            (picked as unknown as { exhibition: unknown }).exhibition = exhibition
+              ? pickSelected(exhibition, nestedSelect)
+              : null;
           }
           return picked;
         },
@@ -444,8 +489,226 @@ export function createPrismaMock(
               where?.eventId === undefined || seat.eventId === where.eventId,
           ).length,
       ),
+      findMany: jest.fn(
+        ({
+          where,
+        }: {
+          where?: { eventId?: string; label?: { in?: string[] } };
+        } = {}) =>
+          Promise.resolve(
+            seatRows
+              .filter(
+                (seat) =>
+                  (where?.eventId === undefined ||
+                    seat.eventId === where.eventId) &&
+                  (where?.label?.in === undefined ||
+                    where.label.in.includes(seat.label)),
+              )
+              .map((seat) => mapOccupancySeat(seat)),
+          ),
+      ),
+    },
+    hold: {
+      findMany: jest.fn(
+        ({
+          where,
+          select,
+        }: {
+          where?: HoldWhere;
+          select?: object;
+        } = {}) =>
+          Promise.resolve(
+            holdRows
+              .filter((row) => matchesHold(row, where))
+              .map((row) => pickSelected(row, select)),
+          ),
+      ),
+      findFirst: jest.fn(
+        ({ where, select }: { where?: HoldWhere; select?: object }) => {
+          const row = holdRows.find((hold) => matchesHold(hold, where));
+          return Promise.resolve(row ? pickSelected(row, select) : null);
+        },
+      ),
+      findUnique: jest.fn(
+        ({ where, select }: { where: { id: string }; select?: object }) => {
+          const row = holdRows.find((hold) => hold.id === where.id);
+          return Promise.resolve(row ? mapHoldDetail(row, select) : null);
+        },
+      ),
+      create: jest.fn(
+        ({
+          data,
+          select,
+        }: {
+          data: Omit<SeedHoldRow, 'id' | 'holdStatus'> & {
+            holdStatus?: HoldStatus;
+          };
+          select?: object;
+        }) => {
+          const row: SeedHoldRow = {
+            ...data,
+            id: nextId('hold'),
+            holdStatus: data.holdStatus ?? HoldStatus.active,
+          };
+          holdRows.push(row);
+          return Promise.resolve(pickSelected(row, select));
+        },
+      ),
+      update: jest.fn(
+        ({
+          where,
+          data,
+        }: {
+          where: { id: string };
+          data: Partial<SeedHoldRow>;
+        }) => {
+          const row = holdRows.find((hold) => hold.id === where.id);
+          if (!row) {
+            throw new Error(`hold ${where.id} not found`);
+          }
+          Object.assign(row, data);
+          return Promise.resolve(row);
+        },
+      ),
+      updateMany: jest.fn(
+        ({ where, data }: { where: HoldWhere; data: Partial<SeedHoldRow> }) => {
+          let count = 0;
+          for (const row of holdRows) {
+            if (matchesHold(row, where)) {
+              Object.assign(row, data);
+              count += 1;
+            }
+          }
+          return Promise.resolve({ count });
+        },
+      ),
+    },
+    holdSeat: {
+      createMany: jest.fn(({ data }: { data: SeedHoldSeatRow[] }) => {
+        for (const row of data) {
+          if (holdSeatRows.some((item) => item.seatId === row.seatId)) {
+            throw new Prisma.PrismaClientKnownRequestError(
+              'Unique constraint failed',
+              { code: 'P2002', clientVersion: 'test' },
+            );
+          }
+          holdSeatRows.push({ ...row });
+        }
+        return Promise.resolve({ count: data.length });
+      }),
+      deleteMany: jest.fn(
+        ({ where }: { where?: { holdId?: string | { in?: string[] } } }) => {
+          const ids =
+            typeof where?.holdId === 'string'
+              ? [where.holdId]
+              : (where?.holdId?.in ?? []);
+          const before = holdSeatRows.length;
+          for (let index = holdSeatRows.length - 1; index >= 0; index -= 1) {
+            const row = holdSeatRows[index];
+            if (row && ids.includes(row.holdId)) {
+              holdSeatRows.splice(index, 1);
+            }
+          }
+          return Promise.resolve({ count: before - holdSeatRows.length });
+        },
+      ),
+    },
+    ticket: {
+      createMany: jest.fn(({ data }: { data: Omit<SeedTicketRow, 'id'>[] }) => {
+        for (const row of data) {
+          ticketRows.push({ ...row, id: nextId('ticket') });
+        }
+        return Promise.resolve({ count: data.length });
+      }),
     },
   };
+
+  function mapOccupancySeat(seat: SeedSeatRow) {
+    const ticket = ticketRows.find((row) => row.seatId === seat.id) ?? null;
+    const holdSeat = holdSeatRows.find((row) => row.seatId === seat.id);
+    const hold = holdSeat
+      ? (holdRows.find((row) => row.id === holdSeat.holdId) ?? null)
+      : null;
+    return {
+      id: seat.id,
+      label: seat.label,
+      ticket: ticket
+        ? { id: ticket.id, cancelledAt: ticket.cancelledAt }
+        : null,
+      holdSeat: hold
+        ? {
+            hold: {
+              id: hold.id,
+              customerId: hold.customerId,
+              holdStatus: hold.holdStatus,
+              expiresAt: hold.expiresAt,
+            },
+          }
+        : null,
+    };
+  }
+
+  function mapHoldDetail(row: SeedHoldRow, select?: object) {
+    const picked = pickSelected(row, select);
+    const event = eventRows.find((item) => item.id === row.eventId);
+    const exhibition = event
+      ? exhibitionRows.find((item) => item.id === event.exhibitionId)
+      : undefined;
+    return {
+      ...picked,
+      holdSeats: holdSeatRows
+        .filter((item) => item.holdId === row.id)
+        .map((item) => {
+          const seat = seatRows.find((s) => s.id === item.seatId);
+          return { seat: { label: seat?.label ?? '' } };
+        }),
+      event: event
+        ? {
+            ...pickSelected(event, undefined),
+            exhibition: exhibition ? pickSelected(exhibition, undefined) : null,
+          }
+        : null,
+    };
+  }
+
+  function matchesHold(row: SeedHoldRow, where?: HoldWhere): boolean {
+    if (!where) {
+      return true;
+    }
+    if (typeof where.id === 'string' && row.id !== where.id) {
+      return false;
+    }
+    if (
+      where.id &&
+      typeof where.id === 'object' &&
+      where.id.in &&
+      !where.id.in.includes(row.id)
+    ) {
+      return false;
+    }
+    if (where.customerId !== undefined && row.customerId !== where.customerId) {
+      return false;
+    }
+    if (where.eventId !== undefined && row.eventId !== where.eventId) {
+      return false;
+    }
+    if (where.holdStatus !== undefined && row.holdStatus !== where.holdStatus) {
+      return false;
+    }
+    if (
+      where.expiresAt?.lte !== undefined &&
+      row.expiresAt.getTime() > where.expiresAt.lte.getTime()
+    ) {
+      return false;
+    }
+    if (
+      where.expiresAt?.gt !== undefined &&
+      row.expiresAt.getTime() <= where.expiresAt.gt.getTime()
+    ) {
+      return false;
+    }
+    return true;
+  }
 
   return {
     ...models,
@@ -465,6 +728,7 @@ export async function createE2eApp(options?: {
   controllers?: Type<unknown>[];
   exhibitions?: SeedExhibitionRow[];
   events?: SeedEventRow[];
+  seedSeats?: boolean;
   tmdbAxios?: TmdbAxiosMock;
 }): Promise<{
   app: INestApplication;
@@ -477,6 +741,7 @@ export async function createE2eApp(options?: {
     users,
     options?.exhibitions ?? [],
     options?.events ?? [],
+    { seedSeats: options?.seedSeats },
   );
   const moduleRef = await Test.createTestingModule({
     imports: [AppModule],

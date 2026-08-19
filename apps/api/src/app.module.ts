@@ -8,6 +8,7 @@ import { CatalogModule } from './catalog/catalog.module';
 import { validateEnv } from './config/env.validation';
 import { EventsModule } from './events/events.module';
 import { ExhibitionsModule } from './exhibitions/exhibitions.module';
+import { ReservationsModule } from './reservations/reservations.module';
 import { LocalesJsonLoader } from './locales/locales-json.loader';
 import { PrismaModule } from './prisma/prisma.module';
 import { UsersModule } from './users/users.module';
@@ -32,6 +33,7 @@ import { UsersModule } from './users/users.module';
     CatalogModule,
     ExhibitionsModule,
     EventsModule,
+    ReservationsModule,
   ],
   controllers: [AppController],
 })
