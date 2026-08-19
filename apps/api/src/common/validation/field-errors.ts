@@ -11,7 +11,7 @@ export function toFieldErrors(
   for (const error of errors) {
     const path = parent ? `${parent}.${error.property}` : error.property;
     if (error.constraints) {
-      result[path] = Object.values(error.constraints);
+      result[path] = [...new Set(Object.values(error.constraints))];
     }
     if (error.children?.length) {
       Object.assign(result, toFieldErrors(error.children, path));

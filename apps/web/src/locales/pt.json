@@ -6,12 +6,27 @@
     "passwordPlaceholder": "••••••••",
     "submit": "Entrar",
     "logout": "Sair",
+    "cancel": "Cancelar",
+    "edit": "Editar",
+    "retry": "Tentar de novo",
     "roles": {
       "admin": "Admin",
       "organizer": "Organizador",
       "customer": "Consumidor",
       "gate": "Portaria"
-    }
+    },
+    "open": "Abrir"
+  },
+  "nav": {
+    "home": "Início",
+    "exhibitions": "Em cartaz",
+    "myExhibitions": "Meus cartazes",
+    "login": "Entrar",
+    "menu": "Menu",
+    "closeMenu": "Fechar menu"
+  },
+  "footer": {
+    "copy": "© {{year}} PHCTickets"
   },
   "validation": {
     "email": {
@@ -19,21 +34,213 @@
     },
     "password": {
       "required": "Informe a senha"
+    },
+    "tmdbId": {
+      "required": "Escolha um filme do catálogo"
+    },
+    "startsAt": {
+      "invalid": "Informe a data e a hora da sessão"
+    },
+    "time": {
+      "required": "Informe o horário da sessão"
+    },
+    "period": {
+      "required": "Informe o período da replicação",
+      "invalid": "A data final precisa ser igual ou depois da inicial"
+    },
+    "venueName": {
+      "required": "Informe o local da sessão"
+    },
+    "priceFull": {
+      "invalid": "Informe o preço da inteira"
     }
   },
   "auth": {
     "login": {
       "title": "Acesse sua conta",
-      "sessionStarted": "Sessão iniciada",
       "failed": "Não foi possível entrar",
       "failedRetry": "Tente novamente.",
-      "fallback": "Não foi possível entrar"
+      "browseEvents": "Ver o que está em cartaz"
+    }
+  },
+  "catalog": {
+    "searchLabel": "Filme",
+    "searchPlaceholder": "Busque no catálogo TMDb",
+    "searchAction": "Buscar",
+    "searchFailed": "Não foi possível buscar no catálogo",
+    "noResults": "Nenhum filme encontrado.",
+    "changeMovie": "Trocar filme"
+  },
+  "exhibitions": {
+    "noPoster": "Sem pôster",
+    "buyTickets": "Comprar ingressos",
+    "eventCountNone": "Nenhuma sessão",
+    "eventCountOne": "1 sessão",
+    "eventCountMany": "{{count}} sessões",
+    "nextEvent": "Próxima: {{when}}",
+    "noNextEvent": "Sem sessão publicada",
+    "status": {
+      "draft": "Rascunho",
+      "published": "Publicado"
+    },
+    "list": {
+      "title": "Em cartaz",
+      "empty": "Nenhum cartaz publicado no momento."
+    },
+    "detail": {
+      "events": "Sessões",
+      "emptyEvents": "Este cartaz ainda não tem sessão publicada.",
+      "emptyDay": "Nenhuma sessão neste dia.",
+      "today": "HOJE",
+      "daysLabel": "Dias com sessão",
+      "cap": "Até {{max}} ingressos por compra"
+    },
+    "organizer": {
+      "title": "Meus cartazes",
+      "new": "Novo cartaz",
+      "empty": "Você ainda não criou um cartaz.",
+      "publish": "Publicar",
+      "unpublish": "Voltar para rascunho",
+      "published": "Cartaz publicado",
+      "unpublished": "Cartaz em rascunho",
+      "changeFailed": "Não foi possível mudar a situação",
+      "publishAll": "Publicar todas as sessões",
+      "publishedAll": "Sessões publicadas",
+      "columns": {
+        "movie": "Filme",
+        "next": "Próxima sessão",
+        "events": "Sessões",
+        "status": "Situação"
+      }
+    },
+    "form": {
+      "newTitle": "Novo cartaz",
+      "create": "Criar cartaz",
+      "created": "Cartaz criado",
+      "failed": "Não foi possível salvar o cartaz",
+      "changeMovie": "Salvar filme",
+      "movieSaved": "Filme atualizado",
+      "movieCanChange": "O filme pode ser trocado enquanto o cartaz não tiver sessões.",
+      "movieLocked": "O filme não pode ser trocado depois que o cartaz tem sessões."
+    }
+  },
+  "events": {
+    "priceLine": "Inteira {{full}} · Meia {{half}}",
+    "buy": {
+      "chooseSeats": "Escolher assentos",
+      "full": "Inteira",
+      "half": "Meia",
+      "total": "Total {{total}}",
+      "freeSeats": "{{count}} lugares livres",
+      "qtyRequired": "Informe pelo menos um ingresso",
+      "overCap": "A quantidade passa do teto desta sessão",
+      "notEnoughSeats": "Só há {{count}} lugares livres nesta sessão.",
+      "soldOut": "Não há lugares livres nesta sessão.",
+      "customerOnly": "Entre como consumidor para escolher assentos.",
+      "eventStarted": "Esta sessão já começou. A venda está encerrada.",
+      "minus": "Diminuir",
+      "plus": "Aumentar"
+    },
+    "sale": {
+      "startsSoon": "Inicia em breve",
+      "started": "Vendas encerradas"
+    },
+    "seats": {
+      "title": "Mapa",
+      "summary": "Resumo",
+      "free": "Livre",
+      "selected": "Selecionado",
+      "heldByMe": "Retido por você",
+      "taken": "Ocupado",
+      "counts": "{{full}} inteira(s) · {{half}} meia(s)",
+      "picked": "{{current}} de {{needed}} assentos",
+      "none": "Nenhum",
+      "confirm": "Confirmar assentos",
+      "existingHold": "Você já tem um pedido nesta sessão.",
+      "continueHold": "Continuar pedido",
+      "conflictTitle": "Assento indisponível"
+    },
+    "status": {
+      "draft": "Rascunho",
+      "published": "Publicada"
+    },
+    "organizer": {
+      "title": "Sessões",
+      "new": "Adicionar sessões",
+      "empty": "Este cartaz ainda não tem sessões.",
+      "publish": "Publicar",
+      "unpublish": "Voltar para rascunho",
+      "published": "Sessão publicada",
+      "unpublished": "Sessão em rascunho",
+      "changeFailed": "Não foi possível mudar a situação da sessão",
+      "columns": {
+        "startsAt": "Data",
+        "venue": "Local",
+        "prices": "Preços",
+        "cap": "Teto",
+        "status": "Situação"
+      }
+    },
+    "form": {
+      "editTitle": "Editar sessão",
+      "startsAt": "Data e hora",
+      "date": "Data",
+      "time": "Horário",
+      "venueName": "Local",
+      "venueNamePlaceholder": "Cine PHC",
+      "venueAddress": "Endereço",
+      "venueAddressPlaceholder": "Rua, número e cidade",
+      "priceFull": "Inteira",
+      "priceHalf": "Meia",
+      "maxTicketsPerOrder": "Teto por compra",
+      "maxTicketsPerOrderHint": "Máximo de ingressos em uma compra",
+      "save": "Salvar sessão",
+      "saved": "Sessão salva",
+      "failed": "Não foi possível salvar a sessão",
+      "notFound": "Sessão não encontrada neste cartaz."
+    },
+    "batch": {
+      "title": "Novas sessões",
+      "mode": "Como criar",
+      "manual": "Avulsa",
+      "daily": "Diária",
+      "filters": "Lote",
+      "dailyHelp": "Cada card é um horário que se repete em todos os dias do período. A quantidade é o número de horários por dia, não o total gravado. 3 horários em 7 dias geram 21 sessões.",
+      "period": "Período",
+      "periodFrom": "De",
+      "periodTo": "Até",
+      "quantity": "Qtd. sessões",
+      "sameVenue": "Mesmo local para todas?",
+      "samePrice": "Mesmo preço para todas?",
+      "dailyPlaceholder": "Diariamente no período selecionado",
+      "eventLabel": "Sessão {{n}}",
+      "add": "Adicionar sessão",
+      "remove": "Remover",
+      "preview": "{{count}} sessões serão criadas",
+      "previewDaily": "{{models}} horários × {{days}} dias = {{total}} sessões",
+      "limit": "O lote passa de {{max}} sessões. Encurte o período ou diminua a quantidade.",
+      "create": "Criar sessões",
+      "created_one": "{{count}} sessão criada",
+      "created_other": "{{count}} sessões criadas",
+      "failed": "Não foi possível criar as sessões",
+      "duplicate": "Há duas sessões no mesmo horário e no mesmo local."
+    }
+  },
+  "reservations": {
+    "pending": {
+      "title": "Aguardando pagamento",
+      "seats": "Assentos: {{seats}}",
+      "timer": "Tempo restante {{time}}",
+      "expired": "O prazo acabou. Escolha os assentos de novo.",
+      "back": "Voltar ao cartaz"
     }
   },
   "errors": {
+    "title": "Erro",
     "api": {
       "connectionFailed": "Não foi possível conectar à API",
-      "invalidResponse": "Resposta inválida da API"
+      "invalidResponse": "Resposta inválida da API",
+      "requestFailed": "Não foi possível concluir a operação"
     }
   }
 }

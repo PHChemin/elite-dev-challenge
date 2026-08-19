@@ -16,6 +16,23 @@ describe('toFieldErrors', () => {
     });
   });
 
+  it('reports a message once when several constraints share it', () => {
+    const errors: ValidationError[] = [
+      {
+        property: 'priceFull',
+        constraints: {
+          isInt: 'Informe o preço da inteira',
+          min: 'Informe o preço da inteira',
+        },
+        children: [],
+      },
+    ];
+
+    expect(toFieldErrors(errors)).toEqual({
+      priceFull: ['Informe o preço da inteira'],
+    });
+  });
+
   it('flattens nested fields with a dotted path', () => {
     const errors: ValidationError[] = [
       {

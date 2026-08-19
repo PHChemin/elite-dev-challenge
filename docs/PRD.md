@@ -15,7 +15,8 @@ O objetivo do Must é o fluxo ponta a ponta: login por papel, sessão com mapa, 
 
 ## 2. Glossário
 
-- **Sessão (`Event`):** Exibição de um filme em data, local e preços definidos pelo organizador.
+- **Cartaz (`Exhibition`):** Programação do organizador para um título TMDb. A vitrine lista o cartaz, não cada horário.
+- **Sessão (`Event`):** Exibição com data, local e preços, ligada a um cartaz.
 - **Assento (`Seat`):** Poltrona identificada no mapa da sessão (ex.: `F12`).
 - **Retenção (`Hold`):** Bloqueio temporário de assentos (10 minutos) até o pagamento.
 - **Pedido (`Order`):** Pagamento simulado (`approved` ou `declined`) ligado a um hold.
@@ -28,8 +29,8 @@ O objetivo do Must é o fluxo ponta a ponta: login por papel, sessão com mapa, 
 ## 3. Atores e Permissões
 
 - **Admin:** Cadastra organizadores (telas Should). Seed traz um admin.
-- **Organizador:** Cria e edita sessões (Must). Cria e desativa portaria (Should).
-- **Consumidor:** Lista sessões, compra, vê ingressos, compartilha link. Registro aberto (Should); seed traz dois consumidores.
+- **Organizador:** Cria e edita cartazes e sessões (Must). Cria e desativa portaria (Should).
+- **Consumidor:** Lista cartazes, escolhe sessão, compra, vê ingressos, compartilha link. Registro aberto (Should); seed traz dois consumidores.
 - **Portaria (`gate`):** Escolhe a sessão e valida QR ou código digitado.
 - **Sistema:** JWT, autorização por papel, unicidade de assento, expiração de hold, resposta padronizada de erro.
 
@@ -50,17 +51,19 @@ O objetivo do Must é o fluxo ponta a ponta: login por papel, sessão com mapa, 
 - [x] Seed cobre os quatro papéis; README lista e-mails e senhas.
 - [x] Rota protegida recusa token ausente, inválido ou papel errado.
 
-#### US02 — Catálogo TMDb e CRUD de sessão
+#### US02 — Catálogo TMDb, cartaz e sessões
 
 **Ator:** Organizador  
-**História:** Como organizador, quero montar uma sessão a partir de um filme TMDb com data, local, preços e teto.
+**História:** Como organizador, quero abrir um cartaz a partir de um filme TMDb e criar sessões com data, local, preços e teto.
 
 **Critérios de Aceitação:**
 
 - [x] Busca TMDb devolve título e poster.
-- [ ] Criar/editar/listar sessão com `priceFull`, `priceHalf`, `maxTicketsPerOrder` (padrão 6).
-- [ ] Sem `priceHalf` no request, a API grava `floor(priceFull / 2)`.
-- [x] Falha da TMDb não apaga sessões já salvas.
+- [x] Criar cartaz com o filme; criar/editar/listar sessão com `priceFull`, `priceHalf`, `maxTicketsPerOrder` (padrão 6).
+- [x] Sem `priceHalf` no request, a API grava `floor(priceFull / 2)`.
+- [x] Falha da TMDb não apaga cartazes nem sessões já salvos.
+- [x] Vitrine lista cartaz publicado mesmo sem sessão publicada.
+- [x] Mesmo horário e mesmo local no cartaz → conflito.
 
 #### US03 — Compra: quantidade, mapa e retenção
 
@@ -69,11 +72,11 @@ O objetivo do Must é o fluxo ponta a ponta: login por papel, sessão com mapa, 
 
 **Critérios de Aceitação:**
 
-- [ ] Soma inteira + meia ≤ teto da sessão.
-- [ ] Mapa exige exatamente essa quantidade de lugares.
-- [ ] Prosseguir cria hold de 10 minutos se os assentos estão livres.
-- [ ] Dois holds no mesmo assento: o segundo recebe conflito.
-- [ ] Hold expirado libera o assento.
+- [x] Soma inteira + meia ≤ teto da sessão.
+- [x] Mapa exige exatamente essa quantidade de lugares.
+- [x] Prosseguir cria hold de 10 minutos se os assentos estão livres.
+- [x] Dois holds no mesmo assento: o segundo recebe conflito.
+- [x] Hold expirado libera o assento.
 
 #### US04 — Pagamento simulado
 
@@ -151,6 +154,8 @@ Nota fiscal, revenda entre usuários, app nativo, recuperação de senha, e-mail
 - **RN08 — Evento errado:** `ticket.eventId` ≠ sessão ativa da porta.
 - **RN09 — Fonte da verdade:** Regras de negócio na API; a UI não autoriza sozinha.
 - **RN10 — TDD:** Issue fecha só com testes da API verdes.
+- **RN11 — Vitrine:** Lista pública olha `publishStatus` do cartaz. Sessão draft não entra no detalhe público.
+- **RN12 — Horário e local:** No mesmo cartaz, o par `startsAt` + `venueName` é único.
 
 ## 6. Fora de Escopo
 
@@ -169,32 +174,32 @@ Won’t do enunciado e do prazo. Pista e Ticketmaster. Escala de staff por sess�
 
 ### Consumidor compra
 
-1. Lista sessões publicadas → detalhe.  
-2. Quantidade inteira e meia → mapa.  
-3. Prosseguir → hold 10 min → pagamento.  
+1. Lista cartazes publicados → detalhe do cartaz.
+2. Escolhe a sessão. Quantidade inteira e meia → mapa.
+3. Prosseguir → hold 10 min → pagamento.
 4. Sucesso → ingresso, QR, link.
 
 ### Organizador publica
 
-1. Busca filme TMDb.  
-2. Data, local, inteira (meia = metade, editável), teto.  
-3. Publica.
+1. Busca filme TMDb e abre o cartaz.
+2. Cria sessões (uma ou várias): data, local, inteira (meia = metade, editável), teto.
+3. Publica o cartaz.
 
 ### Portaria valida
 
-1. Login → escolhe sessão.  
-2. Lê QR ou digita código.  
+1. Login → escolhe sessão.
+2. Lê QR ou digita código.
 3. Vê válido / inválido / já utilizado / evento errado.
 
 ## 9. Matriz Issue × História
 
-| História | Issue / PR (ver github-issues.md) |
-| -------- | --------------------------------- |
-| US01     | Auth e papéis · `feat/auth-catalog` |
-| US02     | TMDb + CRUD de sessão · `feat/auth-catalog` / `feat/events-seats` |
-| US03     | Mapa e retenção · `feat/events-seats` |
-| US04     | Pagamento simulado · `feat/checkout-tickets` |
-| US05     | Ingresso, QR e link · `feat/checkout-tickets` |
-| US06     | Portaria · `feat/gate-share` |
-| US07     | Seed, README, testes · `chore/seed-readme-deploy` |
-| US08–US09 | Issues Should |
+| História  | Issue / PR (ver github-issues.md)                                 |
+| --------- | ----------------------------------------------------------------- |
+| US01      | Auth e papéis · `feat/auth-catalog`                               |
+| US02      | TMDb + CRUD de sessão · `feat/auth-catalog` / `feat/events-seats` |
+| US03      | Mapa e retenção · `feat/events-seats`                             |
+| US04      | Pagamento simulado · `feat/checkout-tickets`                      |
+| US05      | Ingresso, QR e link · `feat/checkout-tickets`                     |
+| US06      | Portaria · `feat/gate-share`                                      |
+| US07      | Seed, README, testes · `chore/seed-readme-deploy`                 |
+| US08–US09 | Issues Should                                                     |

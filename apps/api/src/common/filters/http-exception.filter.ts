@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { I18nService } from 'nestjs-i18n';
+import { toIsoString } from '../dates';
 import type { FieldErrors } from '../validation/field-errors';
 
 @Catch()
@@ -30,7 +31,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
     response.status(status).json({
       statusCode: status,
-      timestamp: new Date().toISOString(),
+      timestamp: toIsoString(),
       path,
       message: this.resolveMessage(exception),
       fieldErrors: this.resolveFieldErrors(exception),

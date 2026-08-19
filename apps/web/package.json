@@ -15,11 +15,15 @@
     "@mantine/form": "^9.5.1",
     "@mantine/hooks": "^9.5.1",
     "@mantine/notifications": "^9.5.1",
+    "@mdi/js": "^7.4.47",
+    "@mdi/react": "^1.6.1",
     "axios": "^1.19.0",
+    "dayjs": "^1.11.23",
     "i18next": "^26.3.6",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
-    "react-i18next": "^17.0.11"
+    "react-i18next": "^17.0.11",
+    "react-router-dom": "^7.18.2"
   },
   "devDependencies": {
     "@types/node": "^24.13.3",

@@ -51,20 +51,30 @@ model User {
   organizer          User?      @relation("employsGate", fields: [organizerId], references: [id])
   gateStaff          User[]     @relation("employsGate")
   mustChangePassword Boolean    @default(false)
-  events             Event[]
+  exhibitions        Exhibition[]
   holds              Hold[]
   orders             Order[]
   tickets            Ticket[]   @relation("owns")
   validatedTickets   Ticket[]   @relation("validates")
 }
 
+model Exhibition {
+  id            String        @id @default(uuid())
+  organizerId   String
+  organizer     User          @relation(fields: [organizerId], references: [id])
+  tmdbId        String
+  title         String
+  posterUrl     String?
+  publishStatus PublishStatus @default(draft)
+  events        Event[]
+
+  @@unique([organizerId, tmdbId])
+}
+
 model Event {
   id                 String        @id @default(uuid())
-  organizerId        String
-  organizer          User          @relation(fields: [organizerId], references: [id])
-  tmdbId             String
-  title              String
-  posterUrl          String
+  exhibitionId       String
+  exhibition         Exhibition    @relation(fields: [exhibitionId], references: [id], onDelete: Cascade)
   startsAt           DateTime
   venueName          String
   venueAddress       String?
@@ -75,6 +85,8 @@ model Event {
   seats              Seat[]
   holds              Hold[]
   tickets            Ticket[]
+
+  @@unique([exhibitionId, startsAt, venueName])
 }
 
 model Seat {

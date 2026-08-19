@@ -72,7 +72,7 @@ function toApiError(error: unknown): ApiError {
   const body = payload as ApiErrorBody;
   return new ApiError(
     body.statusCode ?? error.response.status,
-    resolveMessage(body, i18n.t("auth.login.fallback")),
+    resolveMessage(body, i18n.t("errors.api.requestFailed")),
     body.fieldErrors ?? {},
   );
 }
@@ -87,5 +87,10 @@ export async function apiGet<T>(
 
 export async function apiPost<T>(path: string, body: unknown): Promise<T> {
   const { data } = await api.post<T>(path, body);
+  return data;
+}
+
+export async function apiPatch<T>(path: string, body: unknown): Promise<T> {
+  const { data } = await api.patch<T>(path, body);
   return data;
 }
