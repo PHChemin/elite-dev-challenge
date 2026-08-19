@@ -72,11 +72,11 @@ O objetivo do Must é o fluxo ponta a ponta: login por papel, sessão com mapa, 
 
 **Critérios de Aceitação:**
 
-- [ ] Soma inteira + meia ≤ teto da sessão.
-- [ ] Mapa exige exatamente essa quantidade de lugares.
-- [ ] Prosseguir cria hold de 10 minutos se os assentos estão livres.
-- [ ] Dois holds no mesmo assento: o segundo recebe conflito.
-- [ ] Hold expirado libera o assento.
+- [x] Soma inteira + meia ≤ teto da sessão.
+- [x] Mapa exige exatamente essa quantidade de lugares.
+- [x] Prosseguir cria hold de 10 minutos se os assentos estão livres.
+- [x] Dois holds no mesmo assento: o segundo recebe conflito.
+- [x] Hold expirado libera o assento.
 
 #### US04 — Pagamento simulado
 
@@ -174,32 +174,32 @@ Won’t do enunciado e do prazo. Pista e Ticketmaster. Escala de staff por sess�
 
 ### Consumidor compra
 
-1. Lista cartazes publicados → detalhe do cartaz.  
-2. Escolhe a sessão. Quantidade inteira e meia → mapa.  
-3. Prosseguir → hold 10 min → pagamento.  
+1. Lista cartazes publicados → detalhe do cartaz.
+2. Escolhe a sessão. Quantidade inteira e meia → mapa.
+3. Prosseguir → hold 10 min → pagamento.
 4. Sucesso → ingresso, QR, link.
 
 ### Organizador publica
 
-1. Busca filme TMDb e abre o cartaz.  
-2. Cria sessões (uma ou várias): data, local, inteira (meia = metade, editável), teto.  
+1. Busca filme TMDb e abre o cartaz.
+2. Cria sessões (uma ou várias): data, local, inteira (meia = metade, editável), teto.
 3. Publica o cartaz.
 
 ### Portaria valida
 
-1. Login → escolhe sessão.  
-2. Lê QR ou digita código.  
+1. Login → escolhe sessão.
+2. Lê QR ou digita código.
 3. Vê válido / inválido / já utilizado / evento errado.
 
 ## 9. Matriz Issue × História
 
-| História | Issue / PR (ver github-issues.md) |
-| -------- | --------------------------------- |
-| US01     | Auth e papéis · `feat/auth-catalog` |
-| US02     | TMDb + CRUD de sessão · `feat/auth-catalog` / `feat/events-seats` |
-| US03     | Mapa e retenção · `feat/events-seats` |
-| US04     | Pagamento simulado · `feat/checkout-tickets` |
-| US05     | Ingresso, QR e link · `feat/checkout-tickets` |
-| US06     | Portaria · `feat/gate-share` |
-| US07     | Seed, README, testes · `chore/seed-readme-deploy` |
-| US08–US09 | Issues Should |
+| História  | Issue / PR (ver github-issues.md)                                 |
+| --------- | ----------------------------------------------------------------- |
+| US01      | Auth e papéis · `feat/auth-catalog`                               |
+| US02      | TMDb + CRUD de sessão · `feat/auth-catalog` / `feat/events-seats` |
+| US03      | Mapa e retenção · `feat/events-seats`                             |
+| US04      | Pagamento simulado · `feat/checkout-tickets`                      |
+| US05      | Ingresso, QR e link · `feat/checkout-tickets`                     |
+| US06      | Portaria · `feat/gate-share`                                      |
+| US07      | Seed, README, testes · `chore/seed-readme-deploy`                 |
+| US08–US09 | Issues Should                                                     |
