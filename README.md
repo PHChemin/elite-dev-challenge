@@ -1,11 +1,16 @@
 # PHCTickets
 
+**Autor:** Pedro Henrique Chemin Prado
+
 Plataforma de sessões de cinema e ingressos (desafio Elite Dev / Verzel).
+
+Este repositório foi estruturado para desenvolvimento **guiado por IA** (Cursor), com documentação de referência ([PRD](docs/PRD.md), [SDD](docs/SDD.md), [Visual](docs/visual.md)), **skills** para agentes em [`.agents/skills/`](.agents/skills/) e metodologia **TDD** na API: testes escritos antes da implementação de cada módulo Must. Todo artefato gerado com IA foi **revisado e aprovado** pelo autor.
 
 - [PRD](docs/PRD.md)
 - [SDD](docs/SDD.md)
 - [Visual](docs/visual.md)
 - [Uso de IA](docs/ai-process.md)
+- [Deploy em produção](docs/deploy.md)
 
 ## Stack
 
@@ -21,6 +26,12 @@ O Compose local usa os defaults do `docker-compose.yml`. No host, a API lê `app
 docker compose up --build
 ```
 
+Depois do primeiro `up`, popule o banco:
+
+```bash
+docker compose exec api npx prisma db seed
+```
+
 API: `http://localhost:3000/api`. Swagger: `http://localhost:3000/api/docs`. Front: `http://localhost:5173`.
 
 Só o banco (API e web no host):
@@ -29,25 +40,9 @@ Só o banco (API e web no host):
 docker compose up db -d
 ```
 
-## Droplet (produção)
+## Deploy (produção)
 
-O Compose de produção publica só 80 e 443. Postgres, API e Nginx ficam na rede interna. O Caddy encaminha `/` ao front e `/api` ao Nest.
-
-1. Copie e edite o ambiente. Não commite este arquivo.
-
-```bash
-cp .env.prod.example .env.prod
-```
-
-2. Troque senhas e `JWT_SECRET`. Em acesso por IP, use `SITE_ADDRESS=:80` e `CORS_ORIGIN=http://SEU_IP`. Com domínio apontando para a droplet, use o hostname (`SITE_ADDRESS=tickets.seudominio.com` e `CORS_ORIGIN=https://tickets.seudominio.com`) para o Caddy emitir HTTPS.
-
-3. `VITE_API_URL=/api` faz o browser chamar a mesma origem. Rebuild da imagem `web` é obrigatório se essa variável mudar.
-
-```bash
-docker compose -f docker-compose.prod.yml --env-file .env.prod up --build -d
-```
-
-Abra `http://SEU_IP` (ou o domínio). A porta 5432 não fica exposta.
+Instruções completas para droplet, VPS Hostinger e teste local do stack de produção: [docs/deploy.md](docs/deploy.md).
 
 ## Como subir no host
 
@@ -66,14 +61,26 @@ npm run dev:web
 
 ## Usuários do seed
 
-| Papel       | E-mail                       | Senha          |
-| ----------- | ---------------------------- | -------------- |
-| Admin       | `admin@phctickets.local`     | `admin123`     |
-| Organizador | `organizer@phctickets.local` | `organizer123` |
-| Consumidor  | `customer@phctickets.local`  | `customer123`  |
-| Portaria    | `gate@phctickets.local`      | `gate123`      |
+**Não há registro de usuários no Must.** Use **somente** as contas abaixo para login e testes manuais.
+
+| Papel        | E-mail                        | Senha          |
+| ------------ | ----------------------------- | -------------- |
+| Admin        | `admin@phctickets.local`      | `admin123`     |
+| Organizador  | `organizer@phctickets.local`  | `organizer123` |
+| Consumidor 1 | `customer@phctickets.local`   | `customer123`  |
+| Consumidor 2 | `customer2@phctickets.local`  | `customer123`  |
+| Portaria     | `gate@phctickets.local`       | `gate123`      |
 
 A portaria fica ligada ao organizador do seed (`organizerId`).
+
+### Sessão demo (após `prisma db seed`)
+
+| Campo            | Valor                                      |
+| ---------------- | ------------------------------------------ |
+| Filme            | Clube da Luta                              |
+| Sessão           | 15/12/2026 19:00 — Cine PHC                |
+| Ingresso demo    | assento A1 do `customer@phctickets.local`  |
+| Código (QR) demo | `cccccccccccccccccccccccccccccccc`         |
 
 Prisma Studio (Postgres no ar, `apps/api/.env` com `DATABASE_URL`):
 
@@ -81,7 +88,25 @@ Prisma Studio (Postgres no ar, `apps/api/.env` com `DATABASE_URL`):
 npm run prisma:studio
 ```
 
-Abre `http://localhost:5555`. É a UI do Prisma para ver e editar tabelas. Não entra no Compose de produção.
+Abre `http://localhost:5555`. Não entra no Compose de produção.
+
+## Uso de IA
+
+Ferramentas, decisões humanas e artefatos gerados estão em [docs/ai-process.md](docs/ai-process.md).
+
+## Variáveis de ambiente
+
+| Variável         | Onde | Uso                                      |
+| ---------------- | ---- | ---------------------------------------- |
+| `DATABASE_URL`   | api  | Conexão Postgres                         |
+| `JWT_SECRET`     | api  | Assinatura JWT                           |
+| `JWT_EXPIRES_IN` | api  | Expiração do token (ex.: `8h`)           |
+| `CORS_ORIGIN`    | api  | Origem permitida do front                |
+| `TMDB_API_KEY`   | api  | Catálogo TMDb (organizador)              |
+| `VITE_API_URL`   | web  | Base da API no browser                   |
+| `PORT`           | api  | Porta HTTP da API (default `3000`)       |
+
+Templates: [apps/api/.env.example](apps/api/.env.example), [apps/web/.env.example](apps/web/.env.example), produção: [.env.prod.example](.env.prod.example).
 
 ## Testes
 
@@ -89,20 +114,51 @@ Abre `http://localhost:5555`. É a UI do Prisma para ver e editar tabelas. Não 
 npm test
 ```
 
-## O que já existe
+A suíte roda na API (`apps/api`): **unit** (`jest` em `src/**/*.spec.ts`) e **e2e** (`test/**/*.e2e-spec.ts`) em sequência. Comandos adicionais:
 
-Scaffold do monorepo, schema Prisma, tema Mantine (Roboto e paleta PHCTickets) e Docker Compose.
+```bash
+npm run test:e2e -w @phctickets/api
+npm run test:cov -w @phctickets/api
+```
 
-Auth JWT na API: `POST /api/auth/login`, `GET /api/users/me`, guards de papel. Catálogo TMDb: `GET /api/catalog/movies`, chave só na API.
+Os e2e usam mock de Prisma ([`apps/api/test/helpers/e2e-app.ts`](apps/api/test/helpers/e2e-app.ts)) — **não é necessário Postgres** para `npm test`.
 
-CRUD de cartaz e sessão: `POST /api/exhibitions`, `GET /api/exhibitions`, `GET /api/exhibitions/:id`, `GET /api/exhibitions/mine`, `GET /api/exhibitions/mine/:id`, `PATCH /api/exhibitions/:id`, `POST /api/exhibitions/:id/events`, `PATCH /api/events/:id`. O cartaz guarda o filme TMDb. A sessão guarda horário, local, preços e teto. Sem meia no request, a API grava `floor(priceFull / 2)`. Cada sessão gera 96 assentos. A vitrine lê o banco e não consulta a TMDb.
+Cobertura Must (success + fail por operação): auth, catálogo/cartaz/sessões, retenção e unicidade, pagamento, ingressos/share, **portaria**.
 
-Mapa e retenção: `GET /api/events/:id` (sessão publicada e `freeSeatCount`), `GET /api/events/:id/seats` (customer), `POST /api/reservations/holds`, `GET /api/reservations/holds/:id`. O consumidor informa inteira e meia, escolhe o mapa 8×12 e retém os lugares por 10 minutos.
+## O que foi implementado
 
-- Pagamento simulado: `POST /api/orders/pay` com `approved` ou `declined`. Aprovação gera um ingresso por assento. Recusa não vende e libera o lugar. Teto é por compra na sessão (padrão 6), não cota da conta. Capacidade da sala é outra regra.
+### Infraestrutura
 
-Ingressos: `GET /api/tickets/mine` (customer), `GET /api/tickets/share/:shareToken` (público, rate limit). `GET /api/reservations/holds/mine` lista holds pendentes. QR no web a partir do `code`. Telas `/ingressos`, `/ingressos/:id` e `/ingresso/:shareToken`. Após pagamento aprovado, o consumidor vai para Meus ingressos.
+Monorepo npm workspaces, Prisma/PostgreSQL, tema Mantine (Roboto, paleta PHCTickets), Docker Compose local e de produção (Caddy + Nginx).
 
-## O que falta
+### Auth
 
-Portaria e sessão no seed. Ver [issues](docs/github-issues.md).
+JWT com `role` (`admin`, `organizer`, `customer`, `gate`), guards no Nest e telas protegidas no React. Login via contas do seed — registro de consumidor fica fora do Must.
+
+### Catálogo e cartaz
+
+Organizador busca filme na TMDb e cria cartaz. A vitrine pública lê o banco (não chama TMDb a cada listagem). Cartaz nasce `draft`; publicação controla visibilidade.
+
+### Sessões
+
+CRUD de sessão com layout fixo 8×12 (96 assentos). Meia omitida no request grava `floor(inteira/2)`. No mesmo cartaz, horário + local são únicos.
+
+### Compra
+
+Consumidor informa inteira e meia **antes** do mapa. Hold de 10 minutos; teto por **compra** na sessão (default 6), distinto da capacidade da sala.
+
+### Pagamento simulado
+
+`approved` gera um ingresso por assento com `code` (QR) e `shareToken` (link). `declined` libera os lugares.
+
+### Ingressos
+
+Meus ingressos, detalhe com QR, share público com rate limit. Holds pendentes aparecem na mesma lista.
+
+### Portaria
+
+Lista sessões ativas do organizador (paginada; exclui encerradas; badges “Em andamento” / “Inicia em breve”). Validação por QR ou código digitado com quatro respostas: `valid`, `invalid`, `already_used`, `wrong_event`. A portaria valida o QR, não a categoria meia/inteira.
+
+### Qualidade
+
+Jest unit + e2e na API, TDD por issue Must. Swagger em `/api/docs`.

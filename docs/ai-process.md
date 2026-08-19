@@ -25,10 +25,39 @@ O enunciado pede ferramentas, o que a IA gerou e o que foi decisão humana.
 
 ## O que a IA gerou
 
-- PRD, SDD, visual, skills em `.agents/skills/`, texto das issues.
-- Monorepo `apps/api` + `apps/web` e schema Prisma.
-- Auth JWT na API: `POST /api/auth/login`, `GET /api/users/me`, guards de papel, testes Jest, seed dos quatro papéis no README.
-- Módulo `tickets/`: listagem do dono, share público, throttler no share; holds pendentes em `GET /api/reservations/holds/mine`.
-- Telas Meus ingressos, detalhe com QR e link, share público; nav e hold pendente na lista.
-- Docker Compose local, Compose de produção na droplet, dependências hoisted na raiz.
-- Prisma no Nest (`PrismaService`). Prisma Studio em `http://localhost:5555`. Swagger em `/api/docs`.
+### Documentação
+
+- [PRD](PRD.md), [SDD](SDD.md), [visual](visual.md), issues em [github-issues.md](github-issues.md)
+- Skills do projeto em [`.agents/skills/`](../.agents/skills/)
+- Mockups de referência em `docs/design/`
+- README, este arquivo e [deploy.md](deploy.md)
+
+### Backend (NestJS + Prisma)
+
+- Monorepo `apps/api` + `apps/web`, schema Prisma, migrations
+- Seed: cinco usuários (admin, organizador, dois consumidores, portaria), sessão demo publicada com 96 assentos e ingresso pago para teste da portaria
+- **Auth:** `POST /api/auth/login`, `GET /api/users/me`, guards por papel, JWT com `role`
+- **Catálogo:** integração TMDb, busca de filme para o organizador
+- **Exhibitions / Events:** CRUD de cartaz e sessão, layout 8×12, publicação, unicidade horário+local
+- **Reservations:** hold de 10 minutos, expiração, unicidade de assento, listagem de holds pendentes
+- **Orders:** pagamento simulado (approve/decline), geração de tickets
+- **Tickets:** meus ingressos, detalhe, share público por `shareToken`, rate limit no share
+- **Gate:** `GET /gate/events` (sessões do organizador, paginada, badges de venda), `POST /gate/scan` (valid, invalid, already_used, wrong_event)
+- Swagger em `/api/docs`, i18n API (`pt.json`), `PrismaService`
+
+### Frontend (Vite + React + Mantine)
+
+- Tema PHCTickets (Roboto, paleta do visual)
+- Login e rotas protegidas por papel
+- Vitrine pública, fluxo do organizador (cartaz, sessões, TMDb)
+- Mapa de assentos, checkout com inteira/meia antes do mapa
+- Meus ingressos, detalhe com QR, share público
+- **Portaria:** lista de sessões (`/portaria`), validação por câmera QR ou código manual (`/portaria/sessoes/:eventId`)
+
+### Infra e qualidade
+
+- Docker Compose local (`docker compose up`)
+- Docker Compose de produção (`docker-compose.prod.yml`): Postgres, API, Nginx, Caddy
+- [`deploy/Caddyfile`](../deploy/Caddyfile) — proxy `/api` + SPA
+- Testes Jest unit (`src/**/*.spec.ts`) e e2e (`test/**/*.e2e-spec.ts`) com mock de Prisma por módulo Must (auth, catalog, exhibitions, reservations, orders, tickets, gate)
+- Prisma Studio documentado no README (`npm run prisma:studio`)
